@@ -22,8 +22,8 @@ export const BaseComponentPropsSchema = z.object({
 
 // Button component validation
 export const ButtonPropsSchema = BaseComponentPropsSchema.extend({
-  variant: z.enum(['primary', 'secondary', 'outline', 'ghost', 'destructive']),
-  size: z.enum(['sm', 'md', 'lg', 'xl']),
+  variant: z.enum(['primary', 'secondary', 'outline', 'ghost', 'destructive']).optional(),
+  size: z.enum(['sm', 'md', 'lg', 'xl']).optional(),
   disabled: z.boolean().optional(),
   loading: z.boolean().optional(),
   type: z.enum(['button', 'submit', 'reset']).optional(),

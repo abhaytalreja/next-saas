@@ -1,7 +1,7 @@
 {
-  "name": "NextSaaS Design System - HubSpot Inspired",
+  "name": "NextSaaS Design System",
   "version": "2.0.0",
-  "description": "A professional design system inspired by HubSpot Canvas for modern SaaS applications",
+  "description": "A professional design system for modern SaaS applications",
   "philosophy": {
     "clear": "Design for clarity and focus through feature prioritization and visual hierarchy",
     "joyful": "Foster joy by humanizing the experience with playful interactions",
@@ -118,7 +118,7 @@
         "900": "#1c1917",
         "950": "#0c0a09"
       },
-      "hubspot": {
+      "extended": {
         "orange": {
           "50": "#fef6f0",
           "100": "#fde9d7",
@@ -261,7 +261,7 @@
       "xl": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
       "2xl": "0 25px 50px -12px rgb(0 0 0 / 0.25)",
       "inner": "inset 0 2px 4px 0 rgb(0 0 0 / 0.05)",
-      "hubspot": "0 2px 8px 0 rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05)"
+      "elevated": "0 2px 8px 0 rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05)"
     },
     "animation": {
       "duration": {
@@ -279,7 +279,7 @@
         "in": "cubic-bezier(0.4, 0, 1, 1)",
         "out": "cubic-bezier(0, 0, 0.2, 1)",
         "in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
-        "hubspot": "cubic-bezier(0.2, 0, 0.13, 1.5)"
+        "smooth": "cubic-bezier(0.2, 0, 0.13, 1.5)"
       }
     }
   },

@@ -88,11 +88,11 @@ GitHub Actions workflow validates:
 - Accessibility compliance
 - Security audits
 
-## 🎨 HubSpot Design System
+## 🎨 NextSaaS Design System
 
 ### Design Philosophy
 
-Our design system follows HubSpot's Canvas principles:
+Our design system follows modern design principles:
 
 - **Clear** - Design for clarity and focus
 - **Joyful** - Foster joy through playful interactions
@@ -102,9 +102,9 @@ Our design system follows HubSpot's Canvas principles:
 ### Color System
 
 ```javascript
-// Brand colors inspired by HubSpot
+// Brand colors for NextSaaS
 primary: {
-  500: "#f05a1a", // HubSpot orange
+  500: "#f05a1a", // Primary orange
   600: "#e13d10",
   // ... full scale
 }
@@ -295,7 +295,7 @@ The guard rails system is continuously improved through:
 
 ## 📚 Resources
 
-- [HubSpot Canvas Design System](https://canvas.hubspot.com/)
+- [Modern Design Systems Guide](https://designsystems.com/)
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 - [ESLint Rules](https://eslint.org/docs/rules/)

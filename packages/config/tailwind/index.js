@@ -1,5 +1,5 @@
 const { fontFamily } = require("tailwindcss/defaultTheme")
-const designTokens = require("../design-tokens/hubspot-tokens.json")
+const designTokens = require("../design-tokens/brand-tokens.json")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -29,7 +29,7 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         
-        // HubSpot Design System Colors
+        // NextSaaS Design System Colors
         primary: {
           ...designTokens.tokens.colors.brand.primary,
           DEFAULT: designTokens.tokens.colors.brand.primary[500],
@@ -74,8 +74,8 @@ module.exports = {
           foreground: designTokens.tokens.colors.neutral[900],
         },
         
-        // HubSpot specific colors
-        hubspot: designTokens.tokens.colors.hubspot,
+        // Extended brand colors
+        extended: designTokens.tokens.colors.extended,
       },
       borderRadius: {
         ...designTokens.tokens.borderRadius,
@@ -97,9 +97,9 @@ module.exports = {
       spacing: designTokens.tokens.spacing,
       boxShadow: {
         ...designTokens.tokens.shadows,
-        // Custom HubSpot shadows
-        'hubspot-card': designTokens.tokens.shadows.hubspot,
-        'hubspot-hover': '0 4px 12px rgba(0, 0, 0, 0.15)',
+        // Custom elevated shadows
+        'elevated-card': designTokens.tokens.shadows.elevated,
+        'interactive-hover': '0 4px 12px rgba(0, 0, 0, 0.15)',
       },
       keyframes: {
         // Legacy animations
@@ -111,7 +111,7 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        // HubSpot animations
+        // NextSaaS animations
         "fadeIn": {
           from: { opacity: "0" },
           to: { opacity: "1" },
@@ -129,13 +129,13 @@ module.exports = {
         // Legacy animations
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        // HubSpot animations
+        // NextSaaS animations
         "fade-in": "fadeIn 0.2s ease-out forwards",
         "slide-in": "slideIn 0.3s ease-out forwards",
         "scale-in": "scaleIn 0.2s ease-out forwards",
       },
       transitionTimingFunction: {
-        'hubspot': designTokens.tokens.animation.easing.hubspot,
+        'smooth': designTokens.tokens.animation.easing.smooth,
       },
       transitionDuration: designTokens.tokens.animation.duration,
     },
@@ -157,7 +157,7 @@ module.exports = {
       }
       return plugins;
     })(),
-    // Custom plugin for HubSpot-specific utilities
+    // Custom plugin for NextSaaS-specific utilities
     function({ addUtilities, theme }) {
       const newUtilities = {
         '.focus-ring': {
@@ -166,15 +166,15 @@ module.exports = {
             'box-shadow': `0 0 0 3px ${theme('colors.primary.500')}33`,
           },
         },
-        '.hubspot-hover': {
+        '.interactive-hover': {
           'transition': 'all 0.2s cubic-bezier(0.2, 0, 0.13, 1.5)',
           '&:hover': {
             'transform': 'translateY(-1px)',
-            'box-shadow': theme('boxShadow.hubspot-hover'),
+            'box-shadow': theme('boxShadow.interactive-hover'),
           },
         },
-        '.hubspot-card': {
-          'box-shadow': theme('boxShadow.hubspot-card'),
+        '.elevated-card': {
+          'box-shadow': theme('boxShadow.elevated-card'),
           'border-radius': theme('borderRadius.lg'),
           'background-color': theme('colors.white'),
           'border': `1px solid ${theme('colors.neutral.200')}`,

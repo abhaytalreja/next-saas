@@ -4,7 +4,7 @@ import { cn } from "../lib/utils"
 import { ButtonPropsSchema, validateProps } from "../utils/component-validator"
 
 /**
- * Button component following NextSaaS HubSpot design system
+ * Button component following NextSaaS design system
  * 
  * @example
  * ```tsx
@@ -25,8 +25,8 @@ import { ButtonPropsSchema, validateProps } from "../utils/component-validator"
  */
 
 const buttonVariants = cva(
-  // Base styles with HubSpot-inspired design and dark mode support
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:pointer-events-none shadow-sm hubspot-hover [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  // Base styles with modern design and dark mode support
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:pointer-events-none shadow-sm interactive-hover [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {

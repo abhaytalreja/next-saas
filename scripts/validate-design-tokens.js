@@ -167,7 +167,7 @@ function validateDesignTokens(tokensPath) {
  * CLI execution
  */
 function main() {
-  const tokensPath = path.join(__dirname, '..', 'packages', 'config', 'design-tokens', 'hubspot-tokens.json');
+  const tokensPath = path.join(__dirname, '..', 'packages', 'config', 'design-tokens', 'brand-tokens.json');
   
   if (!fs.existsSync(tokensPath)) {
     console.error('❌ Design tokens file not found:', tokensPath);

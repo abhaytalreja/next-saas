@@ -12,8 +12,11 @@ export interface LanguageSelectorAppProps {
 export function LanguageSelectorApp({ className, showLabel = false }: LanguageSelectorAppProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentLocale, setCurrentLocale] = useState('en');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    
     // Get current locale from localStorage or browser
     const savedLocale = localStorage.getItem('nextsaas-locale');
     if (savedLocale && supportedLocales.some(locale => locale.code === savedLocale)) {
@@ -53,6 +56,33 @@ export function LanguageSelectorApp({ className, showLabel = false }: LanguageSe
       return () => document.removeEventListener('click', handleClickOutside);
     }
   }, [isOpen]);
+
+  if (!mounted) {
+    // Return a placeholder during SSR
+    return (
+      <div className={`relative language-selector ${className}`}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="flex items-center gap-2"
+          aria-label="Select language"
+        >
+          <span className="text-lg">🌐</span>
+          {showLabel && (
+            <span className="hidden sm:inline">Language</span>
+          )}
+          <svg 
+            className="w-4 h-4"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className={`relative language-selector ${className}`}>

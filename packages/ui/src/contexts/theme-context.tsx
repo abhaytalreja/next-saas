@@ -60,11 +60,7 @@ export function ThemeProvider({ children, defaultTheme = 'light' }: ThemeProvide
     setThemeState(newTheme);
   };
 
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return <div style={{ visibility: 'hidden' }}>{children}</div>;
-  }
-
+  // Provide default values during SSR
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}
