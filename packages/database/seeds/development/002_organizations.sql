@@ -1,0 +1,6 @@
+-- Development seed data for organizations
+INSERT INTO organizations (id, name, slug, domain, logo_url, settings, metadata, subscription_status, trial_ends_at, created_by) VALUES
+  ('00000000-0000-0000-1000-000000000001', 'Acme Corp', 'acme-corp', 'acme.example.com', 'https://api.dicebear.com/7.x/identicon/svg?seed=acme', '{"theme": "blue", "features": ["api", "webhooks"]}', '{}', 'active', NULL, '00000000-0000-0000-0000-000000000002'),
+  ('00000000-0000-0000-1000-000000000002', 'Startup Inc', 'startup-inc', NULL, 'https://api.dicebear.com/7.x/identicon/svg?seed=startup', '{"theme": "green"}', '{}', 'trial', NOW() + INTERVAL '14 days', '00000000-0000-0000-0000-000000000003'),
+  ('00000000-0000-0000-1000-000000000003', 'Enterprise LLC', 'enterprise-llc', 'enterprise.example.com', 'https://api.dicebear.com/7.x/identicon/svg?seed=enterprise', '{"theme": "purple", "features": ["sso", "audit-logs", "api"]}', '{}', 'active', NULL, '00000000-0000-0000-0000-000000000005')
+ON CONFLICT (id) DO NOTHING;

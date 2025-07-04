@@ -40,6 +40,9 @@ NextSaaS is a comprehensive starter kit designed to accelerate SaaS development.
 - 🛠️ **Developer Tools** - ESLint, Prettier, Husky pre-commit hooks
 - 📦 **Package Management** - NPM workspaces for dependency management
 - 🔌 **Automatic Port Management** - Smart port detection and fallback for development servers
+- 🗄️ **Database Ready** - Multi-tenant architecture with Supabase integration
+- 🔒 **Row Level Security** - Built-in data isolation and security policies
+- 📊 **Migration System** - Version-controlled database schema evolution
 
 ## 📁 Project Structure
 
@@ -71,6 +74,7 @@ next-saas/
 - Node.js 18+ 
 - npm 10.9.2+
 - Git
+- Supabase account (free tier works great)
 
 ### Installation
 
@@ -88,10 +92,21 @@ next-saas/
 3. **Set up environment variables**
    ```bash
    cp .env.example .env.local
-   # Edit .env.local with your values
+   # Edit .env.local with your Supabase credentials
    ```
 
-4. **Start development servers**
+4. **Set up the database**
+   ```bash
+   npm run db:setup
+   ```
+   
+   This will:
+   - Create all database tables
+   - Set up Row Level Security policies
+   - Configure triggers and functions
+   - Optionally seed sample data
+
+5. **Start development servers**
    ```bash
    npm run dev
    ```
@@ -124,6 +139,11 @@ npm run type-check       # Run TypeScript type checking
 # Testing
 npm run test            # Run all tests
 npm run test:watch      # Run tests in watch mode
+
+# Database
+npm run db:setup        # Complete database setup (migrations + seeds)
+npm run db:migrate up   # Run database migrations
+npm run db:seed run     # Seed the database
 
 # Maintenance
 npm run clean           # Clean all build artifacts
@@ -172,7 +192,7 @@ Each package in the `packages/` directory is available to all apps:
 
 - **@nextsaas/ui** - Shared React components
 - **@nextsaas/auth** - Authentication logic and hooks
-- **@nextsaas/database** - Database client and queries
+- **@nextsaas/database** - Database client, schemas, and migrations
 - **@nextsaas/config** - Shared ESLint, TypeScript, Tailwind configs
 - **@nextsaas/types** - Shared TypeScript type definitions
 - **@nextsaas/utils** - Shared utility functions
@@ -317,10 +337,12 @@ Comprehensive documentation is available at http://localhost:3001 when running t
 - **Getting Started** - Set up your development environment
 - **Development Guide** - Best practices and workflows  
 - **Architecture Overview** - Understand the project structure
+- **Database Setup** - Complete database configuration guide
 - **Deployment Guide** - Deploy to production
 
 You can also view the documentation files directly:
 - [README.md](./README.md) (this file)
+- [Database Setup Guide](./docs/DATABASE_SETUP.md)
 - [Package Structure](#-project-structure)
 - [Quick Start](#-quick-start)
 
