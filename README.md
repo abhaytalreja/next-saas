@@ -276,11 +276,30 @@ You can also view the documentation files directly:
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](./docs/contributing.md) for details.
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🌐 Live Demo
+
+**Production Deployments** (deployed to Vercel):
+- 🚀 **Web App**: [next-saas-web.vercel.app](https://next-saas-web.vercel.app)
+- 📚 **Documentation**: [next-saas-docs.vercel.app](https://next-saas-docs.vercel.app)
+- 🌟 **Landing Page**: [next-saas-landing.vercel.app](https://next-saas-landing.vercel.app)
+
+**Local Development**:
+- Web App: http://localhost:3000
+- Documentation: http://localhost:3001
+- Landing Page: http://localhost:3002
+
+## 🔗 Links
+
+- [Issues](https://github.com/abhaytalreja/next-saas/issues)
+- [Pull Requests](https://github.com/abhaytalreja/next-saas/pulls)
+- [Contributing Guide](./CONTRIBUTING.md)
+- [License](./LICENSE)
 
 ## 🙏 Acknowledgments
 
