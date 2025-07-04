@@ -32,10 +32,14 @@ NextSaaS is a comprehensive starter kit designed to accelerate SaaS development.
 - 🎨 **Tailwind CSS** - Utility-first CSS with custom design system
 - 🧱 **Shared Packages** - Reusable code across all applications
 - 🔐 **Authentication Ready** - Pre-configured auth package structure
+- ⚙️ **Configuration System** - Type-safe, environment-aware configuration management
+- 🔒 **Secret Management** - Built-in utilities for secure secret handling
+- 🌍 **i18n Support** - Internationalization ready with 15+ languages
 - 📚 **Documentation Site** - MDX-powered docs with syntax highlighting
 - 🚀 **Landing Page** - Marketing site with shared components
 - 🛠️ **Developer Tools** - ESLint, Prettier, Husky pre-commit hooks
 - 📦 **Package Management** - NPM workspaces for dependency management
+- 🔌 **Automatic Port Management** - Smart port detection and fallback for development servers
 
 ## 📁 Project Structure
 
@@ -49,7 +53,7 @@ next-saas/
 │   ├── ui/                 # Shared React components
 │   ├── auth/               # Authentication utilities
 │   ├── database/           # Database client and schemas
-│   ├── config/             # Shared configurations (ESLint, TS, Tailwind)
+│   ├── config/             # Configuration system with validation
 │   ├── tsconfig/           # Base TypeScript configurations
 │   ├── types/              # Shared TypeScript types
 │   └── utils/              # Shared utility functions
@@ -93,9 +97,9 @@ next-saas/
    ```
 
    Your applications will be available at:
-   - 🌐 **Web App**: http://localhost:3000
-   - 📚 **Documentation**: http://localhost:3001
-   - 🚀 **Landing Page**: http://localhost:3002
+   - 🌐 **Web App**: http://localhost:3000 (auto-detects next available port if occupied)
+   - 📚 **Documentation**: http://localhost:3001 (auto-detects next available port if occupied)
+   - 🚀 **Landing Page**: http://localhost:3002 (auto-detects next available port if occupied)
 
 ## 📝 Development Guide
 
@@ -210,21 +214,67 @@ Centralized design tokens in `packages/config/tailwind`:
 
 ## 🔧 Configuration
 
+### Port Management
+
+All Next.js applications include automatic port management. If the default port is occupied, the app will automatically find the next available port:
+
+```bash
+# Default ports:
+# Web: 3000, Docs: 3001, Landing: 3002
+
+# If port 3002 is busy, landing will use 3003, 3004, etc.
+npm run dev
+```
+
+See [Port Management Documentation](./docs/PORT_MANAGEMENT.md) for more details.
+
+### Configuration System
+
+NextSaaS includes a comprehensive configuration management system:
+
+```typescript
+import { initializeGlobalConfig, config } from '@nextsaas/config';
+
+// Initialize configuration
+await initializeGlobalConfig();
+
+// Access configuration
+const dbConfig = config.database();
+const isFeatureEnabled = config.feature('aiIntegration');
+```
+
+Features:
+- **Type-safe** - Full TypeScript support with auto-generated types
+- **Environment-aware** - Separate configs for dev/staging/prod/test
+- **Validated** - Runtime validation using Zod schemas
+- **Secure** - Built-in secret management and encryption
+- **CLI Tools** - Manage configuration via command line
+
 ### Environment Variables
 
-Create `.env.local` in the root directory:
+Use the configuration CLI to set up your environment:
+
+```bash
+# Interactive setup
+npx nextsaas-config setup --interactive
+
+# Or create from template
+npx nextsaas-config init --env production
+```
+
+Example `.env.local`:
 
 ```env
 # Database
 DATABASE_URL=your_database_url
 
 # Authentication
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your_secret_key
+JWT_SECRET=your-secure-jwt-secret
+SESSION_SECRET=your-secure-session-secret
 
 # Third-party services
 STRIPE_SECRET_KEY=your_stripe_key
-RESEND_API_KEY=your_resend_key
+SENDGRID_API_KEY=your_sendgrid_key
 
 # Add more as needed...
 ```
