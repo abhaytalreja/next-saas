@@ -1,4 +1,5 @@
 export * from "./components/button"
 export * from "./components/card"
+export * from "./components/language-selector"
 export * from "./lib/utils"
 export * from "./utils/component-validator"

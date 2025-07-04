@@ -1,0 +1,56 @@
+{
+  "navigation": {
+    "home": "ホーム",
+    "docs": "ドキュメント",
+    "pricing": "料金",
+    "blog": "ブログ",
+    "signIn": "サインイン",
+    "getStarted": "開始する"
+  },
+  "hero": {
+    "title": "SaaSを構築",
+    "titleAccent": "10倍高速に",
+    "description": "NextSaaSは、SaaSの立ち上げに必要なすべてを備えた本番環境対応のスターターキットです。Next.js 15、TypeScript、Turborepoで構築されています。",
+    "getStartedFree": "無料で開始",
+    "viewDemo": "デモを見る"
+  },
+  "features": {
+    "title": "必要なものすべて",
+    "productionReady": {
+      "title": "本番環境対応",
+      "description": "ベストプラクティスで構築され、初日からスケーラブル。"
+    },
+    "authentication": {
+      "title": "認証",
+      "description": "Supabase統合による完全な認証システム。"
+    },
+    "payments": {
+      "title": "支払い",
+      "description": "サブスクリプションと一回限りの支払いのためのStripe統合。"
+    },
+    "uiComponents": {
+      "title": "UIコンポーネント",
+      "description": "Radix UIで構築された美しくアクセシブルなコンポーネント。"
+    },
+    "analytics": {
+      "title": "分析",
+      "description": "ビジネスメトリクスを追跡する組み込み分析。"
+    },
+    "developerExperience": {
+      "title": "開発者体験",
+      "description": "TypeScript、ESLint、Prettierなどが設定済み。"
+    }
+  },
+  "cta": {
+    "title": "SaaSを構築する準備はできましたか？",
+    "description": "NextSaaSでより速く構築している何千人もの開発者に参加してください",
+    "startBuildingToday": "今日から構築を開始"
+  },
+  "footer": {
+    "copyright": "© 2024 NextSaaS. すべての権利予約。"
+  },
+  "language": {
+    "selectLanguage": "言語を選択",
+    "currentLanguage": "現在の言語"
+  }
+}

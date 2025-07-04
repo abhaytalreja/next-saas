@@ -1,0 +1,56 @@
+{
+  "navigation": {
+    "home": "首页",
+    "docs": "文档",
+    "pricing": "定价",
+    "blog": "博客",
+    "signIn": "登录",
+    "getStarted": "开始使用"
+  },
+  "hero": {
+    "title": "构建您的SaaS",
+    "titleAccent": "快10倍",
+    "description": "NextSaaS是一个生产就绪的入门套件，包含启动SaaS所需的一切。使用Next.js 15、TypeScript和Turborepo构建。",
+    "getStartedFree": "免费开始",
+    "viewDemo": "查看演示"
+  },
+  "features": {
+    "title": "您需要的一切",
+    "productionReady": {
+      "title": "生产就绪",
+      "description": "采用最佳实践构建，从第一天就可扩展。"
+    },
+    "authentication": {
+      "title": "身份验证",
+      "description": "完整的身份验证系统，集成Supabase。"
+    },
+    "payments": {
+      "title": "支付",
+      "description": "Stripe集成，支持订阅和一次性支付。"
+    },
+    "uiComponents": {
+      "title": "UI组件",
+      "description": "使用Radix UI构建的美观、无障碍组件。"
+    },
+    "analytics": {
+      "title": "分析",
+      "description": "内置分析，跟踪您的业务指标。"
+    },
+    "developerExperience": {
+      "title": "开发者体验",
+      "description": "TypeScript、ESLint、Prettier等已配置。"
+    }
+  },
+  "cta": {
+    "title": "准备好构建您的SaaS了吗？",
+    "description": "加入数千名使用NextSaaS更快构建的开发者",
+    "startBuildingToday": "今天开始构建"
+  },
+  "footer": {
+    "copyright": "© 2024 NextSaaS. 保留所有权利。"
+  },
+  "language": {
+    "selectLanguage": "选择语言",
+    "currentLanguage": "当前语言"
+  }
+}

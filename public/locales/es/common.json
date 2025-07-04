@@ -1,0 +1,56 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "docs": "Documentos",
+    "pricing": "Precios",
+    "blog": "Blog",
+    "signIn": "Iniciar Sesión",
+    "getStarted": "Comenzar"
+  },
+  "hero": {
+    "title": "Construye tu SaaS",
+    "titleAccent": "10x Más Rápido",
+    "description": "NextSaaS es un kit de inicio listo para producción con todo lo que necesitas para lanzar tu SaaS. Construido con Next.js 15, TypeScript y Turborepo.",
+    "getStartedFree": "Comenzar Gratis",
+    "viewDemo": "Ver Demo"
+  },
+  "features": {
+    "title": "Todo lo que Necesitas",
+    "productionReady": {
+      "title": "Listo para Producción",
+      "description": "Construido con las mejores prácticas y listo para escalar desde el primer día."
+    },
+    "authentication": {
+      "title": "Autenticación",
+      "description": "Sistema completo de autenticación con integración Supabase."
+    },
+    "payments": {
+      "title": "Pagos",
+      "description": "Integración con Stripe para suscripciones y pagos únicos."
+    },
+    "uiComponents": {
+      "title": "Componentes UI",
+      "description": "Componentes hermosos y accesibles construidos con Radix UI."
+    },
+    "analytics": {
+      "title": "Analíticas",
+      "description": "Analíticas integradas para rastrear las métricas de tu negocio."
+    },
+    "developerExperience": {
+      "title": "Experiencia de Desarrollador",
+      "description": "TypeScript, ESLint, Prettier y más configurado."
+    }
+  },
+  "cta": {
+    "title": "¿Listo para Construir tu SaaS?",
+    "description": "Únete a miles de desarrolladores que están construyendo más rápido con NextSaaS",
+    "startBuildingToday": "Comienza a Construir Hoy"
+  },
+  "footer": {
+    "copyright": "© 2024 NextSaaS. Todos los derechos reservados."
+  },
+  "language": {
+    "selectLanguage": "Seleccionar Idioma",
+    "currentLanguage": "Idioma Actual"
+  }
+}
