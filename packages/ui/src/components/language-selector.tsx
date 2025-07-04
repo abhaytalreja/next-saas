@@ -1,21 +1,29 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Button } from './button';
 import { supportedLocales, localeNames, localeFlags } from '@nextsaas/config/i18n';
 
 export interface LanguageSelectorProps {
   className?: string;
+  currentLocale?: string;
+  onLocaleChange?: (locale: string) => void;
 }
 
-export function LanguageSelector({ className }: LanguageSelectorProps) {
-  const router = useRouter();
+export function LanguageSelector({ 
+  className, 
+  currentLocale = 'en',
+  onLocaleChange 
+}: LanguageSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const currentLocale = router.locale || 'en';
 
   const handleLocaleChange = (locale: string) => {
-    router.push(router.asPath, router.asPath, { locale });
+    if (onLocaleChange) {
+      onLocaleChange(locale);
+    } else {
+      // Fallback to simple page reload with locale
+      window.location.href = `/${locale}${window.location.pathname}`;
+    }
     setIsOpen(false);
   };
 
