@@ -1,4 +1,28 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+echo "🛡️  NextSaaS Guard Rails - Pre-commit Quality Checks"
+
+# Run lint-staged for file-specific checks
+echo "📝 Running lint-staged..."
 npx lint-staged
+
+# Run security audit
+echo "🔒 Running security audit..."
+npm audit --audit-level moderate || true
+
+# Check for secret leaks (if secretlint is available)
+if command -v secretlint >/dev/null 2>&1; then
+  echo "🔍 Scanning for secrets..."
+  npx secretlint "**/*" || true
+fi
+
+# Validate design tokens
+echo "🎨 Validating design tokens..."
+npm run validate:design-tokens || true
+
+# Check bundle size impact
+echo "📦 Checking bundle size impact..."
+npm run bundle:check || true
+
+echo "✅ Pre-commit checks completed!"

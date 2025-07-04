@@ -1,0 +1,320 @@
+{
+  "industry": "real-estate",
+  "useCase": "property-management",
+  "displayName": "RealEstate Pro",
+  "description": "Complete property management and real estate CRM solution",
+  "branding": {
+    "primaryColor": "#2563eb",
+    "secondaryColor": "#059669",
+    "accentColor": "#dc2626",
+    "fontPrimary": "Inter",
+    "fontSecondary": "Crimson Text"
+  },
+  "content": {
+    "hero": {
+      "headline": "Manage Properties Like a Pro",
+      "subheadline": "Streamline your real estate business with our comprehensive property management platform. Track listings, manage clients, and close deals faster.",
+      "ctaText": "Start Managing Properties",
+      "features": [
+        "Property Listing Management",
+        "Client Relationship Management",
+        "Document Management",
+        "Financial Tracking",
+        "Marketing Automation"
+      ]
+    },
+    "navigation": {
+      "brandName": "RealEstate Pro",
+      "menuItems": [
+        { "label": "Properties", "href": "/properties" },
+        { "label": "Clients", "href": "/clients" },
+        { "label": "Transactions", "href": "/transactions" },
+        { "label": "Reports", "href": "/reports" },
+        { "label": "Marketing", "href": "/marketing" }
+      ]
+    },
+    "features": [
+      {
+        "title": "Property Management",
+        "description": "Efficiently manage your property portfolio with advanced listing tools",
+        "icon": "building",
+        "benefits": [
+          "Multi-listing syndication",
+          "Photo and virtual tour management",
+          "Automated property valuation",
+          "Maintenance tracking"
+        ]
+      },
+      {
+        "title": "Client Management",
+        "description": "Build stronger relationships with buyers and sellers",
+        "icon": "users",
+        "benefits": [
+          "Contact management and segmentation",
+          "Communication history tracking",
+          "Automated follow-up sequences",
+          "Client portal access"
+        ]
+      },
+      {
+        "title": "Transaction Management",
+        "description": "Streamline deals from listing to closing",
+        "icon": "document",
+        "benefits": [
+          "Digital contract management",
+          "Transaction timeline tracking",
+          "Commission calculations",
+          "Compliance documentation"
+        ]
+      }
+    ],
+    "pricing": {
+      "title": "Choose Your Plan",
+      "subtitle": "Scale your real estate business with our flexible pricing",
+      "plans": [
+        {
+          "name": "Starter",
+          "price": 49,
+          "interval": "month",
+          "description": "Perfect for new agents",
+          "features": [
+            "Up to 25 active listings",
+            "100 client contacts",
+            "Basic reporting",
+            "Email support"
+          ]
+        },
+        {
+          "name": "Professional",
+          "price": 99,
+          "interval": "month",
+          "description": "For growing agencies",
+          "features": [
+            "Unlimited listings",
+            "1,000 client contacts",
+            "Advanced analytics",
+            "Team collaboration",
+            "Priority support"
+          ],
+          "popular": true
+        },
+        {
+          "name": "Enterprise",
+          "price": 199,
+          "interval": "month",
+          "description": "For large brokerages",
+          "features": [
+            "Everything in Professional",
+            "Custom integrations",
+            "White-label options",
+            "Dedicated support",
+            "Advanced permissions"
+          ]
+        }
+      ]
+    },
+    "testimonials": [
+      {
+        "name": "Sarah Johnson",
+        "title": "Real Estate Agent",
+        "company": "Johnson Realty",
+        "content": "This platform has transformed how I manage my listings and client relationships. I've increased my sales by 40% since switching.",
+        "rating": 5
+      },
+      {
+        "name": "Mike Chen",
+        "title": "Broker",
+        "company": "Pacific Properties",
+        "content": "The reporting features give me insights I never had before. My team is more productive and our clients are happier.",
+        "rating": 5
+      }
+    ],
+    "faq": [
+      {
+        "question": "How do I import my existing listings?",
+        "answer": "You can easily import listings from MLS, CSV files, or other real estate platforms using our import wizard.",
+        "category": "Getting Started"
+      },
+      {
+        "question": "Does it integrate with MLS systems?",
+        "answer": "Yes, we support integration with major MLS systems for automatic listing syndication and updates.",
+        "category": "Integrations"
+      },
+      {
+        "question": "Can I customize the client portal?",
+        "answer": "Absolutely! You can customize colors, logos, and content to match your brand.",
+        "category": "Customization"
+      }
+    ],
+    "footer": {
+      "companyDescription": "RealEstate Pro helps real estate professionals manage properties, clients, and transactions more efficiently.",
+      "links": [
+        {
+          "title": "Product",
+          "links": [
+            { "label": "Features", "href": "/features" },
+            { "label": "Pricing", "href": "/pricing" },
+            { "label": "Integrations", "href": "/integrations" }
+          ]
+        },
+        {
+          "title": "Support",
+          "links": [
+            { "label": "Help Center", "href": "/help" },
+            { "label": "Contact Us", "href": "/contact" },
+            { "label": "Training", "href": "/training" }
+          ]
+        }
+      ],
+      "socialLinks": [
+        { "platform": "twitter", "url": "https://twitter.com/realestatepro" },
+        { "platform": "linkedin", "url": "https://linkedin.com/company/realestatepro" }
+      ]
+    }
+  },
+  "dashboard": {
+    "defaultLayout": "crm",
+    "widgets": [
+      {
+        "id": "active-listings",
+        "name": "Active Listings",
+        "type": "metric",
+        "position": { "x": 0, "y": 0, "w": 3, "h": 2 }
+      },
+      {
+        "id": "recent-activities",
+        "name": "Recent Activities",
+        "type": "activity-feed",
+        "position": { "x": 3, "y": 0, "w": 6, "h": 4 }
+      },
+      {
+        "id": "sales-pipeline",
+        "name": "Sales Pipeline",
+        "type": "chart",
+        "position": { "x": 0, "y": 2, "w": 9, "h": 3 }
+      }
+    ],
+    "navigation": [
+      { "label": "Dashboard", "href": "/dashboard", "icon": "home" },
+      { "label": "Properties", "href": "/properties", "icon": "building" },
+      { "label": "Clients", "href": "/clients", "icon": "users" },
+      { "label": "Transactions", "href": "/transactions", "icon": "document" },
+      { "label": "Reports", "href": "/reports", "icon": "chart" },
+      { "label": "Settings", "href": "/settings", "icon": "cog" }
+    ],
+    "quickActions": [
+      { "label": "Add Property", "action": "create-property", "icon": "plus" },
+      { "label": "New Client", "action": "create-client", "icon": "user-plus" },
+      { "label": "Schedule Showing", "action": "schedule-showing", "icon": "calendar" }
+    ]
+  },
+  "dataModel": {
+    "entities": [
+      {
+        "name": "Property",
+        "fields": [
+          { "name": "address", "type": "string", "required": true },
+          { "name": "price", "type": "number", "required": true },
+          { "name": "bedrooms", "type": "number" },
+          { "name": "bathrooms", "type": "number" },
+          { "name": "squareFootage", "type": "number" },
+          { "name": "propertyType", "type": "enum", "options": ["house", "condo", "townhouse", "land"] },
+          { "name": "listingStatus", "type": "enum", "options": ["active", "pending", "sold", "withdrawn"] },
+          { "name": "description", "type": "string" },
+          { "name": "features", "type": "json" },
+          { "name": "listingDate", "type": "date" },
+          { "name": "mlsNumber", "type": "string" }
+        ]
+      },
+      {
+        "name": "Client",
+        "fields": [
+          { "name": "firstName", "type": "string", "required": true },
+          { "name": "lastName", "type": "string", "required": true },
+          { "name": "email", "type": "email", "required": true },
+          { "name": "phone", "type": "phone" },
+          { "name": "clientType", "type": "enum", "options": ["buyer", "seller", "both"] },
+          { "name": "budget", "type": "number" },
+          { "name": "preapproved", "type": "boolean" },
+          { "name": "preferredAreas", "type": "json" },
+          { "name": "notes", "type": "string" }
+        ]
+      },
+      {
+        "name": "Transaction",
+        "fields": [
+          { "name": "propertyId", "type": "string", "required": true },
+          { "name": "clientId", "type": "string", "required": true },
+          { "name": "salePrice", "type": "number", "required": true },
+          { "name": "commission", "type": "number" },
+          { "name": "status", "type": "enum", "options": ["pending", "under-contract", "closed", "cancelled"] },
+          { "name": "closingDate", "type": "date" },
+          { "name": "contractDate", "type": "date" }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "from": "Transaction",
+        "to": "Property",
+        "type": "many-to-one",
+        "foreignKey": "propertyId"
+      },
+      {
+        "from": "Transaction",
+        "to": "Client",
+        "type": "many-to-one",
+        "foreignKey": "clientId"
+      }
+    ]
+  },
+  "features": {
+    "enabledFeatures": [
+      "property-management",
+      "client-crm",
+      "transaction-management",
+      "mls-integration",
+      "document-storage",
+      "email-marketing",
+      "financial-reporting",
+      "calendar-scheduling"
+    ],
+    "disabledFeatures": [
+      "inventory-management",
+      "project-management",
+      "time-tracking",
+      "invoicing"
+    ]
+  },
+  "integrations": {
+    "recommended": ["mls", "docusign", "mailchimp", "calendly"],
+    "required": ["mls"],
+    "optional": ["stripe", "quickbooks", "google-calendar", "zapier"]
+  },
+  "emailTemplates": {
+    "welcome": {
+      "subject": "Welcome to RealEstate Pro!",
+      "content": "Welcome to RealEstate Pro, {{firstName}}! We're excited to help you manage your real estate business more effectively.",
+      "variables": ["firstName", "lastName", "company"]
+    },
+    "notification": {
+      "subject": "New Activity: {{activityType}}",
+      "content": "There's been a new {{activityType}} for {{propertyAddress}}. Login to your dashboard to view details.",
+      "variables": ["activityType", "propertyAddress", "clientName"]
+    },
+    "marketing": [
+      {
+        "subject": "New Property Alert: {{propertyAddress}}",
+        "content": "A new property matching your criteria is now available: {{propertyAddress}} for ${{price}}.",
+        "variables": ["propertyAddress", "price", "bedrooms", "bathrooms"]
+      }
+    ]
+  },
+  "legal": {
+    "privacyPolicy": "Standard real estate privacy policy with GDPR compliance",
+    "termsOfService": "Real estate specific terms of service",
+    "gdprCompliant": true,
+    "ccpaCompliant": true,
+    "industryCompliance": ["NAR", "MLS", "RESPA"]
+  }
+}

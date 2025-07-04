@@ -1,4 +1,5 @@
 const { fontFamily } = require("tailwindcss/defaultTheme")
+const designTokens = require("../design-tokens/hubspot-tokens.json")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -21,49 +22,87 @@ module.exports = {
     },
     extend: {
       colors: {
+        // Legacy CSS variables for backward compatibility
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        
+        // HubSpot Design System Colors
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          ...designTokens.tokens.colors.brand.primary,
+          DEFAULT: designTokens.tokens.colors.brand.primary[500],
+          foreground: "#ffffff",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          ...designTokens.tokens.colors.brand.secondary,
+          DEFAULT: designTokens.tokens.colors.brand.secondary[500],
+          foreground: "#ffffff",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          ...designTokens.tokens.colors.brand.accent,
+          DEFAULT: designTokens.tokens.colors.brand.accent[500],
+          foreground: "#ffffff",
+        },
+        
+        // Semantic colors
+        success: designTokens.tokens.colors.semantic.success,
+        warning: designTokens.tokens.colors.semantic.warning,
+        error: designTokens.tokens.colors.semantic.error,
+        destructive: {
+          ...designTokens.tokens.colors.semantic.error,
+          DEFAULT: designTokens.tokens.colors.semantic.error[500],
+          foreground: "#ffffff",
+        },
+        info: designTokens.tokens.colors.semantic.info,
+        
+        // Neutral colors
+        neutral: designTokens.tokens.colors.neutral,
+        
+        // Component-specific colors
+        muted: {
+          DEFAULT: designTokens.tokens.colors.neutral[100],
+          foreground: designTokens.tokens.colors.neutral[600],
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "#ffffff",
+          foreground: designTokens.tokens.colors.neutral[900],
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "#ffffff",
+          foreground: designTokens.tokens.colors.neutral[900],
         },
+        
+        // HubSpot specific colors
+        hubspot: designTokens.tokens.colors.hubspot,
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        ...designTokens.tokens.borderRadius,
+        // Legacy values for backward compatibility
+        lg: "var(--radius, 0.5rem)",
+        md: "calc(var(--radius, 0.5rem) - 2px)",
+        sm: "calc(var(--radius, 0.5rem) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
+        sans: designTokens.tokens.typography.fontFamilies.sans,
+        serif: designTokens.tokens.typography.fontFamilies.serif,
+        mono: designTokens.tokens.typography.fontFamilies.mono,
+        display: designTokens.tokens.typography.fontFamilies.display,
+      },
+      fontSize: designTokens.tokens.typography.fontSizes,
+      fontWeight: designTokens.tokens.typography.fontWeights,
+      lineHeight: designTokens.tokens.typography.lineHeights,
+      letterSpacing: designTokens.tokens.typography.letterSpacing,
+      spacing: designTokens.tokens.spacing,
+      boxShadow: {
+        ...designTokens.tokens.shadows,
+        // Custom HubSpot shadows
+        'hubspot-card': designTokens.tokens.shadows.hubspot,
+        'hubspot-hover': '0 4px 12px rgba(0, 0, 0, 0.15)',
       },
       keyframes: {
+        // Legacy animations
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -72,12 +111,79 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        // HubSpot animations
+        "fadeIn": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "slideIn": {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(0)" },
+        },
+        "scaleIn": {
+          from: { transform: "scale(0.95)", opacity: "0" },
+          to: { transform: "scale(1)", opacity: "1" },
+        },
       },
       animation: {
+        // Legacy animations
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        // HubSpot animations
+        "fade-in": "fadeIn 0.2s ease-out forwards",
+        "slide-in": "slideIn 0.3s ease-out forwards",
+        "scale-in": "scaleIn 0.2s ease-out forwards",
       },
+      transitionTimingFunction: {
+        'hubspot': designTokens.tokens.animation.easing.hubspot,
+      },
+      transitionDuration: designTokens.tokens.animation.duration,
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    // Conditionally load optional plugins
+    ...(function() {
+      const plugins = [];
+      try {
+        plugins.push(require("@tailwindcss/forms"));
+      } catch (e) {
+        console.warn("@tailwindcss/forms not found, skipping...");
+      }
+      try {
+        plugins.push(require("@tailwindcss/typography"));
+      } catch (e) {
+        console.warn("@tailwindcss/typography not found, skipping...");
+      }
+      return plugins;
+    })(),
+    // Custom plugin for HubSpot-specific utilities
+    function({ addUtilities, theme }) {
+      const newUtilities = {
+        '.focus-ring': {
+          '&:focus': {
+            outline: 'none',
+            'box-shadow': `0 0 0 3px ${theme('colors.primary.500')}33`,
+          },
+        },
+        '.hubspot-hover': {
+          'transition': 'all 0.2s cubic-bezier(0.2, 0, 0.13, 1.5)',
+          '&:hover': {
+            'transform': 'translateY(-1px)',
+            'box-shadow': theme('boxShadow.hubspot-hover'),
+          },
+        },
+        '.hubspot-card': {
+          'box-shadow': theme('boxShadow.hubspot-card'),
+          'border-radius': theme('borderRadius.lg'),
+          'background-color': theme('colors.white'),
+          'border': `1px solid ${theme('colors.neutral.200')}`,
+        },
+        '.text-balance': {
+          'text-wrap': 'balance',
+        },
+      }
+      addUtilities(newUtilities)
+    },
+  ],
 }

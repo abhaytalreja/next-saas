@@ -1,0 +1,327 @@
+{
+  "industry": "cryptocurrency",
+  "useCase": "defi-platform",
+  "displayName": "DeFi Analytics Pro",
+  "description": "Advanced DeFi portfolio management and analytics platform",
+  "branding": {
+    "primaryColor": "#6366f1",
+    "secondaryColor": "#f59e0b",
+    "accentColor": "#10b981",
+    "fontPrimary": "JetBrains Mono",
+    "fontSecondary": "Inter"
+  },
+  "content": {
+    "hero": {
+      "headline": "Master Your DeFi Portfolio",
+      "subheadline": "Track, analyze, and optimize your decentralized finance investments with real-time data and advanced analytics.",
+      "ctaText": "Connect Your Wallet",
+      "features": [
+        "Multi-Chain Portfolio Tracking",
+        "Yield Farming Analytics",
+        "Impermanent Loss Calculator",
+        "Risk Assessment Tools",
+        "Auto-Compound Strategies"
+      ]
+    },
+    "navigation": {
+      "brandName": "DeFi Analytics Pro",
+      "menuItems": [
+        { "label": "Portfolio", "href": "/portfolio" },
+        { "label": "Yield Farming", "href": "/yield" },
+        { "label": "Analytics", "href": "/analytics" },
+        { "label": "Strategies", "href": "/strategies" },
+        { "label": "Markets", "href": "/markets" }
+      ]
+    },
+    "features": [
+      {
+        "title": "Real-Time Portfolio Tracking",
+        "description": "Monitor your DeFi positions across multiple chains",
+        "icon": "chart-bar",
+        "benefits": [
+          "Cross-chain portfolio aggregation",
+          "Real-time price updates",
+          "Historical performance tracking",
+          "Tax reporting integration"
+        ]
+      },
+      {
+        "title": "Yield Optimization",
+        "description": "Maximize your returns with intelligent yield strategies",
+        "icon": "trending-up",
+        "benefits": [
+          "APY comparison across protocols",
+          "Auto-compound calculations",
+          "Risk-adjusted returns",
+          "Strategy backtesting"
+        ]
+      },
+      {
+        "title": "Risk Management",
+        "description": "Protect your investments with advanced risk tools",
+        "icon": "shield-check",
+        "benefits": [
+          "Smart contract risk scoring",
+          "Liquidation price alerts",
+          "Portfolio diversification analysis",
+          "Market volatility indicators"
+        ]
+      }
+    ],
+    "pricing": {
+      "title": "Choose Your Plan",
+      "subtitle": "Scale your DeFi operations with our flexible pricing",
+      "plans": [
+        {
+          "name": "Basic",
+          "price": 0,
+          "interval": "month",
+          "description": "Perfect for getting started",
+          "features": [
+            "Basic portfolio tracking",
+            "Up to 3 wallets",
+            "Basic analytics",
+            "Community support"
+          ]
+        },
+        {
+          "name": "Pro",
+          "price": 29,
+          "interval": "month",
+          "description": "For serious DeFi investors",
+          "features": [
+            "Advanced portfolio analytics",
+            "Unlimited wallets",
+            "Yield optimization tools",
+            "Real-time alerts",
+            "Priority support"
+          ],
+          "popular": true
+        },
+        {
+          "name": "Enterprise",
+          "price": 99,
+          "interval": "month",
+          "description": "For institutions and DAOs",
+          "features": [
+            "Everything in Pro",
+            "Multi-user access",
+            "Custom integrations",
+            "Dedicated support",
+            "API access"
+          ]
+        }
+      ]
+    },
+    "testimonials": [
+      {
+        "name": "Alex Chen",
+        "title": "DeFi Trader",
+        "company": "Independent",
+        "content": "This platform helped me optimize my yield farming strategies and avoid costly mistakes. My returns increased by 60%.",
+        "rating": 5
+      },
+      {
+        "name": "Maria Rodriguez",
+        "title": "Portfolio Manager",
+        "company": "Crypto Capital",
+        "content": "The risk analysis tools are exceptional. We can now make informed decisions about protocol allocations.",
+        "rating": 5
+      }
+    ],
+    "faq": [
+      {
+        "question": "Which blockchains are supported?",
+        "answer": "We support Ethereum, Polygon, Binance Smart Chain, Avalanche, Fantom, and Arbitrum with more chains coming soon.",
+        "category": "Technical"
+      },
+      {
+        "question": "How do you calculate impermanent loss?",
+        "answer": "We use real-time price data and liquidity pool ratios to calculate impermanent loss dynamically as market conditions change.",
+        "category": "Features"
+      },
+      {
+        "question": "Is my wallet data secure?",
+        "answer": "We only read public blockchain data. We never store private keys or have access to your funds.",
+        "category": "Security"
+      }
+    ],
+    "footer": {
+      "companyDescription": "DeFi Analytics Pro provides advanced tools for tracking, analyzing, and optimizing decentralized finance investments.",
+      "links": [
+        {
+          "title": "Product",
+          "links": [
+            { "label": "Features", "href": "/features" },
+            { "label": "Pricing", "href": "/pricing" },
+            { "label": "API", "href": "/api" }
+          ]
+        },
+        {
+          "title": "Resources",
+          "links": [
+            { "label": "DeFi Guide", "href": "/guide" },
+            { "label": "Blog", "href": "/blog" },
+            { "label": "Research", "href": "/research" }
+          ]
+        }
+      ],
+      "socialLinks": [
+        { "platform": "twitter", "url": "https://twitter.com/defianalyticspro" },
+        { "platform": "github", "url": "https://github.com/defianalyticspro" }
+      ]
+    }
+  },
+  "dashboard": {
+    "defaultLayout": "analytics",
+    "widgets": [
+      {
+        "id": "portfolio-value",
+        "name": "Total Portfolio Value",
+        "type": "metric",
+        "position": { "x": 0, "y": 0, "w": 4, "h": 2 }
+      },
+      {
+        "id": "yield-earnings",
+        "name": "Yield Earnings (24h)",
+        "type": "metric",
+        "position": { "x": 4, "y": 0, "w": 4, "h": 2 }
+      },
+      {
+        "id": "protocol-allocation",
+        "name": "Protocol Allocation",
+        "type": "chart",
+        "position": { "x": 8, "y": 0, "w": 4, "h": 4 }
+      },
+      {
+        "id": "performance-chart",
+        "name": "Portfolio Performance",
+        "type": "chart",
+        "position": { "x": 0, "y": 2, "w": 8, "h": 4 }
+      },
+      {
+        "id": "yield-opportunities",
+        "name": "Top Yield Opportunities",
+        "type": "table",
+        "position": { "x": 0, "y": 6, "w": 12, "h": 3 }
+      }
+    ],
+    "navigation": [
+      { "label": "Dashboard", "href": "/dashboard", "icon": "home" },
+      { "label": "Portfolio", "href": "/portfolio", "icon": "chart-pie" },
+      { "label": "Yield Farming", "href": "/yield", "icon": "trending-up" },
+      { "label": "Analytics", "href": "/analytics", "icon": "chart-bar" },
+      { "label": "Strategies", "href": "/strategies", "icon": "cog" },
+      { "label": "Markets", "href": "/markets", "icon": "globe" }
+    ],
+    "quickActions": [
+      { "label": "Connect Wallet", "action": "connect-wallet", "icon": "wallet" },
+      { "label": "Add Position", "action": "add-position", "icon": "plus" },
+      { "label": "Create Alert", "action": "create-alert", "icon": "bell" }
+    ]
+  },
+  "dataModel": {
+    "entities": [
+      {
+        "name": "Wallet",
+        "fields": [
+          { "name": "address", "type": "string", "required": true },
+          { "name": "name", "type": "string" },
+          { "name": "chain", "type": "enum", "options": ["ethereum", "polygon", "bsc", "avalanche", "fantom", "arbitrum"] },
+          { "name": "isActive", "type": "boolean" },
+          { "name": "lastSynced", "type": "date" }
+        ]
+      },
+      {
+        "name": "Position",
+        "fields": [
+          { "name": "walletId", "type": "string", "required": true },
+          { "name": "protocol", "type": "string", "required": true },
+          { "name": "tokenA", "type": "string", "required": true },
+          { "name": "tokenB", "type": "string" },
+          { "name": "amount", "type": "number", "required": true },
+          { "name": "apy", "type": "number" },
+          { "name": "value", "type": "number" },
+          { "name": "positionType", "type": "enum", "options": ["liquidity", "lending", "borrowing", "staking", "farming"] },
+          { "name": "entryDate", "type": "date", "required": true }
+        ]
+      },
+      {
+        "name": "Transaction",
+        "fields": [
+          { "name": "hash", "type": "string", "required": true },
+          { "name": "walletId", "type": "string", "required": true },
+          { "name": "type", "type": "enum", "options": ["swap", "deposit", "withdraw", "claim", "stake", "unstake"] },
+          { "name": "amount", "type": "number", "required": true },
+          { "name": "token", "type": "string", "required": true },
+          { "name": "gasUsed", "type": "number" },
+          { "name": "gasPrice", "type": "number" },
+          { "name": "timestamp", "type": "date", "required": true }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "from": "Position",
+        "to": "Wallet",
+        "type": "many-to-one",
+        "foreignKey": "walletId"
+      },
+      {
+        "from": "Transaction",
+        "to": "Wallet",
+        "type": "many-to-one",
+        "foreignKey": "walletId"
+      }
+    ]
+  },
+  "features": {
+    "enabledFeatures": [
+      "portfolio-tracking",
+      "yield-farming",
+      "analytics",
+      "risk-management",
+      "price-alerts",
+      "transaction-history",
+      "tax-reporting",
+      "strategy-backtesting"
+    ],
+    "disabledFeatures": [
+      "property-management",
+      "client-crm",
+      "document-storage",
+      "invoicing"
+    ]
+  },
+  "integrations": {
+    "recommended": ["moralis", "covalent", "defipulse", "coingecko"],
+    "required": ["web3provider"],
+    "optional": ["1inch", "paraswap", "zapper", "debank"]
+  },
+  "emailTemplates": {
+    "welcome": {
+      "subject": "Welcome to DeFi Analytics Pro!",
+      "content": "Welcome to DeFi Analytics Pro, {{firstName}}! Connect your wallet to start tracking your DeFi positions.",
+      "variables": ["firstName", "lastName"]
+    },
+    "notification": {
+      "subject": "Price Alert: {{tokenSymbol}}",
+      "content": "{{tokenSymbol}} has {{direction}} your alert threshold of ${{price}}. Current price: ${{currentPrice}}.",
+      "variables": ["tokenSymbol", "direction", "price", "currentPrice"]
+    },
+    "marketing": [
+      {
+        "subject": "Weekly DeFi Market Update",
+        "content": "Your weekly summary: Portfolio change: {{portfolioChange}}%, Top performer: {{topToken}}.",
+        "variables": ["portfolioChange", "topToken", "totalValue"]
+      }
+    ]
+  },
+  "legal": {
+    "privacyPolicy": "Cryptocurrency and DeFi specific privacy policy",
+    "termsOfService": "DeFi analytics terms of service",
+    "gdprCompliant": true,
+    "ccpaCompliant": true,
+    "industryCompliance": ["AML", "KYC", "FATF"]
+  }
+}
