@@ -11,7 +11,7 @@ export default function LandingPage() {
       <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <div className="text-2xl font-bold">NextSaaS</div>
         <div className="flex gap-6 items-center">
-          <Link href="/docs" className="hover:text-gray-600">Docs</Link>
+          <Link href="http://localhost:3001" className="hover:text-gray-600">Docs</Link>
           <Link href="/pricing" className="hover:text-gray-600">Pricing</Link>
           <Link href="/blog" className="hover:text-gray-600">Blog</Link>
           <Button variant="outline" size="sm">Sign In</Button>
