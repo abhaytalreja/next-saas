@@ -25,16 +25,16 @@ import { ButtonPropsSchema, validateProps } from "../utils/component-validator"
  */
 
 const buttonVariants = cva(
-  // Base styles with HubSpot-inspired design
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none shadow-sm hubspot-hover [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  // Base styles with HubSpot-inspired design and dark mode support
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:pointer-events-none shadow-sm hubspot-hover [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 active:bg-primary-800",
-        secondary: "bg-white border border-neutral-300 text-neutral-700 hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100",
-        outline: "border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500 active:bg-primary-100",
-        ghost: "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus:ring-primary-500 active:bg-neutral-200",
-        destructive: "bg-error-600 text-white hover:bg-error-700 focus:ring-error-500 active:bg-error-800",
+        primary: "bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 active:bg-primary-800 dark:bg-primary-500 dark:hover:bg-primary-600 dark:active:bg-primary-700",
+        secondary: "bg-white border border-neutral-300 text-neutral-700 hover:bg-neutral-50 focus:ring-primary-500 active:bg-neutral-100 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 dark:active:bg-gray-600",
+        outline: "border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500 active:bg-primary-100 dark:border-primary-400 dark:text-primary-400 dark:hover:bg-primary-900 dark:active:bg-primary-800",
+        ghost: "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 focus:ring-primary-500 active:bg-neutral-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 dark:active:bg-gray-600",
+        destructive: "bg-error-600 text-white hover:bg-error-700 focus:ring-error-500 active:bg-error-800 dark:bg-red-600 dark:hover:bg-red-700 dark:active:bg-red-800",
       },
       size: {
         sm: "px-3 py-1.5 text-sm h-8 min-w-[44px]",
