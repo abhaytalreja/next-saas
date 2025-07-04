@@ -1,0 +1,9 @@
+{
+  "extends": "@nextsaas/tsconfig/base.json",
+  "compilerOptions": {
+    "incremental": false,
+    "noEmit": false
+  },
+  "include": ["src"],
+  "exclude": ["dist", "build", "node_modules"]
+}

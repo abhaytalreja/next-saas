@@ -1,0 +1,9 @@
+{
+  "extends": "@nextsaas/tsconfig/base.json",
+  "compilerOptions": {
+    "lib": ["es2022", "dom"],
+    "jsx": "react-jsx"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

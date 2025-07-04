@@ -1,0 +1,103 @@
+# Getting Started with NextSaaS
+
+Welcome to NextSaaS! This guide will help you get up and running with your new SaaS project.
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- **Node.js** 18+ installed
+- **npm** 10.9.2+
+- **Git** for version control
+- A code editor (VS Code recommended)
+
+## Installation Steps
+
+### 1. Clone and Install
+
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd next-saas
+
+# Install dependencies
+npm install
+```
+
+### 2. Environment Setup
+
+Create your environment file:
+
+```bash
+cp .env.example .env.local
+```
+
+Then edit `.env.local` with your actual values:
+
+```env
+# Database (Supabase)
+DATABASE_URL="postgresql://..."
+NEXT_PUBLIC_SUPABASE_URL="https://your-project.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
+
+# Authentication
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="generate-a-secret-key"
+
+# Add other services as needed
+```
+
+### 3. Start Development
+
+```bash
+npm run dev
+```
+
+This starts:
+- **Web App**: http://localhost:3000
+- **Documentation**: http://localhost:3001
+- **Landing Page**: http://localhost:3002
+
+## Project Structure
+
+```
+next-saas/
+├── apps/
+│   ├── web/        # Main SaaS application
+│   ├── docs/       # Documentation (you are here!)
+│   └── landing/    # Marketing site
+├── packages/
+│   ├── ui/         # Shared components
+│   ├── auth/       # Authentication
+│   ├── database/   # Database utilities
+│   └── ...         # Other shared packages
+```
+
+## Next Steps
+
+1. **Explore the Apps**: Check out each application
+2. **Set up Database**: Configure Supabase or your preferred database
+3. **Customize UI**: Modify components in `packages/ui`
+4. **Add Features**: Build your SaaS functionality
+
+## Common Commands
+
+```bash
+# Development
+npm run dev              # Start all apps
+npm run build           # Build all apps
+npm run lint            # Lint code
+npm run format          # Format code
+
+# Working with specific apps
+npm run dev -- --filter=@nextsaas/web
+npm run build -- --filter=@nextsaas/web
+```
+
+## Getting Help
+
+- Check the [Architecture Guide](/architecture) to understand the project structure
+- See [Development Guide](/development) for detailed workflows
+- Visit [Deployment Guide](/deployment) when ready to ship
+
+Happy building! 🚀

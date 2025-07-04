@@ -1,0 +1,283 @@
+# Development Guide
+
+This guide covers development workflows, best practices, and tips for working with NextSaaS.
+
+## Development Workflow
+
+### Starting Development
+
+```bash
+# Start all applications
+npm run dev
+
+# Start specific app
+npm run dev -- --filter=@nextsaas/web
+
+# Start with debugging
+DEBUG=* npm run dev
+```
+
+### Making Changes
+
+1. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **Make your changes** following the coding standards
+
+3. **Test your changes**
+   ```bash
+   npm run test
+   npm run type-check
+   npm run lint
+   ```
+
+4. **Commit with conventional commits**
+   ```bash
+   git add .
+   git commit -m "feat: add new feature"
+   ```
+
+## Working with Shared Packages
+
+### Creating New Components
+
+1. **Create component in UI package**
+   ```bash
+   mkdir packages/ui/src/components/Card
+   cd packages/ui/src/components/Card
+   touch Card.tsx index.ts
+   ```
+
+2. **Write the component**
+   ```typescript
+   // packages/ui/src/components/Card/Card.tsx
+   import React from 'react';
+   
+   interface CardProps {
+     children: React.ReactNode;
+     className?: string;
+   }
+   
+   export function Card({ children, className }: CardProps) {
+     return (
+       <div className={`bg-white rounded-lg shadow ${className}`}>
+         {children}
+       </div>
+     );
+   }
+   ```
+
+3. **Export the component**
+   ```typescript
+   // packages/ui/src/components/Card/index.ts
+   export { Card } from './Card';
+   
+   // packages/ui/src/index.ts
+   export * from './components/Card';
+   ```
+
+4. **Use in any app**
+   ```typescript
+   import { Card } from '@nextsaas/ui';
+   
+   export default function MyPage() {
+     return (
+       <Card className="p-6">
+         <h1>Hello World</h1>
+       </Card>
+     );
+   }
+   ```
+
+### Package Dependencies
+
+Each package can depend on other packages:
+
+```typescript
+// packages/auth/src/hooks/useAuth.ts
+import { User } from '@nextsaas/types';
+import { apiClient } from '@nextsaas/utils';
+```
+
+## Code Standards
+
+### TypeScript
+
+- Use strict mode everywhere
+- Define explicit types (avoid `any`)
+- Use interfaces for objects
+- Use enums for constants
+
+```typescript
+// Good
+interface UserProps {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+}
+
+enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
+// Avoid
+const user: any = { name: 'John' };
+```
+
+### React Components
+
+- Use functional components
+- Use TypeScript for props
+- Follow naming conventions
+
+```typescript
+interface ButtonProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: 'primary' | 'secondary';
+}
+
+export function Button({ 
+  children, 
+  onClick, 
+  variant = 'primary' 
+}: ButtonProps) {
+  return (
+    <button 
+      className={`btn btn-${variant}`} 
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+## Testing
+
+### Unit Tests
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import { Button } from './Button';
+
+describe('Button', () => {
+  it('renders children', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+  
+  it('calls onClick when clicked', () => {
+    const handleClick = jest.fn();
+    render(<Button onClick={handleClick}>Click me</Button>);
+    
+    screen.getByText('Click me').click();
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+### Integration Tests
+
+```typescript
+import { render, screen, fireEvent } from '@testing-library/react';
+import { LoginForm } from './LoginForm';
+
+test('submits login form', async () => {
+  const handleSubmit = jest.fn();
+  render(<LoginForm onSubmit={handleSubmit} />);
+  
+  fireEvent.change(screen.getByLabelText('Email'), {
+    target: { value: 'test@example.com' },
+  });
+  
+  fireEvent.click(screen.getByText('Login'));
+  
+  expect(handleSubmit).toHaveBeenCalledWith({
+    email: 'test@example.com',
+  });
+});
+```
+
+## Performance Optimization
+
+### Code Splitting
+
+```typescript
+import dynamic from 'next/dynamic';
+
+const DynamicChart = dynamic(() => import('./Chart'), {
+  loading: () => <p>Loading chart...</p>,
+  ssr: false,
+});
+```
+
+### Image Optimization
+
+```typescript
+import Image from 'next/image';
+
+export function Avatar({ src, alt }: { src: string; alt: string }) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={40}
+      height={40}
+      className="rounded-full"
+    />
+  );
+}
+```
+
+## Debugging
+
+### VS Code Debugging
+
+Use the provided launch configurations:
+
+1. **Server-side debugging**: Next.js: debug server-side
+2. **Client-side debugging**: Next.js: debug client-side
+3. **Full-stack debugging**: Next.js: debug full stack
+
+### Console Debugging
+
+```typescript
+// Development only logs
+if (process.env.NODE_ENV === 'development') {
+  console.log('Debug info:', data);
+}
+```
+
+## Troubleshooting
+
+### Hot Reload Not Working
+
+```bash
+# Clear Next.js cache
+rm -rf apps/web/.next
+npm run dev
+```
+
+### TypeScript Errors
+
+```bash
+# Rebuild TypeScript
+npm run type-check
+
+# Clear TypeScript cache
+rm -rf **/*.tsbuildinfo
+```
+
+### Package Resolution Issues
+
+```bash
+# Clear all caches
+npm run clean
+rm -rf node_modules
+npm install
+```
