@@ -14,13 +14,13 @@ export function AnimatedHero({ title, titleAccent, description, features }: Anim
   return (
     <>
       <motion.h1 
-        className="text-6xl font-bold mb-6"
+        className="text-6xl font-bold mb-6 text-gray-900 dark:text-white"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         {title}
-        <span className="text-orange-600"> {titleAccent}</span>
+        <span className="text-orange-600 dark:text-orange-400"> {titleAccent}</span>
       </motion.h1>
       <motion.p 
         className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto"
@@ -35,8 +35,8 @@ export function AnimatedHero({ title, titleAccent, description, features }: Anim
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Button size="lg">Get Started Free</Button>
-        <Button variant="outline" size="lg">View Demo</Button>
+        <Button size="lg" className="font-semibold">Get Started Free</Button>
+        <Button variant="outline" size="lg" className="font-semibold">View Demo</Button>
       </motion.div>
       <motion.div 
         className="flex flex-wrap gap-6 justify-center text-sm text-gray-500 dark:text-gray-400"

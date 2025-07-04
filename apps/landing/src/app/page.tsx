@@ -11,7 +11,7 @@ const heroData = {
     "🌐 6 Languages",
     "🛡️ Guard Rails", 
     "🎯 Use Case Ready",
-    "⚡ HubSpot Design"
+    "💰 100% Free"
   ]
 };
 
@@ -71,7 +71,7 @@ const coreFeatures = [
   {
     icon: '🚀',
     title: 'Production Ready',
-    description: 'Built with best practices and ready to scale from day one with HubSpot-inspired design system.'
+    description: 'Built with best practices and ready to scale from day one with modern design system.'
   },
   {
     icon: '🔒',
@@ -120,21 +120,28 @@ export default function LandingPage() {
       {/* Updated CTA Section */}
       <section className="bg-gradient-to-r from-orange-600 to-red-600 text-white py-20">
         <div className="max-w-4xl mx-auto text-center px-6">
-          <h2 className="text-4xl font-bold mb-4">Ready to Build Your Global SaaS?</h2>
+          <h2 className="text-4xl font-bold mb-4">Ready to Build Your Global SaaS for FREE?</h2>
           <p className="text-xl mb-8 text-orange-100">
             Join developers worldwide using NextSaaS with internationalization, 
-            quality guard rails, and industry templates
+            quality guard rails, and industry templates - completely free and open source
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-orange-600 hover:bg-gray-100">
-              Start Building Today
+            <Button 
+              size="lg" 
+              className="bg-white text-orange-600 hover:bg-gray-100 dark:bg-white dark:text-orange-600 dark:hover:bg-gray-100 font-semibold"
+            >
+              Start Building Free
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-orange-600">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-2 border-white text-white hover:bg-white hover:text-orange-600 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-orange-600 font-semibold"
+            >
               View Live Demo →
             </Button>
           </div>
           <div className="mt-8 text-sm text-orange-200">
-            ✨ New: Internationalization • Guard Rails • Use Case Templates
+            ✨ 100% Free • Open Source • No Subscriptions • No Hidden Costs
           </div>
         </div>
       </section>

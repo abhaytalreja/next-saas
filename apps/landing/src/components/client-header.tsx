@@ -1,6 +1,7 @@
 'use client';
 
-import { Button, ThemeSwitcher, LanguageSelectorApp } from '@nextsaas/ui';
+import { Button } from '@nextsaas/ui';
+import { ThemeSwitcher, LanguageSelectorApp } from '@nextsaas/ui/client';
 import Link from 'next/link';
 
 export function ClientHeader() {
@@ -8,13 +9,13 @@ export function ClientHeader() {
     <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto">
       <div className="text-2xl font-bold text-gray-900 dark:text-white">NextSaaS</div>
       <div className="flex gap-6 items-center">
-        <Link href="http://localhost:3001" className="hover:text-gray-600 dark:hover:text-gray-300">
+        <Link href="http://localhost:3001" className="text-gray-900 dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
           Docs
         </Link>
-        <Link href="/pricing" className="hover:text-gray-600 dark:hover:text-gray-300">
+        <Link href="/pricing" className="text-gray-900 dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
           Pricing
         </Link>
-        <Link href="/blog" className="hover:text-gray-600 dark:hover:text-gray-300">
+        <Link href="/blog" className="text-gray-900 dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
           Blog
         </Link>
         
