@@ -85,14 +85,19 @@ export const developmentConfig: Partial<BaseConfig> = {
       windowMs: 900000,
       maxRequests: 1000, // High limit for development
       skipSuccessfulRequests: true,
+      skipFailedRequests: false,
     },
     csp: {
       enabled: false, // Disabled for easier development
+      directives: {},
     },
     https: {
       enforced: false,
       hsts: {
         enabled: false,
+        maxAge: 0,
+        includeSubDomains: false,
+        preload: false,
       },
     },
     api: {
@@ -164,6 +169,7 @@ export const developmentConfig: Partial<BaseConfig> = {
   // Service configurations with development defaults
   database: {
     ...developmentDatabaseDefaults,
+    provider: 'postgresql' as const,
     url: process.env.DATABASE_URL || 'postgresql://postgres:password@localhost:5432/nextsaas_dev',
   },
 

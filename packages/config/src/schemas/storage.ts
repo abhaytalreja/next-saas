@@ -405,31 +405,79 @@ export const testStorageDefaults: Partial<StorageConfig> = {
   },
   imageProcessing: {
     enabled: false,
+    engine: 'sharp',
+    autoOptimize: false,
+    quality: {
+      jpeg: 80,
+      png: 90,
+      webp: 80,
+    },
+    formats: {
+      jpeg: { enabled: true },
+      png: { enabled: true },
+      webp: { enabled: false },
+    },
+    thumbnails: {
+      enabled: false,
+      sizes: [],
+    },
+    watermark: {
+      enabled: false,
+    },
   },
   cdn: {
     enabled: false,
+    cacheTtl: 86400,
+    customHeaders: {},
+    purgeOnUpload: false,
   },
   backup: {
     enabled: false,
+    provider: 'same',
+    retention: {
+      maxFiles: 100,
+      days: 30,
+      deleteAfterDays: 90,
+    },
+    versioning: {
+      enabled: false,
+      maxVersions: 5,
+    },
   },
   security: {
     encryption: {
       enabled: false,
+      algorithm: 'AES-256-GCM',
+      keyRotation: false,
     },
     accessControl: {
       publicRead: true,
       signedUrls: false,
+      corsEnabled: false,
+      allowedOrigins: [],
+      allowedMethods: [],
+      allowedHeaders: [],
     },
     scanning: {
       antiVirus: false,
       malwareDetection: false,
+      contentModeration: false,
     },
   },
   cleanup: {
     enabled: true,
+    schedule: '0 0 * * *',
+    orphanedFiles: false,
+    tempFiles: true,
     tempFileMaxAge: 3600, // 1 hour for tests
   },
   monitoring: {
     enabled: false,
+    logUploads: false,
+    logDownloads: false,
+    logDeletes: false,
+    metricsCollection: false,
+    alertOnQuotaLimit: false,
+    quotaLimitPercentage: 80,
   },
 };

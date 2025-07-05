@@ -198,13 +198,14 @@ export function encryptValue(value: string, key: string): EncryptionResult {
   const derivedKey = deriveKey(key, salt.toString('hex'));
   const iv = crypto.randomBytes(16);
   
-  const cipher = crypto.createCipher(DEFAULT_SECURITY_CONFIG.algorithm, derivedKey);
-  cipher.setAAD(Buffer.from('NextSaaS-Config', 'utf8'));
+  const cipher = crypto.createCipheriv(DEFAULT_SECURITY_CONFIG.algorithm, derivedKey, iv);
+  const aad = Buffer.from('NextSaaS-Config', 'utf8');
+  (cipher as any).setAAD(aad);
   
   let encrypted = cipher.update(value, 'utf8', 'hex');
   encrypted += cipher.final('hex');
   
-  const tag = cipher.getAuthTag();
+  const tag = (cipher as any).getAuthTag();
   
   return {
     encrypted,
@@ -222,9 +223,10 @@ export function decryptValue(options: DecryptionOptions): string {
   
   const derivedKey = deriveKey(key, salt);
   
-  const decipher = crypto.createDecipher(DEFAULT_SECURITY_CONFIG.algorithm, derivedKey);
-  decipher.setAAD(Buffer.from('NextSaaS-Config', 'utf8'));
-  decipher.setAuthTag(Buffer.from(tag, 'hex'));
+  const decipher = crypto.createDecipheriv(DEFAULT_SECURITY_CONFIG.algorithm, derivedKey, Buffer.from(iv, 'hex'));
+  const aad = Buffer.from('NextSaaS-Config', 'utf8');
+  (decipher as any).setAAD(aad);
+  (decipher as any).setAuthTag(Buffer.from(tag, 'hex'));
   
   let decrypted = decipher.update(encrypted, 'hex', 'utf8');
   decrypted += decipher.final('utf8');

@@ -10,7 +10,7 @@ const nextConfig = {
       },
     },
   },
-  transpilePackages: ['@nextsaas/ui'],
+  transpilePackages: ['@nextsaas/ui', '@nextsaas/supabase'],
   typescript: {
     ignoreBuildErrors: false,
   },

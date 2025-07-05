@@ -5,7 +5,7 @@ import { Environment } from '../src/loader';
 import { program } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as inquirer from 'inquirer';
+import inquirer from 'inquirer';
 
 /**
  * Interactive setup script for NextSaaS configuration

@@ -3,11 +3,64 @@ import type { AppProps } from 'next/app'
 import { useState } from 'react'
 
 const navigation = [
-  { name: 'Getting Started', href: '/getting-started', current: false },
-  { name: 'Development', href: '/development', current: false },
-  { name: 'Internationalization', href: '/internationalization', current: false },
-  { name: 'Guard Rails', href: '/guard-rails', current: false },
-  { name: 'Use Cases', href: '/use-cases', current: false },
+  {
+    name: '🚀 Quick Start',
+    items: [
+      { name: 'Overview', href: '/', current: false },
+      { name: 'Setup Methods', href: '/setup-methods', current: false },
+      { name: '5-Minute Setup', href: '/quickstart', current: false },
+      { name: 'Project Structure', href: '/project-structure', current: false },
+    ]
+  },
+  {
+    name: '✨ Features',
+    items: [
+      { name: 'Business Logic', href: '/features/business-logic', current: false },
+      { name: 'Pricing Sync', href: '/features/pricing-sync', current: false },
+      { name: 'Authentication', href: '/features/authentication', current: false },
+      { name: 'Database', href: '/features/database', current: false },
+      { name: 'UI Components', href: '/features/ui-components', current: false },
+      { name: 'Email', href: '/features/email', current: false },
+      { name: 'Payments', href: '/features/payments', current: false },
+      { name: 'Internationalization', href: '/features/i18n', current: false },
+    ]
+  },
+  {
+    name: '🛠️ Development',
+    items: [
+      { name: 'Local Development', href: '/development/local', current: false },
+      { name: 'Environment Variables', href: '/development/environment', current: false },
+      { name: 'Testing', href: '/development/testing', current: false },
+      { name: 'Code Style', href: '/development/code-style', current: false },
+    ]
+  },
+  {
+    name: '🏗️ Architecture',
+    items: [
+      { name: 'Organization Modes', href: '/architecture/organization-modes', current: false },
+      { name: 'Monorepo Structure', href: '/architecture/monorepo', current: false },
+      { name: 'Database Schema', href: '/architecture/database-schema', current: false },
+      { name: 'Security', href: '/architecture/security', current: false },
+      { name: 'Performance', href: '/architecture/performance', current: false },
+    ]
+  },
+  {
+    name: '🚢 Deployment',
+    items: [
+      { name: 'Vercel', href: '/deployment/vercel', current: false },
+      { name: 'Docker', href: '/deployment/docker', current: false },
+      { name: 'Environment Setup', href: '/deployment/environment', current: false },
+    ]
+  },
+  {
+    name: '📚 Guides',
+    items: [
+      { name: 'Adding Features', href: '/guides/adding-features', current: false },
+      { name: 'Custom Styling', href: '/guides/styling', current: false },
+      { name: 'API Integration', href: '/guides/api-integration', current: false },
+      { name: 'Best Practices', href: '/guides/best-practices', current: false },
+    ]
+  }
 ]
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -24,15 +77,24 @@ export default function App({ Component, pageProps }: AppProps) {
                 <div className="flex items-center flex-shrink-0 px-4">
                   <h1 className="text-xl font-bold text-gray-900">NextSaaS Docs</h1>
                 </div>
-                <nav className="mt-5 flex-1 px-2 space-y-1">
-                  {navigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                    >
-                      {item.name}
-                    </a>
+                <nav className="mt-5 flex-1 px-2 space-y-8">
+                  {navigation.map((section) => (
+                    <div key={section.name}>
+                      <h3 className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        {section.name}
+                      </h3>
+                      <div className="mt-2 space-y-1">
+                        {section.items.map((item) => (
+                          <a
+                            key={item.name}
+                            href={item.href}
+                            className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                          >
+                            {item.name}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </nav>
               </div>
@@ -66,15 +128,24 @@ export default function App({ Component, pageProps }: AppProps) {
                 <div className="flex-shrink-0 flex items-center px-4">
                   <h1 className="text-xl font-bold text-gray-900">NextSaaS Docs</h1>
                 </div>
-                <nav className="mt-5 px-2 space-y-1">
-                  {navigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-                    >
-                      {item.name}
-                    </a>
+                <nav className="mt-5 px-2 space-y-8">
+                  {navigation.map((section) => (
+                    <div key={section.name}>
+                      <h3 className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        {section.name}
+                      </h3>
+                      <div className="mt-2 space-y-1">
+                        {section.items.map((item) => (
+                          <a
+                            key={item.name}
+                            href={item.href}
+                            className="text-gray-600 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+                          >
+                            {item.name}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </nav>
               </div>

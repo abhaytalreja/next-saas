@@ -71,5 +71,8 @@ export * from './security';
 // Secret manager exports
 export * from './secret-manager';
 
+// Organization mode exports
+export * from './organization-modes';
+
 // Default export for convenience
 export { loadConfig as default } from './loader';

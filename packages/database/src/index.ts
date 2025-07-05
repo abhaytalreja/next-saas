@@ -40,3 +40,6 @@ export type {
 
 // Re-export legacy schemas for compatibility
 export * from './schemas';
+
+// Organization mode hooks
+// export * from './hooks/use-organization'; // Temporarily disabled due to type issues

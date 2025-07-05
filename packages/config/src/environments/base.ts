@@ -287,17 +287,33 @@ export const baseConfigDefaults: Partial<BaseConfig> = {
       enabled: true,
       origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'],
       credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     },
     rateLimit: {
       enabled: true,
       windowMs: 900000, // 15 minutes
       maxRequests: 100,
+      skipSuccessfulRequests: false,
+      skipFailedRequests: false,
     },
     csp: {
       enabled: true,
+      directives: {
+        'default-src': ["'self'"],
+        'script-src': ["'self'", "'unsafe-inline'"],
+        'style-src': ["'self'", "'unsafe-inline'"],
+        'img-src': ["'self'", 'data:', 'https:'],
+      },
     },
     https: {
       enforced: false,
+      hsts: {
+        enabled: false,
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: false,
+      },
     },
   },
   cache: {
@@ -306,9 +322,15 @@ export const baseConfigDefaults: Partial<BaseConfig> = {
     memory: {
       enabled: true,
       maxSize: 1000,
+      ttl: 3600,
     },
     redis: {
       enabled: false,
+      host: 'localhost',
+      port: 6379,
+      db: 0,
+      keyPrefix: 'nextsaas:',
+      ttl: 3600,
     },
   },
   api: {
@@ -316,14 +338,22 @@ export const baseConfigDefaults: Partial<BaseConfig> = {
       enabled: true,
       strategy: 'url',
       defaultVersion: 'v1',
+      supportedVersions: ['v1'],
+      deprecationNotice: true,
     },
     documentation: {
       enabled: true,
       path: '/api/docs',
       ui: 'swagger',
+      openapi: {
+        title: 'NextSaaS API',
+        version: '1.0.0',
+        description: 'NextSaaS API Documentation',
+      },
     },
     pagination: {
       enabled: true,
+      strategy: 'offset',
       defaultLimit: 25,
       maxLimit: 100,
     },

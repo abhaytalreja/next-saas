@@ -1,6 +1,7 @@
 import { Button } from '@nextsaas/ui'
 import { ClientHeader } from '../components/client-header'
 import { AnimatedHero, AnimatedFeatures, AnimatedSpotlight } from '../components/client-animations'
+import { PricingSectionWithData } from '../components/pricing-section-server'
 
 // Server-side data - perfect for SEO
 const heroData = {
@@ -116,6 +117,9 @@ export default function LandingPage() {
       <section className="max-w-7xl mx-auto px-6 py-20">
         <AnimatedFeatures features={coreFeatures} title="Everything You Need" />
       </section>
+
+      {/* Pricing Section */}
+      <PricingSectionWithData />
 
       {/* Updated CTA Section */}
       <section className="bg-gradient-to-r from-orange-600 to-red-600 text-white py-20">

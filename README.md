@@ -35,7 +35,7 @@ NextSaaS is a comprehensive starter kit designed to accelerate SaaS development.
 - ⚙️ **Configuration System** - Type-safe, environment-aware configuration management
 - 🔒 **Secret Management** - Built-in utilities for secure secret handling
 - 🌍 **i18n Support** - Internationalization ready with 15+ languages
-- 📚 **Documentation Site** - MDX-powered docs with syntax highlighting
+- 📚 **Documentation Site** - Beautiful docs with complete setup guides
 - 🚀 **Landing Page** - Marketing site with shared components
 - 🛠️ **Developer Tools** - ESLint, Prettier, Husky pre-commit hooks
 - 📦 **Package Management** - NPM workspaces for dependency management
@@ -75,6 +75,11 @@ next-saas/
 - npm 10.9.2+
 - Git
 - Supabase account (free tier works great)
+
+### Quick Links
+- 📖 **[Full Documentation](http://localhost:3001)** - Comprehensive guides and tutorials
+- ⚡ **[5-Minute Quick Start](http://localhost:3001/quickstart)** - Get up and running fast
+- 🔄 **[Setup Methods](http://localhost:3001/setup-methods)** - Choose how to use this template
 
 ### Installation
 

@@ -2,7 +2,7 @@
   "extends": "@nextsaas/tsconfig/base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "lib": ["ES2022"],
     "target": "ES2022",
     "module": "ESNext",

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { BaseConfig, Environment } from './loader';
+export { generateSecureSecret } from './security';
 
 /**
  * Configuration Utilities
@@ -124,7 +125,7 @@ export function validateEnvVar(definition: EnvVarDefinition, value?: string): {
 /**
  * Validate multiple environment variables
  */
-export function validateEnvVars(definitions: EnvVarDefinition[], envVars: Record<string, string> = process.env): {
+export function validateEnvVars(definitions: EnvVarDefinition[], envVars: Record<string, string | undefined> = process.env): {
   valid: boolean;
   errors: string[];
   parsedValues: Record<string, any>;
@@ -158,12 +159,12 @@ export function generateEnvVarDefinitions(environment: Environment): EnvVarDefin
   // Common environment variables
   definitions.push(
     // Application
-    { name: 'APP_NAME', type: 'string', description: 'Application name' },
-    { name: 'APP_VERSION', type: 'string', description: 'Application version' },
+    { name: 'APP_NAME', type: 'string', required: false, description: 'Application name' },
+    { name: 'APP_VERSION', type: 'string', required: false, description: 'Application version' },
     { name: 'APP_URL', type: 'string', required: environment === 'production', description: 'Application URL' },
-    { name: 'API_URL', type: 'string', description: 'API base URL' },
-    { name: 'SUPPORT_EMAIL', type: 'string', description: 'Support email address' },
-    { name: 'ADMIN_EMAIL', type: 'string', description: 'Admin email address' },
+    { name: 'API_URL', type: 'string', required: false, description: 'API base URL' },
+    { name: 'SUPPORT_EMAIL', type: 'string', required: false, description: 'Support email address' },
+    { name: 'ADMIN_EMAIL', type: 'string', required: false, description: 'Admin email address' },
     
     // Environment
     { name: 'NODE_ENV', type: 'string', required: true, description: 'Node environment' },

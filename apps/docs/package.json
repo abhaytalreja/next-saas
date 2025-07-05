@@ -11,6 +11,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@mdx-js/loader": "^3.1.0",
+    "@mdx-js/react": "^3.1.0",
+    "@next/mdx": "^15.3.5",
     "@nextsaas/types": "*",
     "@nextsaas/ui": "*",
     "@nextsaas/utils": "*",
