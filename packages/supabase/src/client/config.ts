@@ -63,7 +63,12 @@ export function getSupabaseConfig(): SupabaseConfig {
   const parsed = supabaseConfigSchema.safeParse(config);
   if (!parsed.success) {
     console.error('Invalid Supabase configuration:', parsed.error.errors);
-    throw new Error('Invalid Supabase configuration. Please check your environment variables.');
+    console.error('Current config:', {
+      url: config.url ? 'Set' : 'Missing',
+      anonKey: config.anonKey ? 'Set' : 'Missing',
+      serviceRoleKey: config.serviceRoleKey ? 'Set' : 'Missing',
+    });
+    throw new Error(`Invalid Supabase configuration: ${JSON.stringify(parsed.error.errors)}`);
   }
 
   return parsed.data;

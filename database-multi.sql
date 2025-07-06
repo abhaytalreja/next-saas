@@ -1,25 +1,8 @@
-#!/usr/bin/env node
+-- NextSaaS Database Schema
+-- Organization Mode: multi
+-- Generated on: 2025-07-06T02:20:03.590Z
 
-const fs = require('fs');
-const path = require('path');
 
-// Parse command line arguments
-const args = process.argv.slice(2);
-const organizationMode = args.includes('--mode') 
-  ? args[args.indexOf('--mode') + 1] 
-  : 'single';
-
-const validModes = ['none', 'single', 'multi'];
-if (!validModes.includes(organizationMode)) {
-  console.error(`Invalid organization mode: ${organizationMode}`);
-  console.error(`Valid modes are: ${validModes.join(', ')}`);
-  process.exit(1);
-}
-
-console.log(`Generating database SQL for organization mode: ${organizationMode}`);
-
-// Base tables needed for all modes
-const baseTables = `
 -- Enable necessary extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
@@ -70,10 +53,8 @@ BEGIN
     ALTER TABLE plans ALTER COLUMN features TYPE jsonb USING to_jsonb(features);
   END IF;
 END $$;
-`;
 
-// Organizations table (only for single and multi modes)
-const organizationTables = `
+
 -- Organizations table
 CREATE TABLE IF NOT EXISTS organizations (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -114,19 +95,12 @@ CREATE TABLE IF NOT EXISTS organization_invitations (
   accepted_at timestamptz,
   created_at timestamptz DEFAULT now()
 );
-`;
 
-// Projects/Items tables - structure depends on mode
-const getProjectTables = (mode) => {
-  const ownerColumn = mode === 'none' 
-    ? 'user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE'
-    : 'organization_id uuid NOT NULL REFERENCES organizations(id) ON DELETE CASCADE';
 
-  return `
 -- Projects/Workspaces
 CREATE TABLE IF NOT EXISTS projects (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  ${ownerColumn},
+  organization_id uuid NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   name text NOT NULL,
   slug text NOT NULL,
   description text,
@@ -136,13 +110,13 @@ CREATE TABLE IF NOT EXISTS projects (
   created_by uuid REFERENCES auth.users(id),
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now(),
-  ${mode === 'none' ? 'UNIQUE(user_id, slug)' : 'UNIQUE(organization_id, slug)'}
+  UNIQUE(organization_id, slug)
 );
 
 -- Items (flexible content)
 CREATE TABLE IF NOT EXISTS items (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  ${ownerColumn},
+  organization_id uuid NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   project_id uuid NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
   parent_id uuid REFERENCES items(id) ON DELETE CASCADE,
   type text NOT NULL,
@@ -159,20 +133,12 @@ CREATE TABLE IF NOT EXISTS items (
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
-`;
-};
 
-// Subscriptions table - structure depends on mode
-const getSubscriptionTables = (mode) => {
-  const ownerColumn = mode === 'none'
-    ? 'user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE'
-    : 'organization_id uuid NOT NULL REFERENCES organizations(id) ON DELETE CASCADE';
 
-  return `
 -- Subscriptions
 CREATE TABLE IF NOT EXISTS subscriptions (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  ${ownerColumn},
+  organization_id uuid NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   plan_id uuid NOT NULL REFERENCES plans(id),
   stripe_subscription_id text UNIQUE,
   stripe_customer_id text,
@@ -191,7 +157,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 -- Usage tracking
 CREATE TABLE IF NOT EXISTS usage_tracking (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  ${ownerColumn},
+  organization_id uuid NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   metric_name text NOT NULL,
   usage_value bigint NOT NULL DEFAULT 0,
   usage_limit bigint,
@@ -199,45 +165,27 @@ CREATE TABLE IF NOT EXISTS usage_tracking (
   period_end timestamptz NOT NULL,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now(),
-  UNIQUE(${mode === 'none' ? 'user_id' : 'organization_id'}, metric_name, period_start)
+  UNIQUE(organization_id, metric_name, period_start)
 );
-`;
-};
 
-// Indexes - adjust based on mode
-const getIndexes = (mode) => {
-  const baseIndexes = `
+
 -- Indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
 CREATE INDEX IF NOT EXISTS idx_profiles_updated_at ON profiles(updated_at);
-`;
 
-  const organizationIndexes = `
+CREATE INDEX IF NOT EXISTS idx_projects_organization_id ON projects(organization_id);
+CREATE INDEX IF NOT EXISTS idx_items_project_id ON items(project_id);
+CREATE INDEX IF NOT EXISTS idx_items_type ON items(type);
+CREATE INDEX IF NOT EXISTS idx_items_status ON items(status);
+
 CREATE INDEX IF NOT EXISTS idx_organizations_slug ON organizations(slug);
 CREATE INDEX IF NOT EXISTS idx_organizations_subscription_status ON organizations(subscription_status);
 CREATE INDEX IF NOT EXISTS idx_organization_members_user_id ON organization_members(user_id);
 CREATE INDEX IF NOT EXISTS idx_organization_members_organization_id ON organization_members(organization_id);
 CREATE INDEX IF NOT EXISTS idx_organization_invitations_email ON organization_invitations(email);
 CREATE INDEX IF NOT EXISTS idx_organization_invitations_token ON organization_invitations(token);
-`;
 
-  const projectIndexes = `
-CREATE INDEX IF NOT EXISTS idx_projects_${mode === 'none' ? 'user_id' : 'organization_id'} ON projects(${mode === 'none' ? 'user_id' : 'organization_id'});
-CREATE INDEX IF NOT EXISTS idx_items_project_id ON items(project_id);
-CREATE INDEX IF NOT EXISTS idx_items_type ON items(type);
-CREATE INDEX IF NOT EXISTS idx_items_status ON items(status);
-`;
 
-  let indexes = baseIndexes + projectIndexes;
-  if (mode !== 'none') {
-    indexes += organizationIndexes;
-  }
-  return indexes;
-};
-
-// RLS Policies - adjust based on mode
-const getRLSPolicies = (mode) => {
-  const baseRLS = `
 -- Enable RLS on all tables
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE plans ENABLE ROW LEVEL SECURITY;
@@ -259,82 +207,7 @@ CREATE POLICY "Users can update their own profile" ON profiles
 DROP POLICY IF EXISTS "Anyone can view active plans" ON plans;
 CREATE POLICY "Anyone can view active plans" ON plans
   FOR SELECT USING (is_active = true);
-`;
 
-  if (mode === 'none') {
-    // User-centric policies
-    return baseRLS + `
--- Projects policies (user-owned)
-DROP POLICY IF EXISTS "Users can view their own projects" ON projects;
-CREATE POLICY "Users can view their own projects" ON projects
-  FOR SELECT USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can create their own projects" ON projects;
-CREATE POLICY "Users can create their own projects" ON projects
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can update their own projects" ON projects;
-CREATE POLICY "Users can update their own projects" ON projects
-  FOR UPDATE USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can delete their own projects" ON projects;
-CREATE POLICY "Users can delete their own projects" ON projects
-  FOR DELETE USING (auth.uid() = user_id);
-
--- Items policies (user-owned via project)
-DROP POLICY IF EXISTS "Users can view items in their projects" ON items;
-CREATE POLICY "Users can view items in their projects" ON items
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM projects 
-      WHERE projects.id = items.project_id 
-      AND projects.user_id = auth.uid()
-    )
-  );
-
-DROP POLICY IF EXISTS "Users can create items in their projects" ON items;
-CREATE POLICY "Users can create items in their projects" ON items
-  FOR INSERT WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM projects 
-      WHERE projects.id = items.project_id 
-      AND projects.user_id = auth.uid()
-    )
-  );
-
-DROP POLICY IF EXISTS "Users can update items in their projects" ON items;
-CREATE POLICY "Users can update items in their projects" ON items
-  FOR UPDATE USING (
-    EXISTS (
-      SELECT 1 FROM projects 
-      WHERE projects.id = items.project_id 
-      AND projects.user_id = auth.uid()
-    )
-  );
-
-DROP POLICY IF EXISTS "Users can delete items in their projects" ON items;
-CREATE POLICY "Users can delete items in their projects" ON items
-  FOR DELETE USING (
-    EXISTS (
-      SELECT 1 FROM projects 
-      WHERE projects.id = items.project_id 
-      AND projects.user_id = auth.uid()
-    )
-  );
-
--- Subscription policies (user-owned)
-DROP POLICY IF EXISTS "Users can view their own subscription" ON subscriptions;
-CREATE POLICY "Users can view their own subscription" ON subscriptions
-  FOR SELECT USING (auth.uid() = user_id);
-
--- Usage tracking policies (user-owned)
-DROP POLICY IF EXISTS "Users can view their own usage" ON usage_tracking;
-CREATE POLICY "Users can view their own usage" ON usage_tracking
-  FOR SELECT USING (auth.uid() = user_id);
-`;
-  } else {
-    // Organization-based policies
-    return baseRLS + `
 ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE organization_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE organization_invitations ENABLE ROW LEVEL SECURITY;
@@ -459,13 +332,8 @@ CREATE POLICY "Members can view organization usage" ON usage_tracking
       AND organization_members.user_id = auth.uid()
     )
   );
-`;
-  }
-};
 
-// Functions and triggers
-const getFunctions = (mode) => {
-  const baseFunctions = `
+
 -- Updated at trigger
 CREATE OR REPLACE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$
@@ -495,9 +363,7 @@ CREATE TRIGGER update_plans_updated_at BEFORE UPDATE ON plans
 DROP TRIGGER IF EXISTS update_subscriptions_updated_at ON subscriptions;
 CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON subscriptions
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
-`;
 
-  const organizationFunctions = `
 DROP TRIGGER IF EXISTS update_organizations_updated_at ON organizations;
 CREATE TRIGGER update_organizations_updated_at BEFORE UPDATE ON organizations
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
@@ -533,55 +399,7 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
-`;
 
-  if (mode === 'single') {
-    // Auto-create organization for new users
-    return baseFunctions + organizationFunctions + `
--- Trigger to create default organization for new users
-DROP TRIGGER IF EXISTS create_default_org_for_user ON auth.users;
-CREATE TRIGGER create_default_org_for_user
-  AFTER INSERT ON auth.users
-  FOR EACH ROW
-  EXECUTE FUNCTION create_default_organization();
-`;
-  } else if (mode === 'multi') {
-    return baseFunctions + organizationFunctions;
-  }
-  
-  return baseFunctions;
-};
-
-// Generate the complete SQL based on mode
-let sql = '-- NextSaaS Database Schema\n';
-sql += `-- Organization Mode: ${organizationMode}\n`;
-sql += `-- Generated on: ${new Date().toISOString()}\n\n`;
-
-// Add base tables
-sql += baseTables;
-
-// Add organization tables if needed
-if (organizationMode !== 'none') {
-  sql += '\n' + organizationTables;
-}
-
-// Add project/content tables
-sql += '\n' + getProjectTables(organizationMode);
-
-// Add subscription tables
-sql += '\n' + getSubscriptionTables(organizationMode);
-
-// Add indexes
-sql += '\n' + getIndexes(organizationMode);
-
-// Add RLS policies
-sql += '\n' + getRLSPolicies(organizationMode);
-
-// Add functions and triggers
-sql += '\n' + getFunctions(organizationMode);
-
-// Add default data
-sql += `
 -- Insert default plans
 INSERT INTO plans (name, slug, price_monthly, price_yearly, features, limits, is_default, sort_order)
 VALUES 
@@ -598,22 +416,3 @@ VALUES
    '{"users": -1, "projects": -1, "storage_gb": -1, "api_calls": -1}'::jsonb,
    false, 3)
 ON CONFLICT (slug) DO NOTHING;
-`;
-
-// Write the SQL file
-const outputPath = path.join(process.cwd(), `database-${organizationMode}.sql`);
-fs.writeFileSync(outputPath, sql);
-
-console.log(`✅ Database SQL generated successfully!`);
-console.log(`📄 Output file: ${outputPath}`);
-console.log(`🚀 Mode: ${organizationMode}`);
-console.log(`\nNext steps:`);
-console.log(`1. Review the generated SQL file`);
-console.log(`2. Run it in your Supabase SQL editor`);
-console.log(`3. Set NEXT_PUBLIC_ORGANIZATION_MODE=${organizationMode} in your .env.local`);
-
-// Also update the main generation script
-const mainScriptPath = path.join(process.cwd(), 'scripts', 'generate-supabase-sql.js');
-if (fs.existsSync(mainScriptPath)) {
-  console.log(`\n💡 Tip: The main script has been updated to use mode: ${organizationMode}`);
-}

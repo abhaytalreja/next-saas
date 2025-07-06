@@ -1,0 +1,66 @@
+name: ❓ Question
+description: Ask a question about NextSaaS
+title: "[Question]: "
+labels: ["question", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest in NextSaaS! Please check our documentation first, then feel free to ask your question.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please check the following before asking
+      options:
+        - label: I have read the [documentation](http://localhost:3001)
+          required: true
+        - label: I have checked the [troubleshooting guide](https://github.com/abhaytalreja/next-saas/blob/main/docs/TROUBLESHOOTING.md)
+          required: true
+        - label: I have searched existing issues and discussions
+          required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: How do I...? Why does...? What is the best way to...?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide any relevant context about what you're trying to achieve
+      placeholder: I'm building a... and I need to...
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Question Category
+      options:
+        - Setup/Installation
+        - Configuration
+        - Database/Supabase
+        - Authentication
+        - UI/Styling
+        - Deployment
+        - Best Practices
+        - Architecture
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What I've Tried
+      description: What have you already attempted?
+      placeholder: |
+        - I tried...
+        - I looked at...
+        - I read...

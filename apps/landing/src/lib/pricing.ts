@@ -27,26 +27,37 @@ export interface PricingPlan {
  * This is a server-side function that respects RLS policies
  */
 export async function fetchPricingPlans(): Promise<PricingPlan[]> {
-  const supabase = createSupabaseServerClient();
-  
-  const { data, error } = await supabase
-    .from('plans')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true });
+  try {
+    // Check if Supabase is configured
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.warn('Supabase not configured, using default plans');
+      return getDefaultPlans();
+    }
 
-  if (error) {
-    console.error('Error fetching pricing plans:', error);
-    // Return default plans as fallback
+    const supabase = createSupabaseServerClient();
+    
+    const { data, error } = await supabase
+      .from('plans')
+      .select('*')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching pricing plans:', error);
+      // Return default plans as fallback
+      return getDefaultPlans();
+    }
+
+    // Transform database plans to match our interface
+    return (data || []).map(plan => ({
+      ...plan,
+      description: getDescriptionForPlan(plan.slug),
+      features: Array.isArray(plan.features) ? plan.features : getFeaturesForPlan(plan.slug),
+    }));
+  } catch (error) {
+    console.error('Error in fetchPricingPlans:', error);
     return getDefaultPlans();
   }
-
-  // Transform database plans to match our interface
-  return (data || []).map(plan => ({
-    ...plan,
-    description: getDescriptionForPlan(plan.slug),
-    features: getFeaturesForPlan(plan.slug),
-  }));
 }
 
 /**

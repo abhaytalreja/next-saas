@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/abhaytalreja/next-saas/tree/main/docs
+    about: Please read the documentation before opening an issue
+  - name: 💬 Discord Community
+    url: https://discord.gg/yourdiscord
+    about: Get help from the community in real-time
+  - name: 🔧 Troubleshooting Guide
+    url: https://github.com/abhaytalreja/next-saas/blob/main/docs/TROUBLESHOOTING.md
+    about: Common issues and their solutions

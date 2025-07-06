@@ -1,0 +1,142 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in NextSaaS
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this bug! Please fill out the sections below to help us understand and fix the issue.
+        
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please check the following before submitting your issue
+      options:
+        - label: I have searched existing issues to ensure this bug hasn't been reported
+          required: true
+        - label: I have read the [troubleshooting guide](https://github.com/abhaytalreja/next-saas/blob/main/docs/TROUBLESHOOTING.md)
+          required: true
+        - label: I am using the latest version of NextSaaS
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: When I try to..., I expect..., but instead...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-logs
+    attributes:
+      label: Error Logs/Console Output
+      description: Please copy and paste any relevant error messages or console output
+      render: shell
+      placeholder: |
+        Error: Invalid Supabase configuration
+        at getSupabaseConfig (...)
+
+  - type: dropdown
+    id: affected-app
+    attributes:
+      label: Which app is affected?
+      multiple: true
+      options:
+        - Web App (port 3000)
+        - Landing Page (port 3002)
+        - Documentation (port 3001)
+        - All apps
+        - Build/Dev tools
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: Output of `node --version`
+      placeholder: v18.17.0
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: What OS are you using?
+      placeholder: macOS 14.0, Windows 11, Ubuntu 22.04
+    validations:
+      required: true
+
+  - type: dropdown
+    id: organization-mode
+    attributes:
+      label: Organization Mode
+      description: Which organization mode are you using?
+      options:
+        - none (user-centric)
+        - single (one workspace per user)
+        - multi (multiple organizations)
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: env-check
+    attributes:
+      label: Environment Check
+      description: Have you verified your environment variables are set correctly?
+      placeholder: |
+        - [ ] All required env vars in .env.local
+        - [ ] Variables added to turbo.json globalEnv
+        - [ ] Restarted dev server from root
+        - [ ] Checked Supabase connection
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or information about the problem here
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

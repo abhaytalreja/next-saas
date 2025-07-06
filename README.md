@@ -101,15 +101,19 @@ next-saas/
    ```
 
 4. **Set up the database**
+   
+   First, choose your organization mode:
    ```bash
-   npm run db:setup
+   # Generate database schema (choose one mode)
+   npm run db:generate-sql -- --mode single  # Recommended default
+   # OR: npm run db:generate-sql -- --mode none   # For personal tools
+   # OR: npm run db:generate-sql -- --mode multi  # For enterprise B2B
    ```
    
-   This will:
-   - Create all database tables
-   - Set up Row Level Security policies
-   - Configure triggers and functions
-   - Optionally seed sample data
+   Then apply the generated SQL to your Supabase project and set:
+   ```bash
+   NEXT_PUBLIC_ORGANIZATION_MODE=single  # Match your chosen mode
+   ```
 
 5. **Start development servers**
    ```bash
@@ -335,6 +339,33 @@ Pre-commit hooks are set up with Husky and lint-staged to:
 
 Make sure to add all environment variables in your deployment platform.
 
+## 🗄️ Database Architecture
+
+NextSaaS supports three organization modes to fit different use cases:
+
+### Organization Modes
+
+| Mode | Use Case | Example Apps |
+|------|----------|--------------|
+| **`none`** | Personal tools, individual apps | Todo list, journal, personal finance |
+| **`single`** | Small teams, freelancers (default) | Project management, invoicing | 
+| **`multi`** | Enterprise B2B SaaS | Slack, Notion, GitHub |
+
+### Key Features
+
+- **Multi-tenant architecture** - Data isolation per user or organization
+- **Row Level Security (RLS)** - PostgreSQL-level security policies
+- **Flexible schema** - Adapts based on organization mode
+- **Type-safe queries** - Full TypeScript support
+- **Migration system** - Version-controlled schema changes
+
+### Documentation
+
+- 📊 **[Database Schema Guide](./docs/DATABASE_SCHEMA.md)** - Complete schema documentation for all modes
+- 🔄 **[Organization Modes Comparison](./docs/ORGANIZATION_MODES_COMPARISON.md)** - Detailed comparison and migration guide
+- 🚀 **[Database Setup Guide](./docs/DATABASE_SETUP.md)** - Step-by-step setup instructions
+- 🔌 **[Supabase Integration](./docs/SUPABASE_INTEGRATION.md)** - Supabase-specific configuration
+
 ## 📚 Documentation
 
 Comprehensive documentation is available at http://localhost:3001 when running the development server:
@@ -342,14 +373,14 @@ Comprehensive documentation is available at http://localhost:3001 when running t
 - **Getting Started** - Set up your development environment
 - **Development Guide** - Best practices and workflows  
 - **Architecture Overview** - Understand the project structure
-- **Database Setup** - Complete database configuration guide
 - **Deployment Guide** - Deploy to production
 
-You can also view the documentation files directly:
-- [README.md](./README.md) (this file)
-- [Database Setup Guide](./docs/DATABASE_SETUP.md)
-- [Package Structure](#-project-structure)
-- [Quick Start](#-quick-start)
+Additional documentation files:
+- [Troubleshooting Guide](./docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [Port Management](./docs/PORT_MANAGEMENT.md) - Automatic port configuration
+- [Configuration System](./packages/config/README.md) - Type-safe configuration
+- [UI Components](./packages/ui/README.md) - Shared component library
+- [Contributing Guide](./CONTRIBUTING.md) - How to contribute
 
 ## 🤝 Contributing
 

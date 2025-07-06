@@ -107,6 +107,14 @@ NEXT_PUBLIC_ORGANIZATION_MODE=single  # or 'none' or 'multi'`}</code></pre>
         </div>
       </div>
 
+      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4 mb-4">
+        <p className="text-yellow-900 font-semibold mb-1">⚠️ Common Issue: Environment Variables Not Loading</p>
+        <p className="text-yellow-800 text-sm">
+          If you get "Invalid Supabase configuration" errors, make sure to update <code>turbo.json</code> to include your environment variables. 
+          <a href="/troubleshooting/environment-variables" className="text-yellow-700 underline font-medium">See troubleshooting guide →</a>
+        </p>
+      </div>
+
       <h2>🗄️ Step 4: Set Up Database Tables (2 minutes)</h2>
       
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">

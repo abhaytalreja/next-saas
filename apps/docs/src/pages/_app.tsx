@@ -1,6 +1,7 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { useState } from 'react'
+import TopNav from '../components/TopNav'
 
 const navigation = [
   {
@@ -60,6 +61,18 @@ const navigation = [
       { name: 'API Integration', href: '/guides/api-integration', current: false },
       { name: 'Best Practices', href: '/guides/best-practices', current: false },
     ]
+  },
+  {
+    name: '🔧 Troubleshooting',
+    items: [
+      { name: 'Overview', href: '/troubleshooting', current: false },
+      { name: 'Environment Variables', href: '/troubleshooting/environment-variables', current: false },
+      { name: 'Database Errors', href: '/troubleshooting/database-errors', current: false },
+      { name: 'Build Errors', href: '/troubleshooting/build-errors', current: false },
+      { name: 'Port Conflicts', href: '/troubleshooting/port-conflicts', current: false },
+      { name: 'Authentication', href: '/troubleshooting/authentication', current: false },
+      { name: 'Deployment', href: '/troubleshooting/deployment', current: false },
+    ]
   }
 ]
 
@@ -68,15 +81,14 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex">
+      <TopNav />
+      <div className="flex pt-16"> {/* Add padding-top for fixed nav */}
         {/* Left Sidebar */}
         <div className="hidden md:flex md:flex-shrink-0">
           <div className="flex flex-col w-64">
             <div className="flex flex-col h-0 flex-1 bg-white border-r border-gray-200">
               <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-                <div className="flex items-center flex-shrink-0 px-4">
-                  <h1 className="text-xl font-bold text-gray-900">NextSaaS Docs</h1>
-                </div>
+                {/* Remove the NextSaaS Docs title since it's in TopNav now */}
                 <nav className="mt-5 flex-1 px-2 space-y-8">
                   {navigation.map((section) => (
                     <div key={section.name}>
@@ -125,9 +137,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 </button>
               </div>
               <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-                <div className="flex-shrink-0 flex items-center px-4">
-                  <h1 className="text-xl font-bold text-gray-900">NextSaaS Docs</h1>
-                </div>
+                {/* Remove title from mobile sidebar too */}
                 <nav className="mt-5 px-2 space-y-8">
                   {navigation.map((section) => (
                     <div key={section.name}>
