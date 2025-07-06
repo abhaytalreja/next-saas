@@ -1,3 +1,5 @@
+'use client'
+
 import { ProtectedLayout } from '@nextsaas/auth'
 
 export default function DashboardPage() {

@@ -57,6 +57,19 @@ export function MyComponent() {
 }`}</code>
       </pre>
 
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <h3 className="text-blue-900 font-semibold mb-2">🎨 Component Showcase</h3>
+        <p className="text-blue-800 mb-3">
+          Explore our comprehensive component library with live examples, code snippets, and interactive demos.
+        </p>
+        <a
+          href="/components"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        >
+          Browse Components →
+        </a>
+      </div>
+
       <h2>📦 Available Components</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 not-prose">

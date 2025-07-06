@@ -36,12 +36,12 @@ export function ClientHeader() {
           <ThemeSwitcher showLabel />
         </div>
 
-        <Link href="/auth/sign-in">
+        <Link href="http://localhost:3000/auth/sign-in">
           <Button variant="outline" size="sm">
             Sign In
           </Button>
         </Link>
-        <Link href="/auth/sign-up">
+        <Link href="http://localhost:3000/auth/sign-up">
           <Button size="sm">Get Started</Button>
         </Link>
       </div>

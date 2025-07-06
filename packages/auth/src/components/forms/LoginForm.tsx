@@ -108,7 +108,7 @@ export function LoginForm({
             required
             value={formData.email}
             onChange={handleChange}
-            error={errors.email}
+            error={!!errors.email}
             placeholder="you@example.com"
             disabled={isSubmitting}
           />
@@ -131,7 +131,7 @@ export function LoginForm({
             required
             value={formData.password}
             onChange={handleChange}
-            error={errors.password}
+            error={!!errors.password}
             placeholder="••••••••"
             disabled={isSubmitting}
           />
@@ -168,7 +168,7 @@ export function LoginForm({
       <div>
         <Button
           type="submit"
-          variant="primary"
+          variant="default"
           size="lg"
           fullWidth
           loading={isSubmitting || loading}

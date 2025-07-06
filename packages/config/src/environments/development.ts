@@ -175,6 +175,11 @@ export const developmentConfig: Partial<BaseConfig> = {
 
   auth: {
     ...developmentAuthDefaults,
+    supabase: {
+      url: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co',
+      anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key',
+      serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || 'your-service-role-key',
+    },
     jwt: {
       secret: process.env.JWT_SECRET || 'dev-jwt-secret-change-in-production-minimum-32-chars',
       expiresIn: '24h',
@@ -252,6 +257,11 @@ export const developmentConfig: Partial<BaseConfig> = {
 export const developmentEnvVars = {
   // Database
   DATABASE_URL: 'postgresql://postgres:password@localhost:5432/nextsaas_dev',
+  
+  // Supabase
+  NEXT_PUBLIC_SUPABASE_URL: 'https://your-project.supabase.co',
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: 'your-anon-key',
+  SUPABASE_SERVICE_ROLE_KEY: 'your-service-role-key',
   
   // Authentication
   JWT_SECRET: 'dev-jwt-secret-change-in-production-minimum-32-chars',

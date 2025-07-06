@@ -1,4 +1,4 @@
-// Main authentication package exports
+// Main authentication package exports - CLIENT SIDE ONLY
 
 // Components
 export * from './components/forms/LoginForm'
@@ -22,10 +22,9 @@ export * from './types'
 // Utils
 export * from './utils'
 
-// Lib
+// Lib - CLIENT ONLY
 export * from './lib/auth-client'
-export * from './lib/auth-server'
 export * from './lib/session-manager'
 
-// Middleware
-export * from './middleware'
+// Note: Server-side exports are available in @nextsaas/auth/server
+// Note: Middleware exports are available in @nextsaas/auth/server

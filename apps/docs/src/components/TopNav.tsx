@@ -16,6 +16,14 @@ const searchablePages = [
   { title: 'Database', href: '/features/database', category: 'Features', keywords: ['database', 'supabase', 'postgres'] },
   { title: 'UI Components', href: '/features/ui-components', category: 'Features', keywords: ['ui', 'components', 'design'] },
   
+  // Component Library
+  { title: 'Component Library', href: '/components', category: 'Components', keywords: ['components', 'ui', 'library', 'showcase'] },
+  { title: 'Buttons', href: '/components/buttons', category: 'Components', keywords: ['button', 'action', 'click'] },
+  { title: 'Inputs', href: '/components/inputs', category: 'Components', keywords: ['input', 'form', 'text', 'field'] },
+  { title: 'Cards', href: '/components/cards', category: 'Components', keywords: ['card', 'container', 'content'] },
+  { title: 'Alerts', href: '/components/alerts', category: 'Components', keywords: ['alert', 'notification', 'message'] },
+  { title: 'Tabs', href: '/components/tabs', category: 'Components', keywords: ['tabs', 'navigation', 'panels'] },
+  
   // Architecture
   { title: 'Organization Modes', href: '/architecture/organization-modes', category: 'Architecture', keywords: ['organization', 'modes', 'multi-tenant'] },
   { title: 'Database Schema', href: '/architecture/database-schema', category: 'Architecture', keywords: ['schema', 'tables', 'rls'] },

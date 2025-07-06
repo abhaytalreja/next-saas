@@ -152,6 +152,18 @@ export default function DocsHomePage() {
         </a>
 
         <a
+          href="/components"
+          className="block border-2 border-purple-200 bg-purple-50 rounded-lg p-4 hover:border-purple-400 transition-colors"
+        >
+          <h3 className="font-semibold text-lg mb-2 text-purple-900">
+            🎨 Component Library
+          </h3>
+          <p className="text-sm text-purple-700">
+            Browse 50+ UI components with live examples
+          </p>
+        </a>
+
+        <a
           href="/features/authentication"
           className="block border border-gray-200 rounded-lg p-4 hover:border-gray-400 transition-colors"
         >

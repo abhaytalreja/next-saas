@@ -138,7 +138,7 @@ export function SignupForm({
               required
               value={formData.firstName}
               onChange={handleChange}
-              error={errors.firstName}
+              error={!!errors.firstName}
               disabled={isSubmitting}
             />
           </div>
@@ -160,7 +160,7 @@ export function SignupForm({
               required
               value={formData.lastName}
               onChange={handleChange}
-              error={errors.lastName}
+              error={!!errors.lastName}
               disabled={isSubmitting}
             />
           </div>
@@ -183,7 +183,7 @@ export function SignupForm({
             required
             value={formData.email}
             onChange={handleChange}
-            error={errors.email}
+            error={!!errors.email}
             placeholder="you@example.com"
             disabled={isSubmitting}
           />
@@ -206,7 +206,7 @@ export function SignupForm({
             required
             value={formData.password}
             onChange={handleChange}
-            error={errors.password}
+            error={!!errors.password}
             placeholder="••••••••"
             disabled={isSubmitting}
           />
@@ -256,7 +256,7 @@ export function SignupForm({
               type="text"
               value={formData.organizationName}
               onChange={handleChange}
-              error={errors.organizationName}
+              error={!!errors.organizationName}
               placeholder="Acme Inc."
               disabled={isSubmitting}
             />
@@ -329,7 +329,7 @@ export function SignupForm({
       <div>
         <Button
           type="submit"
-          variant="primary"
+          variant="default"
           size="lg"
           fullWidth
           loading={isSubmitting || loading}

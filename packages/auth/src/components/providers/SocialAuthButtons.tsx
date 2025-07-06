@@ -11,8 +11,8 @@ interface SocialAuthButtonsProps {
   onSuccess?: () => void
   onError?: (error: string) => void
   fullWidth?: boolean
-  size?: 'sm' | 'md' | 'lg'
-  variant?: 'outline' | 'solid'
+  size?: 'sm' | 'default' | 'lg'
+  variant?: 'outline' | 'default'
 }
 
 const defaultProviders: OAuthProvider[] = ['google', 'github', 'microsoft']
@@ -23,7 +23,7 @@ export function SocialAuthButtons({
   onSuccess,
   onError,
   fullWidth = true,
-  size = 'md',
+  size = 'default',
   variant = 'outline',
 }: SocialAuthButtonsProps) {
   const { signInWithOAuth } = useAuth()

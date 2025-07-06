@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { AppSidebar } from '@/components/navigation/app-sidebar'
+import { ClientLayout } from '@/components/client-layout'
+import { ConditionalLayout } from '@/components/conditional-layout'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -16,14 +17,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <div className="flex h-screen overflow-hidden">
-          <AppSidebar />
-          <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <html lang="en" className="h-full">
+      <head>
+        <meta name="theme-color" content="#ffffff" />
+      </head>
+      <body className={`${inter.className} h-full bg-white dark:bg-gray-900 transition-colors`}>
+        <ClientLayout>
+          <ConditionalLayout>
             {children}
-          </main>
-        </div>
+          </ConditionalLayout>
+        </ClientLayout>
       </body>
     </html>
   )

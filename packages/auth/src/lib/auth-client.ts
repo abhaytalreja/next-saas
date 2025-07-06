@@ -2,7 +2,6 @@
 
 import { createClient } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { getConfig } from '@nextsaas/config';
 
 let supabaseClient: SupabaseClient | null = null;
 
@@ -12,13 +11,14 @@ let supabaseClient: SupabaseClient | null = null;
  */
 export function getSupabaseBrowserClient(): SupabaseClient {
   if (!supabaseClient) {
-    const config = getConfig();
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     
-    if (!config.supabase.url || !config.supabase.anonKey) {
+    if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error('Supabase configuration is missing. Please check your environment variables.');
     }
 
-    supabaseClient = createClient(config.supabase.url, config.supabase.anonKey, {
+    supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         autoRefreshToken: true,
         persistSession: true,

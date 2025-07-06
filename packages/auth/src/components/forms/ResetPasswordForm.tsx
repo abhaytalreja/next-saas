@@ -153,7 +153,7 @@ export function ResetPasswordForm({
             required
             value={formData.password}
             onChange={handleChange}
-            error={errors.password}
+            error={!!errors.password}
             placeholder="••••••••"
             disabled={isSubmitting}
           />
@@ -204,7 +204,7 @@ export function ResetPasswordForm({
             required
             value={formData.confirmPassword}
             onChange={handleChange}
-            error={errors.confirmPassword}
+            error={!!errors.confirmPassword}
             placeholder="••••••••"
             disabled={isSubmitting}
           />
@@ -214,7 +214,7 @@ export function ResetPasswordForm({
       <div>
         <Button
           type="submit"
-          variant="primary"
+          variant="default"
           size="lg"
           fullWidth
           loading={isSubmitting || loading}

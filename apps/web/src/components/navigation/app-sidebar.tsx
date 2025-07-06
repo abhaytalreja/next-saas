@@ -34,75 +34,75 @@ const navigation: NavItem[] = [
     icon: Home,
   },
   {
-    title: 'Components',
-    href: '/components',
+    title: 'UI Components',
     icon: Box,
+    href: '/docs/components',
     children: [
       {
         title: 'Actions',
         icon: Layers,
         children: [
-          { title: 'Buttons', href: '/components?tab=buttons' },
-          { title: 'Links', href: '/components?tab=links' },
-          { title: 'Icon Buttons', href: '/components?tab=icon-buttons' },
-          { title: 'Menus', href: '/components?tab=menus' },
+          { title: 'Buttons', href: '/docs/components/actions/buttons' },
+          { title: 'Links', href: '/docs/components/actions/links' },
+          { title: 'Icon Buttons', href: '/docs/components/actions/icon-buttons' },
+          { title: 'Menus', href: '/docs/components/actions/menus' },
         ],
       },
       {
-        title: 'Form Elements',
+        title: 'Forms',
         icon: FileText,
         children: [
-          { title: 'Inputs', href: '/components?tab=inputs' },
-          { title: 'Select', href: '/components?tab=select' },
-          { title: 'Checkbox & Radio', href: '/components?tab=checkbox-radio' },
-          { title: 'Textarea', href: '/components?tab=textarea' },
-          { title: 'Switch', href: '/components?tab=switch' },
+          { title: 'Inputs', href: '/docs/components/forms/inputs' },
+          { title: 'Select', href: '/docs/components/forms/select' },
+          { title: 'Checkbox & Radio', href: '/docs/components/forms/checkbox-radio' },
+          { title: 'Textarea', href: '/docs/components/forms/textarea' },
+          { title: 'Switch', href: '/docs/components/forms/switch' },
         ],
       },
       {
         title: 'Layout',
         icon: Layout,
         children: [
-          { title: 'Container', href: '/components?tab=container' },
-          { title: 'Grid', href: '/components?tab=grid' },
-          { title: 'Stack', href: '/components?tab=stack' },
-          { title: 'Section', href: '/components?tab=section' },
+          { title: 'Container', href: '/docs/components/layout/container' },
+          { title: 'Grid', href: '/docs/components/layout/grid' },
+          { title: 'Stack', href: '/docs/components/layout/stack' },
+          { title: 'Section', href: '/docs/components/layout/section' },
         ],
       },
       {
         title: 'Navigation',
         icon: Navigation,
         children: [
-          { title: 'Navbar', href: '/components?tab=navbar' },
-          { title: 'Sidebar', href: '/components?tab=sidebar' },
-          { title: 'Tabs', href: '/components?tab=tabs' },
-          { title: 'Breadcrumb', href: '/components?tab=breadcrumb' },
-          { title: 'Pagination', href: '/components?tab=pagination' },
+          { title: 'Navbar', href: '/docs/components/navigation/navbar' },
+          { title: 'Sidebar', href: '/docs/components/navigation/sidebar' },
+          { title: 'Tabs', href: '/docs/components/navigation/tabs' },
+          { title: 'Breadcrumb', href: '/docs/components/navigation/breadcrumb' },
+          { title: 'Pagination', href: '/docs/components/navigation/pagination' },
         ],
       },
       {
         title: 'Data Display',
         icon: Database,
         children: [
-          { title: 'Cards', href: '/components?tab=cards' },
-          { title: 'Table', href: '/components?tab=table' },
-          { title: 'List', href: '/components?tab=list' },
-          { title: 'Stats', href: '/components?tab=stats' },
-          { title: 'Badges', href: '/components?tab=badges' },
-          { title: 'Avatars', href: '/components?tab=avatars' },
+          { title: 'Cards', href: '/docs/components/data-display/cards' },
+          { title: 'Table', href: '/docs/components/data-display/table' },
+          { title: 'List', href: '/docs/components/data-display/list' },
+          { title: 'Stats', href: '/docs/components/data-display/stats' },
+          { title: 'Badges', href: '/docs/components/data-display/badges' },
+          { title: 'Avatars', href: '/docs/components/data-display/avatars' },
         ],
       },
       {
         title: 'Feedback',
         icon: MessageSquare,
         children: [
-          { title: 'Alerts', href: '/components?tab=alerts' },
-          { title: 'Progress', href: '/components?tab=progress' },
-          { title: 'Spinner', href: '/components?tab=spinner' },
-          { title: 'Tooltip', href: '/components?tab=tooltip' },
-          { title: 'Toast', href: '/components?tab=toast' },
-          { title: 'Modal', href: '/components?tab=modal' },
-          { title: 'Drawer', href: '/components?tab=drawer' },
+          { title: 'Alerts', href: '/docs/components/feedback/alerts' },
+          { title: 'Progress', href: '/docs/components/feedback/progress' },
+          { title: 'Spinner', href: '/docs/components/feedback/spinner' },
+          { title: 'Tooltip', href: '/docs/components/feedback/tooltip' },
+          { title: 'Toast', href: '/docs/components/feedback/toast' },
+          { title: 'Modal', href: '/docs/components/feedback/modal' },
+          { title: 'Drawer', href: '/docs/components/feedback/drawer' },
         ],
       },
     ],
@@ -125,15 +125,23 @@ function NavItemComponent({ item, depth = 0 }: NavItemComponentProps) {
   const [isOpen, setIsOpen] = React.useState(false)
 
   const hasChildren = item.children && item.children.length > 0
-  const isActive = item.href
-    ? pathname === item.href || pathname.startsWith(item.href + '?')
-    : false
+  const isActive = item.href ? pathname === item.href : false
+  
+  // Check if any child is active
+  const hasActiveChild = hasChildren && item.children!.some(child => 
+    child.href ? pathname === child.href : false
+  )
 
   React.useEffect(() => {
-    if (item.children && pathname.startsWith('/components')) {
-      setIsOpen(true)
+    // Auto-expand UI Components section and relevant subsections when on component pages
+    if (pathname.startsWith('/components') || pathname.startsWith('/docs/components')) {
+      if (item.title === 'UI Components') {
+        setIsOpen(true)
+      } else if (hasChildren && hasActiveChild) {
+        setIsOpen(true)
+      }
     }
-  }, [pathname, item.children])
+  }, [pathname, item.title, hasChildren, hasActiveChild])
 
   const content = (
     <>
@@ -193,7 +201,9 @@ function NavItemComponent({ item, depth = 0 }: NavItemComponentProps) {
           <div
             className={cn(
               'relative flex items-center py-2 px-3 text-sm font-medium rounded-md',
-              'text-gray-700 dark:text-gray-300',
+              hasActiveChild
+                ? 'text-primary-700 dark:text-primary-400'
+                : 'text-gray-700 dark:text-gray-300',
               hasChildren && 'pl-8'
             )}
             style={{

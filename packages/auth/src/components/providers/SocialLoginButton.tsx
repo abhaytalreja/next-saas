@@ -10,8 +10,8 @@ interface SocialLoginButtonProps {
   loading?: boolean
   disabled?: boolean
   fullWidth?: boolean
-  size?: 'sm' | 'md' | 'lg'
-  variant?: 'outline' | 'solid'
+  size?: 'sm' | 'default' | 'lg'
+  variant?: 'outline' | 'default'
 }
 
 const providerConfig: Record<
@@ -114,7 +114,7 @@ export function SocialLoginButton({
   loading = false,
   disabled = false,
   fullWidth = true,
-  size = 'md',
+  size = 'default',
   variant = 'outline',
 }: SocialLoginButtonProps) {
   const config = providerConfig[provider]

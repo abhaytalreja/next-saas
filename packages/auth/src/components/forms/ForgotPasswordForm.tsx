@@ -148,7 +148,7 @@ export function ForgotPasswordForm({
             required
             value={formData.email}
             onChange={handleChange}
-            error={errors.email}
+            error={!!errors.email}
             placeholder="you@example.com"
             disabled={isSubmitting}
           />
@@ -162,7 +162,7 @@ export function ForgotPasswordForm({
       <div>
         <Button
           type="submit"
-          variant="primary"
+          variant="default"
           size="lg"
           fullWidth
           loading={isSubmitting || loading}
