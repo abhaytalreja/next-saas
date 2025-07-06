@@ -1,0 +1,46 @@
+{
+  "color": {
+    "primary": {
+      "50": { "value": "#fef6f0", "type": "color", "description": "Light orange tint" },
+      "100": { "value": "#fde8d7", "type": "color" },
+      "200": { "value": "#fbd1af", "type": "color" },
+      "300": { "value": "#f7b087", "type": "color" },
+      "400": { "value": "#f3885f", "type": "color" },
+      "500": { "value": "#f05a1a", "type": "color", "description": "HubSpot orange - primary brand color" },
+      "600": { "value": "#e0510f", "type": "color" },
+      "700": { "value": "#c0470e", "type": "color" },
+      "800": { "value": "#a03d0c", "type": "color" },
+      "900": { "value": "#782214", "type": "color", "description": "Dark orange shade" }
+    },
+    "neutral": {
+      "50": { "value": "#f8fafc", "type": "color", "description": "Almost white" },
+      "100": { "value": "#f1f5f9", "type": "color" },
+      "200": { "value": "#e2e8f0", "type": "color" },
+      "300": { "value": "#cbd5e1", "type": "color" },
+      "400": { "value": "#94a3b8", "type": "color" },
+      "500": { "value": "#64748b", "type": "color", "description": "Medium gray" },
+      "600": { "value": "#475569", "type": "color" },
+      "700": { "value": "#334155", "type": "color" },
+      "800": { "value": "#1e293b", "type": "color" },
+      "900": { "value": "#0f172a", "type": "color", "description": "Dark slate" }
+    },
+    "success": {
+      "50": { "value": "#ecfdf5", "type": "color" },
+      "500": { "value": "#10b981", "type": "color", "description": "Success green" },
+      "600": { "value": "#059669", "type": "color" },
+      "900": { "value": "#064e3b", "type": "color" }
+    },
+    "warning": {
+      "50": { "value": "#fffbeb", "type": "color" },
+      "500": { "value": "#f59e0b", "type": "color", "description": "Warning amber" },
+      "600": { "value": "#d97706", "type": "color" },
+      "900": { "value": "#78350f", "type": "color" }
+    },
+    "error": {
+      "50": { "value": "#fef2f2", "type": "color" },
+      "500": { "value": "#ef4444", "type": "color", "description": "Error red" },
+      "600": { "value": "#dc2626", "type": "color" },
+      "900": { "value": "#7f1d1d", "type": "color" }
+    }
+  }
+}

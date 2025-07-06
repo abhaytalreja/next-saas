@@ -1,0 +1,93 @@
+{
+  "shadows": {
+    "none": { 
+      "value": "none", 
+      "type": "boxShadow", 
+      "description": "No shadow" 
+    },
+    "sm": { 
+      "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)", 
+      "type": "boxShadow", 
+      "description": "Small shadow for subtle elevation" 
+    },
+    "base": { 
+      "value": "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)", 
+      "type": "boxShadow", 
+      "description": "Default shadow for cards and buttons" 
+    },
+    "md": { 
+      "value": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", 
+      "type": "boxShadow", 
+      "description": "Medium shadow for elevated elements" 
+    },
+    "lg": { 
+      "value": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)", 
+      "type": "boxShadow", 
+      "description": "Large shadow for modals and dropdowns" 
+    },
+    "xl": { 
+      "value": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)", 
+      "type": "boxShadow", 
+      "description": "Extra large shadow for major elevation" 
+    },
+    "2xl": { 
+      "value": "0 25px 50px -12px rgba(0, 0, 0, 0.25)", 
+      "type": "boxShadow", 
+      "description": "Maximum shadow for highest elevation" 
+    },
+    "inner": { 
+      "value": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)", 
+      "type": "boxShadow", 
+      "description": "Inner shadow for pressed/inset appearance" 
+    }
+  },
+  "elevation": {
+    "0": { 
+      "value": "none", 
+      "type": "boxShadow", 
+      "description": "Ground level - no shadow" 
+    },
+    "1": { 
+      "value": "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)", 
+      "type": "boxShadow", 
+      "description": "Level 1 - Subtle elevation" 
+    },
+    "2": { 
+      "value": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", 
+      "type": "boxShadow", 
+      "description": "Level 2 - Card elevation" 
+    },
+    "3": { 
+      "value": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)", 
+      "type": "boxShadow", 
+      "description": "Level 3 - Dropdown elevation" 
+    },
+    "4": { 
+      "value": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)", 
+      "type": "boxShadow", 
+      "description": "Level 4 - Modal elevation" 
+    },
+    "5": { 
+      "value": "0 25px 50px -12px rgba(0, 0, 0, 0.25)", 
+      "type": "boxShadow", 
+      "description": "Level 5 - Maximum elevation" 
+    }
+  },
+  "focus": {
+    "ring": { 
+      "value": "0 0 0 2px rgba(59, 130, 246, 0.5)", 
+      "type": "boxShadow", 
+      "description": "Focus ring for accessibility" 
+    },
+    "ring-primary": { 
+      "value": "0 0 0 2px rgba(240, 90, 26, 0.5)", 
+      "type": "boxShadow", 
+      "description": "Primary focus ring using brand color" 
+    },
+    "ring-error": { 
+      "value": "0 0 0 2px rgba(239, 68, 68, 0.5)", 
+      "type": "boxShadow", 
+      "description": "Error state focus ring" 
+    }
+  }
+}
