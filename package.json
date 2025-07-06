@@ -24,6 +24,7 @@
     "validate:tests": "npm run test",
     "validate:design-tokens": "node scripts/validate-design-tokens.js",
     "validate:components": "node scripts/validate-component-apis.js",
+    "check:linting": "node scripts/check-disabled-linting.js",
     "bundle:analyze": "node scripts/bundle-analyzer.js",
     "bundle:check": "bundlesize",
     "lighthouse:ci": "lhci autorun",
