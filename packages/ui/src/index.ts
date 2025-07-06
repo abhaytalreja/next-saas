@@ -63,6 +63,22 @@ export * from './components/molecules/navigation/Pagination'
 // New Molecules - Feedback
 export * from './components/molecules/feedback/Tooltip'
 export * from './components/molecules/feedback/Drawer'
+export * from './components/molecules/feedback/Modal'
+export * from './components/molecules/feedback/Toast'
+
+// New Molecules - Data Display
+export * from './components/molecules/data-display/Table'
+export * from './components/molecules/data-display/List'
+export * from './components/molecules/data-display/Stat'
+
+// New Molecules - Navigation (Additional)
+export * from './components/molecules/navigation/Navbar'
+export * from './components/molecules/navigation/Sidebar'
+export * from './components/molecules/navigation/Menu'
+export * from './components/molecules/navigation/ContextMenu'
+
+// New Atoms - Navigation
+export * from './components/atoms/navigation/Link'
 
 // Legacy components (for backwards compatibility) - renamed exports
 export {

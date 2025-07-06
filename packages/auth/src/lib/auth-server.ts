@@ -1,63 +1,69 @@
-import { createClient } from '@supabase/supabase-js';
-import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
-import type { SupabaseClient, User, Session } from '@supabase/supabase-js';
-import { getConfig } from '@nextsaas/config';
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
+import type { SupabaseClient, User, Session } from '@supabase/supabase-js'
+import { getConfig } from '@nextsaas/config'
 
 /**
  * Create a Supabase client for server-side operations
  * This client has access to the service role key for admin operations
  */
 export function createSupabaseServerClient(): SupabaseClient {
-  const config = getConfig();
-  
+  const config = getConfig()
+
   if (!config.supabase.url || !config.supabase.serviceRoleKey) {
-    throw new Error('Supabase server configuration is missing. Please check your environment variables.');
+    throw new Error(
+      'Supabase server configuration is missing. Please check your environment variables.'
+    )
   }
 
-  return createClient(config.supabase.url, config.supabase.serviceRoleKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    global: {
-      headers: {
-        'X-Client-Info': 'nextsaas-auth-server'
-      }
+  return createServerClient(
+    config.supabase.url,
+    config.supabase.serviceRoleKey,
+    {
+      cookies: {
+        getAll() {
+          return []
+        },
+        setAll() {},
+      },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+      global: {
+        headers: {
+          'X-Client-Info': 'nextsaas-auth-server',
+        },
+      },
     }
-  });
+  )
 }
 
 /**
  * Create a Supabase client for server-side operations with user context
  * This client uses the user's access token for RLS-enabled operations
  */
-export function createSupabaseServerClientWithAuth(cookieStore: ReturnType<typeof cookies>): SupabaseClient {
-  const config = getConfig();
-  
+export async function createSupabaseServerClientWithAuth(): Promise<SupabaseClient> {
+  const config = getConfig()
+  const cookieStore = await cookies()
+
   if (!config.supabase.url || !config.supabase.anonKey) {
-    throw new Error('Supabase configuration is missing. Please check your environment variables.');
+    throw new Error(
+      'Supabase configuration is missing. Please check your environment variables.'
+    )
   }
 
-  return createClient(config.supabase.url, config.supabase.anonKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    global: {
-      headers: {
-        'X-Client-Info': 'nextsaas-auth-server-user'
-      }
-    },
+  return createServerClient(config.supabase.url, config.supabase.anonKey, {
     cookies: {
       getAll() {
-        return cookieStore.getAll();
+        return cookieStore.getAll()
       },
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet: any[]) {
         try {
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value, options }: any) =>
             cookieStore.set(name, value, options)
-          );
+          )
         } catch {
           // The `setAll` method was called from a Server Component.
           // This can be ignored if you have middleware refreshing
@@ -65,90 +71,100 @@ export function createSupabaseServerClientWithAuth(cookieStore: ReturnType<typeo
         }
       },
     },
-  });
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+    global: {
+      headers: {
+        'X-Client-Info': 'nextsaas-auth-server-user',
+      },
+    },
+  })
 }
 
 /**
  * Create a Supabase client for middleware operations
  */
-export function createSupabaseMiddlewareClient(request: NextRequest): SupabaseClient {
-  const config = getConfig();
-  
+export function createSupabaseMiddlewareClient(
+  request: NextRequest,
+  response: NextResponse
+): SupabaseClient {
+  const config = getConfig()
+
   if (!config.supabase.url || !config.supabase.anonKey) {
-    throw new Error('Supabase configuration is missing. Please check your environment variables.');
+    throw new Error(
+      'Supabase configuration is missing. Please check your environment variables.'
+    )
   }
 
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
+  return createServerClient(config.supabase.url, config.supabase.anonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll()
+      },
+      setAll(cookiesToSet: any[]) {
+        cookiesToSet.forEach(({ name, value, options }: any) => {
+          request.cookies.set({ name, value })
+          response.cookies.set(name, value, options)
+        })
+      },
     },
-  });
-
-  const supabase = createClient(config.supabase.url, config.supabase.anonKey, {
     auth: {
       autoRefreshToken: false,
-      persistSession: false
+      persistSession: false,
     },
     global: {
       headers: {
-        'X-Client-Info': 'nextsaas-auth-middleware'
-      }
-    },
-    cookies: {
-      getAll() {
-        return request.cookies.getAll();
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => {
-          request.cookies.set(name, value);
-          response.cookies.set(name, value, options);
-        });
+        'X-Client-Info': 'nextsaas-auth-middleware',
       },
     },
-  });
-
-  return supabase;
+  })
 }
 
 /**
  * Get the current user from server-side context
  */
-export async function getServerUser(cookieStore?: ReturnType<typeof cookies>): Promise<User | null> {
+export async function getServerUser(): Promise<User | null> {
   try {
-    const cookies_store = cookieStore || cookies();
-    const supabase = createSupabaseServerClientWithAuth(cookies_store);
-    
-    const { data: { user }, error } = await supabase.auth.getUser();
-    
+    const supabase = await createSupabaseServerClientWithAuth()
+
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+
     if (error || !user) {
-      return null;
+      return null
     }
-    
-    return user;
+
+    return user
   } catch (error) {
-    console.error('Error getting server user:', error);
-    return null;
+    console.error('Error getting server user:', error)
+    return null
   }
 }
 
 /**
  * Get the current session from server-side context
  */
-export async function getServerSession(cookieStore?: ReturnType<typeof cookies>): Promise<Session | null> {
+export async function getServerSession(): Promise<Session | null> {
   try {
-    const cookies_store = cookieStore || cookies();
-    const supabase = createSupabaseServerClientWithAuth(cookies_store);
-    
-    const { data: { session }, error } = await supabase.auth.getSession();
-    
+    const supabase = await createSupabaseServerClientWithAuth()
+
+    const {
+      data: { session },
+      error,
+    } = await supabase.auth.getSession()
+
     if (error || !session) {
-      return null;
+      return null
     }
-    
-    return session;
+
+    return session
   } catch (error) {
-    console.error('Error getting server session:', error);
-    return null;
+    console.error('Error getting server session:', error)
+    return null
   }
 }
 
@@ -157,67 +173,74 @@ export async function getServerSession(cookieStore?: ReturnType<typeof cookies>)
  */
 export async function validateAuthToken(token: string): Promise<User | null> {
   try {
-    const supabase = createSupabaseServerClient();
-    
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-    
+    const supabase = createSupabaseServerClient()
+
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(token)
+
     if (error || !user) {
-      return null;
+      return null
     }
-    
-    return user;
+
+    return user
   } catch (error) {
-    console.error('Error validating auth token:', error);
-    return null;
+    console.error('Error validating auth token:', error)
+    return null
   }
 }
 
 /**
  * Create a user with admin privileges
  */
-export async function createUserWithAdmin(email: string, password: string, userData: any) {
-  const supabase = createSupabaseServerClient();
-  
+export async function createUserWithAdmin(
+  email: string,
+  password: string,
+  userData: any
+) {
+  const supabase = createSupabaseServerClient()
+
   const { data, error } = await supabase.auth.admin.createUser({
     email,
     password,
     user_metadata: userData,
-    email_confirm: true
-  });
-  
+    email_confirm: true,
+  })
+
   if (error) {
-    throw error;
+    throw error
   }
-  
-  return data.user;
+
+  return data.user
 }
 
 /**
  * Update user metadata with admin privileges
  */
 export async function updateUserMetadata(userId: string, metadata: any) {
-  const supabase = createSupabaseServerClient();
-  
+  const supabase = createSupabaseServerClient()
+
   const { data, error } = await supabase.auth.admin.updateUserById(userId, {
-    user_metadata: metadata
-  });
-  
+    user_metadata: metadata,
+  })
+
   if (error) {
-    throw error;
+    throw error
   }
-  
-  return data.user;
+
+  return data.user
 }
 
 /**
  * Delete a user with admin privileges
  */
 export async function deleteUser(userId: string) {
-  const supabase = createSupabaseServerClient();
-  
-  const { error } = await supabase.auth.admin.deleteUser(userId);
-  
+  const supabase = createSupabaseServerClient()
+
+  const { error } = await supabase.auth.admin.deleteUser(userId)
+
   if (error) {
-    throw error;
+    throw error
   }
 }

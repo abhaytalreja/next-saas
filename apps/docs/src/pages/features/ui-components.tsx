@@ -2,19 +2,23 @@ export default function UIComponentsPage() {
   return (
     <div className="prose max-w-none">
       <h1>🎨 UI Components</h1>
-      
+
       <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-        <p className="text-green-900 font-semibold mb-1">✅ 50+ Ready-to-Use Components</p>
+        <p className="text-green-900 font-semibold mb-1">
+          ✅ 50+ Ready-to-Use Components
+        </p>
         <p className="text-green-800">
-          A complete component library built with Tailwind CSS, fully typed and customizable.
+          A complete component library built with Tailwind CSS, fully typed and
+          customizable.
         </p>
       </div>
 
       <h2>Overview</h2>
-      
+
       <p>
-        The <code>@nextsaas/ui</code> package provides a comprehensive set of React components 
-        that are shared across all your applications. All components are:
+        The <code>@nextsaas/ui</code> package provides a comprehensive set of
+        React components that are shared across all your applications. All
+        components are:
       </p>
 
       <ul>
@@ -27,7 +31,8 @@ export default function UIComponentsPage() {
 
       <h2>🚀 Using Components</h2>
 
-      <pre><code>{`import { 
+      <pre>
+        <code>{`import { 
   Button, 
   Card, 
   Input, 
@@ -49,7 +54,8 @@ export function MyComponent() {
       </Button>
     </Card>
   );
-}`}</code></pre>
+}`}</code>
+      </pre>
 
       <h2>📦 Available Components</h2>
 
@@ -57,71 +63,141 @@ export function MyComponent() {
         <div>
           <h3 className="font-semibold text-lg mb-3">Layout Components</h3>
           <ul className="space-y-2 text-sm">
-            <li><code>Container</code> - Responsive container</li>
-            <li><code>Grid</code> - Grid layout system ✅</li>
-            <li><code>Stack</code> - Vertical/horizontal stacks ✅</li>
-            <li><code>Card</code> - Content cards</li>
-            <li><code>Section</code> - Page sections</li>
+            <li>
+              <code>Container</code> - Responsive container ✅
+            </li>
+            <li>
+              <code>Grid</code> - Grid layout system ✅
+            </li>
+            <li>
+              <code>Stack</code> - Vertical/horizontal stacks ✅
+            </li>
+            <li>
+              <code>Card</code> - Content cards
+            </li>
+            <li>
+              <code>Section</code> - Page sections ✅
+            </li>
           </ul>
         </div>
 
         <div>
           <h3 className="font-semibold text-lg mb-3">Form Components</h3>
           <ul className="space-y-2 text-sm">
-            <li><code>Input</code> - Text inputs</li>
-            <li><code>Select</code> - Dropdowns</li>
-            <li><code>Checkbox</code> - Checkboxes</li>
-            <li><code>Radio</code> - Radio buttons</li>
-            <li><code>Switch</code> - Toggle switches</li>
-            <li><code>Textarea</code> - Multi-line text</li>
-            <li><code>Form</code> - Form wrapper</li>
+            <li>
+              <code>Input</code> - Text inputs
+            </li>
+            <li>
+              <code>Select</code> - Dropdowns ✅
+            </li>
+            <li>
+              <code>Checkbox</code> - Checkboxes ✅
+            </li>
+            <li>
+              <code>Radio</code> - Radio buttons ✅
+            </li>
+            <li>
+              <code>Switch</code> - Toggle switches
+            </li>
+            <li>
+              <code>Textarea</code> - Multi-line text ✅
+            </li>
+            <li>
+              <code>Form</code> - Form wrapper ✅
+            </li>
           </ul>
         </div>
 
         <div>
           <h3 className="font-semibold text-lg mb-3">Navigation</h3>
           <ul className="space-y-2 text-sm">
-            <li><code>Navbar</code> - Navigation bar</li>
-            <li><code>Sidebar</code> - Side navigation</li>
-            <li><code>Tabs</code> - Tab navigation</li>
-            <li><code>Breadcrumb</code> - Breadcrumbs ✅</li>
-            <li><code>Pagination</code> - Page navigation ✅</li>
+            <li>
+              <code>Navbar</code> - Navigation bar
+            </li>
+            <li>
+              <code>Sidebar</code> - Side navigation
+            </li>
+            <li>
+              <code>Tabs</code> - Tab navigation ✅
+            </li>
+            <li>
+              <code>Breadcrumb</code> - Breadcrumbs ✅
+            </li>
+            <li>
+              <code>Pagination</code> - Page navigation ✅
+            </li>
           </ul>
         </div>
 
         <div>
           <h3 className="font-semibold text-lg mb-3">Feedback</h3>
           <ul className="space-y-2 text-sm">
-            <li><code>Alert</code> - Alert messages</li>
-            <li><code>Toast</code> - Toast notifications</li>
-            <li><code>Modal</code> - Modal dialogs</li>
-            <li><code>Drawer</code> - Slide-out panels</li>
-            <li><code>Tooltip</code> - Hover tooltips ✅</li>
-            <li><code>Progress</code> - Progress bars ✅</li>
-            <li><code>Spinner</code> - Loading spinners</li>
+            <li>
+              <code>Alert</code> - Alert messages
+            </li>
+            <li>
+              <code>Toast</code> - Toast notifications
+            </li>
+            <li>
+              <code>Modal</code> - Modal dialogs
+            </li>
+            <li>
+              <code>Drawer</code> - Slide-out panels ✅
+            </li>
+            <li>
+              <code>Tooltip</code> - Hover tooltips ✅
+            </li>
+            <li>
+              <code>Progress</code> - Progress bars ✅
+            </li>
+            <li>
+              <code>Spinner</code> - Loading spinners
+            </li>
           </ul>
         </div>
 
         <div>
           <h3 className="font-semibold text-lg mb-3">Data Display</h3>
           <ul className="space-y-2 text-sm">
-            <li><code>Table</code> - Data tables</li>
-            <li><code>List</code> - Lists</li>
-            <li><code>Avatar</code> - User avatars</li>
-            <li><code>Badge</code> - Status badges</li>
-            <li><code>Tag</code> - Tags/chips ✅</li>
-            <li><code>Stat</code> - Statistics display</li>
+            <li>
+              <code>Table</code> - Data tables
+            </li>
+            <li>
+              <code>List</code> - Lists
+            </li>
+            <li>
+              <code>Avatar</code> - User avatars
+            </li>
+            <li>
+              <code>Badge</code> - Status badges
+            </li>
+            <li>
+              <code>Tag</code> - Tags/chips ✅
+            </li>
+            <li>
+              <code>Stat</code> - Statistics display
+            </li>
           </ul>
         </div>
 
         <div>
           <h3 className="font-semibold text-lg mb-3">Actions</h3>
           <ul className="space-y-2 text-sm">
-            <li><code>Button</code> - Buttons</li>
-            <li><code>IconButton</code> - Icon buttons ✅</li>
-            <li><code>Link</code> - Styled links</li>
-            <li><code>Menu</code> - Dropdown menus</li>
-            <li><code>ContextMenu</code> - Right-click menus</li>
+            <li>
+              <code>Button</code> - Buttons
+            </li>
+            <li>
+              <code>IconButton</code> - Icon buttons ✅
+            </li>
+            <li>
+              <code>Link</code> - Styled links
+            </li>
+            <li>
+              <code>Menu</code> - Dropdown menus
+            </li>
+            <li>
+              <code>ContextMenu</code> - Right-click menus
+            </li>
           </ul>
         </div>
       </div>
@@ -130,7 +206,8 @@ export function MyComponent() {
 
       <h3>Buttons</h3>
 
-      <pre><code>{`// Different variants
+      <pre>
+        <code>{`// Different variants
 <Button variant="primary">Primary</Button>
 <Button variant="secondary">Secondary</Button>
 <Button variant="outline">Outline</Button>
@@ -150,11 +227,13 @@ export function MyComponent() {
 // Loading state
 <Button isLoading loadingText="Saving...">
   Save
-</Button>`}</code></pre>
+</Button>`}</code>
+      </pre>
 
       <h3>Forms</h3>
 
-      <pre><code>{`import { Form, Input, Select, Button } from '@nextsaas/ui';
+      <pre>
+        <code>{`import { Form, Input, Select, Button } from '@nextsaas/ui';
 
 <Form onSubmit={handleSubmit}>
   <Input
@@ -176,11 +255,13 @@ export function MyComponent() {
   <Button type="submit" variant="primary">
     Submit
   </Button>
-</Form>`}</code></pre>
+</Form>`}</code>
+      </pre>
 
       <h3>Modals</h3>
 
-      <pre><code>{`import { Modal, useModal } from '@nextsaas/ui';
+      <pre>
+        <code>{`import { Modal, useModal } from '@nextsaas/ui';
 
 function MyComponent() {
   const { isOpen, openModal, closeModal } = useModal();
@@ -207,11 +288,13 @@ function MyComponent() {
       </Modal>
     </>
   );
-}`}</code></pre>
+}`}</code>
+      </pre>
 
       <h3>Toast Notifications</h3>
 
-      <pre><code>{`import { useToast } from '@nextsaas/ui';
+      <pre>
+        <code>{`import { useToast } from '@nextsaas/ui';
 
 function MyComponent() {
   const toast = useToast();
@@ -235,18 +318,20 @@ function MyComponent() {
       }
     });
   };
-}`}</code></pre>
+}`}</code>
+      </pre>
 
       <h2>🎨 Customization</h2>
 
       <h3>Theme Configuration</h3>
 
       <p>
-        Components use your Tailwind configuration. Update colors in your 
+        Components use your Tailwind configuration. Update colors in your
         <code>tailwind.config.js</code>:
       </p>
 
-      <pre><code>{`// tailwind.config.js
+      <pre>
+        <code>{`// tailwind.config.js
 module.exports = {
   theme: {
     extend: {
@@ -260,16 +345,18 @@ module.exports = {
       }
     }
   }
-}`}</code></pre>
+}`}</code>
+      </pre>
 
       <h3>Component Variants</h3>
 
       <p>
-        Most components support variants for different styles. You can also 
+        Most components support variants for different styles. You can also
         create custom variants:
       </p>
 
-      <pre><code>{`// Custom button variant
+      <pre>
+        <code>{`// Custom button variant
 <Button 
   className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
 >
@@ -279,15 +366,18 @@ module.exports = {
 // Custom card style
 <Card className="border-2 border-blue-500 shadow-blue-500/20">
   Custom styled card
-</Card>`}</code></pre>
+</Card>`}</code>
+      </pre>
 
       <h2>📱 Responsive Design</h2>
 
       <p>
-        All components are responsive by default. Use responsive props when available:
+        All components are responsive by default. Use responsive props when
+        available:
       </p>
 
-      <pre><code>{`// Responsive grid
+      <pre>
+        <code>{`// Responsive grid
 <Grid cols={{ base: 1, md: 2, lg: 3 }} gap={4}>
   <Card>Item 1</Card>
   <Card>Item 2</Card>
@@ -301,16 +391,18 @@ module.exports = {
 >
   <Box>Item 1</Box>
   <Box>Item 2</Box>
-</Stack>`}</code></pre>
+</Stack>`}</code>
+      </pre>
 
       <h2>🌙 Dark Mode</h2>
 
       <p>
-        Components automatically support dark mode. The theme switches based on 
+        Components automatically support dark mode. The theme switches based on
         the user's system preference or manual toggle:
       </p>
 
-      <pre><code>{`import { useTheme } from '@nextsaas/ui';
+      <pre>
+        <code>{`import { useTheme } from '@nextsaas/ui';
 
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -320,13 +412,12 @@ function ThemeToggle() {
       {theme === 'dark' ? '☀️' : '🌙'}
     </Button>
   );
-}`}</code></pre>
+}`}</code>
+      </pre>
 
       <h2>♿ Accessibility</h2>
 
-      <p>
-        All components follow WCAG 2.1 guidelines:
-      </p>
+      <p>All components follow WCAG 2.1 guidelines:</p>
 
       <ul>
         <li>Proper ARIA labels and roles</li>
@@ -346,5 +437,5 @@ function ThemeToggle() {
         </ul>
       </div>
     </div>
-  );
+  )
 }

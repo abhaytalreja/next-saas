@@ -1,20 +1,21 @@
-import { z } from 'zod'
-
-export const UserSchema = z.object({
-  id: z.string(),
-  email: z.string().email(),
-  name: z.string().optional(),
-  image: z.string().optional(),
-  role: z.enum(['USER', 'ADMIN']).default('USER'),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-})
-
-export type User = z.infer<typeof UserSchema>
-
-export const SessionSchema = z.object({
-  user: UserSchema,
-  expires: z.string(),
-})
-
-export type Session = z.infer<typeof SessionSchema>
+// Main types export file
+export * from './auth'
+export * from './user'
+export * from './organization'
+export * from './session'
+export {
+  type Permission as PermissionType,
+  type Role as RoleType,
+  type PermissionAction,
+  type PermissionScope,
+  type PermissionCondition,
+  type RolePermission,
+  type UserPermission,
+  type PermissionCheck,
+  type PermissionResult,
+  SYSTEM_ROLES,
+  SYSTEM_PERMISSIONS,
+  type SystemRole,
+  type SystemPermission,
+  type PermissionContext,
+} from './permissions'
