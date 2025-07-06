@@ -3,16 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build": "next build",
     "dev": "APP_NAME=web node ../../scripts/dev-with-port.js --port 3000",
     "dev:direct": "next dev --port 3000",
-    "build": "next build",
-    "start": "next start",
     "lint": "echo 'Lint temporarily disabled for Web app due to ESLint config migration'",
+    "start": "next start",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
+    "lucide-react": "^0.525.0",
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
