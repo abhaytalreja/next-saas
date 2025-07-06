@@ -3,11 +3,22 @@ export * from './lib/utils'
 export * from './utils/component-validator'
 
 // Design Tokens
-export * from './design-tokens'
+export { tokens as designTokens } from './design-tokens'
+export {
+  colors,
+  typography,
+  spacing,
+  borderRadius,
+  borderWidth,
+  shadows,
+  elevation,
+  focus,
+  getTokenValue,
+  generateCSSVariables,
+} from './design-tokens'
 
 // Atoms
 export * from './atoms/buttons/Button'
-export * from './atoms/buttons/IconButton'
 export * from './atoms/inputs/Input'
 export * from './atoms/typography/Heading'
 export * from './atoms/typography/Text'
@@ -15,17 +26,16 @@ export * from './atoms/badges/Badge'
 export * from './atoms/avatars/Avatar'
 export * from './atoms/spinners/Spinner'
 export * from './atoms/toggles/Switch'
-export * from './atoms/data-display/Tag'
-export * from './atoms/layout/Grid'
-export * from './atoms/layout/Stack'
-export * from './atoms/feedback/Progress'
+
+// New Components
+export * from './components/atoms/buttons/IconButton'
+export * from './components/atoms/data-display/Tag'
+export * from './components/atoms/layout/Grid'
+export * from './components/atoms/layout/Stack'
 
 // Molecules
 export * from './molecules/cards/Card'
 export * from './molecules/alerts/Alert'
-export * from './molecules/feedback/Tooltip'
-export * from './molecules/navigation/Breadcrumb'
-export * from './molecules/navigation/Pagination'
 
 // Legacy components (for backwards compatibility) - renamed exports
 export {
