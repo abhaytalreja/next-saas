@@ -101,7 +101,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here`}</code></pre>
 
           <div>
             <p className="font-medium text-gray-700">3. App URL & Organization Mode</p>
-            <pre className="mt-2"><code>{`NEXTAUTH_URL=http://localhost:3000
+            <pre className="mt-2"><code>{`NEXTAUTH_URL=http://localhost:3010
 NEXT_PUBLIC_ORGANIZATION_MODE=single  # or 'none' or 'multi'`}</code></pre>
           </div>
         </div>
@@ -117,50 +117,38 @@ NEXT_PUBLIC_ORGANIZATION_MODE=single  # or 'none' or 'multi'`}</code></pre>
 
       <h2>🗄️ Step 4: Set Up Database Tables (2 minutes)</h2>
       
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-        <h4 className="text-blue-900 font-semibold mb-2">🏢 Choose Your Organization Mode</h4>
-        <p className="text-blue-800 mb-2">
-          NextSaaS supports different organization structures. Choose what fits your app:
-        </p>
-        <ul className="text-blue-800 space-y-1 text-sm">
-          <li>• <strong>single</strong> (recommended): One workspace per user, can add teams later</li>
-          <li>• <strong>none</strong>: User-centric app, no organizations needed</li>
-          <li>• <strong>multi</strong>: Full B2B SaaS with multiple teams per user</li>
-        </ul>
-      </div>
+      <p>Generate the complete database schema including authentication tables:</p>
       
-      <p>Generate the database schema for your chosen mode:</p>
-      
-      <pre><code>{`# For most apps (recommended)
-npm run db:generate-sql -- --mode single
+      <pre><code>npm run db:generate-sql</code></pre>
 
-# For personal/individual apps
-npm run db:generate-sql -- --mode none
-
-# For complex B2B SaaS
-npm run db:generate-sql -- --mode multi`}</code></pre>
-
-      <p>This creates a file <code>database-[mode].sql</code> with the appropriate tables. Then:</p>
+      <p>This creates a file <code>supabase-setup.sql</code> with all the necessary tables. Then:</p>
       
       <ol className="text-sm space-y-2 ml-4">
         <li>Go to your <a href="https://app.supabase.com" target="_blank" rel="noopener noreferrer" className="text-blue-600">Supabase Dashboard</a></li>
         <li>Click on "SQL Editor" in the sidebar</li>
         <li>Click "New query"</li>
-        <li>Copy and paste the contents of your <code>database-[mode].sql</code> file</li>
+        <li>Copy and paste the contents of <code>supabase-setup.sql</code></li>
         <li>Click "Run" to create all tables</li>
       </ol>
 
       <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-4">
         <p className="text-green-800 text-sm">
-          ✅ This creates all tables, security policies, and functions!
+          ✅ This creates all tables including authentication, organizations, sessions, billing, and security policies!
         </p>
       </div>
 
-      <p className="mt-4"><strong>Optional: Add sample data</strong></p>
-      <pre><code>npm run db:seed-sql</code></pre>
-      <p className="text-sm text-gray-600 ml-4">
-        This generates seed-data.sql with sample users, organizations, and projects to explore.
-      </p>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+        <h4 className="text-blue-900 font-semibold mb-2">📋 What's Included</h4>
+        <p className="text-blue-800 mb-2">The generated SQL includes:</p>
+        <ul className="text-blue-800 space-y-1 text-sm">
+          <li>• <strong>Core tables</strong>: users, organizations, memberships</li>
+          <li>• <strong>Authentication</strong>: sessions, OAuth accounts, password resets, email verification, invitations</li>
+          <li>• <strong>Billing</strong>: subscriptions, plans, usage tracking</li>
+          <li>• <strong>Content</strong>: projects, items (customizable for your domain)</li>
+          <li>• <strong>System</strong>: audit logs, notifications, feature flags</li>
+          <li>• <strong>Security</strong>: Row Level Security policies for all tables</li>
+        </ul>
+      </div>
 
       <h2>🎉 Step 5: Start Everything (30 seconds)</h2>
       
@@ -171,9 +159,9 @@ npm run db:generate-sql -- --mode multi`}</code></pre>
       <div className="bg-green-50 border border-green-200 rounded-lg p-4 my-4">
         <h4 className="font-semibold text-green-900 mb-2">🎊 Your apps are now running!</h4>
         <ul className="space-y-2">
-          <li><strong>Main App:</strong> <a href="http://localhost:3000" className="text-blue-600">http://localhost:3000</a> - Your SaaS application</li>
-          <li><strong>Documentation:</strong> <a href="http://localhost:3001" className="text-blue-600">http://localhost:3001</a> - You are here!</li>
-          <li><strong>Landing Page:</strong> <a href="http://localhost:3002" className="text-blue-600">http://localhost:3002</a> - Marketing site</li>
+          <li><strong>Main App:</strong> <a href="http://localhost:3010" className="text-blue-600">http://localhost:3010</a> - Your SaaS application</li>
+          <li><strong>Documentation:</strong> <a href="http://localhost:3011" className="text-blue-600">http://localhost:3011</a> - You are here!</li>
+          <li><strong>Landing Page:</strong> <a href="http://localhost:3012" className="text-blue-600">http://localhost:3012</a> - Marketing site</li>
         </ul>
       </div>
 
@@ -184,7 +172,7 @@ npm run db:generate-sql -- --mode multi`}</code></pre>
           <span className="text-green-500 text-xl">✓</span>
           <div>
             <p className="font-medium">Test Authentication</p>
-            <p className="text-sm text-gray-600">Go to <a href="http://localhost:3000/sign-up" className="text-blue-600">http://localhost:3000/sign-up</a> and create your first account</p>
+            <p className="text-sm text-gray-600">Go to <a href="http://localhost:3010/auth/sign-up" className="text-blue-600">http://localhost:3010/auth/sign-up</a> and create your first account</p>
           </div>
         </div>
 

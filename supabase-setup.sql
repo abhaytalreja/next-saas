@@ -1,15 +1,13 @@
--- NextSaaS Database Setup for Supabase
--- Generated on: 2025-07-05T17:30:41.687Z
+-- NextSaaS Complete Database Setup
+-- Generated on: 2025-07-07T03:08:04.646Z
 -- 
 -- Instructions:
 -- 1. Go to your Supabase SQL Editor
 -- 2. Create a new query
 -- 3. Paste this entire file
 -- 4. Click "Run"
-
--- Enable required extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+--
+-- This will create all tables, functions, triggers, and security policies
 
 
 -- ============================================
@@ -135,6 +133,115 @@ COMMENT ON COLUMN memberships.invited_by IS 'User who invited this member';
 COMMENT ON COLUMN memberships.invited_at IS 'When the invitation was sent';
 COMMENT ON COLUMN memberships.accepted_at IS 'When the invitation was accepted';
 
+-- ------------------------------------
+-- 004_organizations_additions.sql
+-- ------------------------------------
+
+-- Additional columns for organizations table
+-- These are added conditionally to avoid errors if they already exist
+
+DO $$ 
+BEGIN
+  -- Add website column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'organizations' AND column_name = 'website') THEN
+    ALTER TABLE organizations ADD COLUMN website VARCHAR(255);
+    COMMENT ON COLUMN organizations.website IS 'Organization website URL';
+  END IF;
+
+  -- Add description column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'organizations' AND column_name = 'description') THEN
+    ALTER TABLE organizations ADD COLUMN description TEXT;
+    COMMENT ON COLUMN organizations.description IS 'Organization description or about text';
+  END IF;
+END $$;
+
+-- ------------------------------------
+-- 005_users_profile_additions.sql
+-- ------------------------------------
+
+-- Additional profile columns for users table
+-- These are added conditionally to avoid errors if they already exist
+
+DO $$ 
+BEGIN
+  -- Add first_name column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'users' AND column_name = 'first_name') THEN
+    ALTER TABLE users ADD COLUMN first_name VARCHAR(255);
+    COMMENT ON COLUMN users.first_name IS 'User first name';
+  END IF;
+
+  -- Add last_name column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'users' AND column_name = 'last_name') THEN
+    ALTER TABLE users ADD COLUMN last_name VARCHAR(255);
+    COMMENT ON COLUMN users.last_name IS 'User last name';
+  END IF;
+
+  -- Add bio column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'users' AND column_name = 'bio') THEN
+    ALTER TABLE users ADD COLUMN bio TEXT;
+    COMMENT ON COLUMN users.bio IS 'User biography or about text';
+  END IF;
+
+  -- Add phone column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'users' AND column_name = 'phone') THEN
+    ALTER TABLE users ADD COLUMN phone VARCHAR(50);
+    COMMENT ON COLUMN users.phone IS 'User phone number';
+  END IF;
+
+  -- Add website column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'users' AND column_name = 'website') THEN
+    ALTER TABLE users ADD COLUMN website VARCHAR(255);
+    COMMENT ON COLUMN users.website IS 'User personal website URL';
+  END IF;
+
+  -- Add current_organization_id column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'users' AND column_name = 'current_organization_id') THEN
+    ALTER TABLE users ADD COLUMN current_organization_id UUID REFERENCES organizations(id);
+    COMMENT ON COLUMN users.current_organization_id IS 'Currently selected organization for multi-tenant context';
+  END IF;
+END $$;
+
+-- Add indexes for the new columns
+CREATE INDEX IF NOT EXISTS idx_users_current_organization_id ON users(current_organization_id);
+CREATE INDEX IF NOT EXISTS idx_users_first_name ON users(first_name);
+CREATE INDEX IF NOT EXISTS idx_users_last_name ON users(last_name);
+
+-- ------------------------------------
+-- 006_memberships_additions.sql
+-- ------------------------------------
+
+-- Additional columns for memberships table
+-- These are added conditionally to avoid errors if they already exist
+
+DO $$ 
+BEGIN
+  -- Add status column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'memberships' AND column_name = 'status') THEN
+    ALTER TABLE memberships ADD COLUMN status VARCHAR(50) DEFAULT 'active' CHECK (status IN ('active', 'invited', 'suspended'));
+    COMMENT ON COLUMN memberships.status IS 'Membership status (active, invited, suspended)';
+  END IF;
+
+  -- Add joined_at column if not exists (rename accepted_at for clarity)
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'memberships' AND column_name = 'joined_at') THEN
+    ALTER TABLE memberships ADD COLUMN joined_at TIMESTAMP WITH TIME ZONE;
+    COMMENT ON COLUMN memberships.joined_at IS 'When the user officially joined the organization';
+  END IF;
+END $$;
+
+-- Add index for status
+CREATE INDEX IF NOT EXISTS idx_memberships_status ON memberships(status);
+CREATE INDEX IF NOT EXISTS idx_memberships_user_organization_status ON memberships(user_id, organization_id, status);
+
 
 -- ============================================
 -- AUTH SCHEMA
@@ -259,6 +366,135 @@ COMMENT ON COLUMN email_verifications.email IS 'Email address to verify';
 COMMENT ON COLUMN email_verifications.token IS 'Unique verification token';
 COMMENT ON COLUMN email_verifications.expires_at IS 'When this token expires';
 COMMENT ON COLUMN email_verifications.verified_at IS 'When the email was verified';
+
+-- ------------------------------------
+-- 005_organization_invitations.sql
+-- ------------------------------------
+
+-- Organization Invitations
+CREATE TABLE IF NOT EXISTS organization_invitations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+  email VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'member')),
+  token VARCHAR(255) UNIQUE NOT NULL DEFAULT encode(gen_random_bytes(32), 'hex'),
+  message TEXT,
+  status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'expired', 'cancelled')),
+  invited_by UUID NOT NULL REFERENCES users(id),
+  accepted_by UUID REFERENCES users(id),
+  expires_at TIMESTAMP WITH TIME ZONE DEFAULT (NOW() + INTERVAL '7 days'),
+  accepted_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_organization_invitations_token ON organization_invitations(token);
+CREATE INDEX IF NOT EXISTS idx_organization_invitations_email ON organization_invitations(email);
+CREATE INDEX IF NOT EXISTS idx_organization_invitations_organization_id ON organization_invitations(organization_id);
+CREATE INDEX IF NOT EXISTS idx_organization_invitations_status ON organization_invitations(status);
+CREATE INDEX IF NOT EXISTS idx_organization_invitations_expires_at ON organization_invitations(expires_at);
+
+-- Add comments
+COMMENT ON TABLE organization_invitations IS 'Pending invitations to join organizations';
+COMMENT ON COLUMN organization_invitations.id IS 'Unique invitation identifier';
+COMMENT ON COLUMN organization_invitations.organization_id IS 'Organization being invited to';
+COMMENT ON COLUMN organization_invitations.email IS 'Email address of invitee';
+COMMENT ON COLUMN organization_invitations.role IS 'Role to be assigned upon acceptance';
+COMMENT ON COLUMN organization_invitations.token IS 'Unique token for accepting invitation';
+COMMENT ON COLUMN organization_invitations.message IS 'Optional personal message from inviter';
+COMMENT ON COLUMN organization_invitations.status IS 'Current status of invitation';
+COMMENT ON COLUMN organization_invitations.invited_by IS 'User who sent the invitation';
+COMMENT ON COLUMN organization_invitations.accepted_by IS 'User who accepted the invitation';
+COMMENT ON COLUMN organization_invitations.expires_at IS 'When this invitation expires';
+COMMENT ON COLUMN organization_invitations.accepted_at IS 'When this invitation was accepted';
+
+-- ------------------------------------
+-- 006_auth_events.sql
+-- ------------------------------------
+
+-- Authentication Events for Security Tracking
+CREATE TABLE IF NOT EXISTS auth_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  event_type VARCHAR(50) NOT NULL,
+  ip_address INET,
+  user_agent TEXT,
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_auth_events_user_id ON auth_events(user_id);
+CREATE INDEX IF NOT EXISTS idx_auth_events_event_type ON auth_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_auth_events_created_at ON auth_events(created_at);
+CREATE INDEX IF NOT EXISTS idx_auth_events_user_created ON auth_events(user_id, created_at);
+
+-- Add comments
+COMMENT ON TABLE auth_events IS 'Authentication and security events for audit trail';
+COMMENT ON COLUMN auth_events.id IS 'Unique event identifier';
+COMMENT ON COLUMN auth_events.user_id IS 'User associated with the event (nullable for failed attempts)';
+COMMENT ON COLUMN auth_events.event_type IS 'Type of authentication event (login, logout, failed_login, password_reset, etc)';
+COMMENT ON COLUMN auth_events.ip_address IS 'IP address where event originated';
+COMMENT ON COLUMN auth_events.user_agent IS 'Browser user agent string';
+COMMENT ON COLUMN auth_events.metadata IS 'Additional event-specific data';
+COMMENT ON COLUMN auth_events.created_at IS 'When the event occurred';
+
+-- ------------------------------------
+-- 007_sessions_additions.sql
+-- ------------------------------------
+
+-- Additional columns for sessions table
+-- These are added conditionally to avoid errors if they already exist
+
+DO $$ 
+BEGIN
+  -- Add browser column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'sessions' AND column_name = 'browser') THEN
+    ALTER TABLE sessions ADD COLUMN browser VARCHAR(255);
+    COMMENT ON COLUMN sessions.browser IS 'Parsed browser name from user agent';
+  END IF;
+
+  -- Add os column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'sessions' AND column_name = 'os') THEN
+    ALTER TABLE sessions ADD COLUMN os VARCHAR(255);
+    COMMENT ON COLUMN sessions.os IS 'Parsed operating system from user agent';
+  END IF;
+
+  -- Add location column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'sessions' AND column_name = 'location') THEN
+    ALTER TABLE sessions ADD COLUMN location VARCHAR(255);
+    COMMENT ON COLUMN sessions.location IS 'Approximate location based on IP geolocation';
+  END IF;
+
+  -- Add status column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'sessions' AND column_name = 'status') THEN
+    ALTER TABLE sessions ADD COLUMN status VARCHAR(50) DEFAULT 'active';
+    COMMENT ON COLUMN sessions.status IS 'Session status (active, revoked, expired)';
+  END IF;
+
+  -- Add last_active_at column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'sessions' AND column_name = 'last_active_at') THEN
+    ALTER TABLE sessions ADD COLUMN last_active_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+    COMMENT ON COLUMN sessions.last_active_at IS 'Last time this session was used';
+  END IF;
+
+  -- Add revoked_at column if not exists
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                WHERE table_name = 'sessions' AND column_name = 'revoked_at') THEN
+    ALTER TABLE sessions ADD COLUMN revoked_at TIMESTAMP WITH TIME ZONE;
+    COMMENT ON COLUMN sessions.revoked_at IS 'When this session was manually revoked';
+  END IF;
+END $$;
+
+-- Add additional indexes for the new columns
+CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status);
+CREATE INDEX IF NOT EXISTS idx_sessions_last_active_at ON sessions(last_active_at);
+CREATE INDEX IF NOT EXISTS idx_sessions_user_status ON sessions(user_id, status);
 
 
 -- ============================================
@@ -892,6 +1128,36 @@ COMMENT ON TABLE api_keys IS 'API keys for programmatic access';
 COMMENT ON COLUMN api_keys.key_hash IS 'Hashed API key for security';
 COMMENT ON COLUMN api_keys.key_prefix IS 'Visible prefix for key identification';
 
+-- ------------------------------------
+-- 006_organization_events.sql
+-- ------------------------------------
+
+-- Organization Events for audit and activity tracking
+CREATE TABLE IF NOT EXISTS organization_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id),
+  event_type VARCHAR(100) NOT NULL,
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_organization_events_organization_id ON organization_events(organization_id);
+CREATE INDEX IF NOT EXISTS idx_organization_events_user_id ON organization_events(user_id);
+CREATE INDEX IF NOT EXISTS idx_organization_events_event_type ON organization_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_organization_events_created_at ON organization_events(created_at);
+CREATE INDEX IF NOT EXISTS idx_organization_events_org_created ON organization_events(organization_id, created_at);
+
+-- Add comments
+COMMENT ON TABLE organization_events IS 'Track important events within organizations';
+COMMENT ON COLUMN organization_events.id IS 'Unique event identifier';
+COMMENT ON COLUMN organization_events.organization_id IS 'Organization where event occurred';
+COMMENT ON COLUMN organization_events.user_id IS 'User who triggered the event (nullable for system events)';
+COMMENT ON COLUMN organization_events.event_type IS 'Type of event (member_added, member_removed, settings_updated, etc)';
+COMMENT ON COLUMN organization_events.metadata IS 'Event-specific data and context';
+COMMENT ON COLUMN organization_events.created_at IS 'When the event occurred';
+
 
 -- ============================================
 -- FUNCTIONS SCHEMA
@@ -1380,7 +1646,7 @@ ALTER TABLE api_keys ENABLE ROW LEVEL SECURITY;
 -- ------------------------------------
 
 -- Helper function to check organization membership
-CREATE OR REPLACE FUNCTION public.check_org_membership(org_id UUID, user_id UUID)
+CREATE OR REPLACE FUNCTION auth.check_org_membership(org_id UUID, user_id UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
   RETURN EXISTS (
@@ -1393,7 +1659,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Helper function to check organization role
-CREATE OR REPLACE FUNCTION public.check_org_role(org_id UUID, user_id UUID, required_role TEXT)
+CREATE OR REPLACE FUNCTION auth.check_org_role(org_id UUID, user_id UUID, required_role TEXT)
 RETURNS BOOLEAN AS $$
 DECLARE
   user_role TEXT;
@@ -1459,12 +1725,12 @@ CREATE POLICY "Users can manage their own email verifications" ON email_verifica
 -- Organizations policies
 CREATE POLICY "Users can read organizations they belong to" ON organizations
   FOR SELECT USING (
-    public.check_org_membership(id, auth.uid())
+    auth.check_org_membership(id, auth.uid())
   );
 
 CREATE POLICY "Organization owners can update their organization" ON organizations
   FOR UPDATE USING (
-    public.check_org_role(id, auth.uid(), 'owner')
+    auth.check_org_role(id, auth.uid(), 'owner')
   );
 
 CREATE POLICY "Users can create organizations" ON organizations
@@ -1474,31 +1740,31 @@ CREATE POLICY "Users can create organizations" ON organizations
 
 CREATE POLICY "Organization owners can soft delete their organization" ON organizations
   FOR UPDATE USING (
-    public.check_org_role(id, auth.uid(), 'owner')
+    auth.check_org_role(id, auth.uid(), 'owner')
     AND deleted_at IS NULL
   );
 
 -- Memberships policies
 CREATE POLICY "Users can view memberships in their organizations" ON memberships
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
     OR user_id = auth.uid()
   );
 
 CREATE POLICY "Organization admins can create memberships" ON memberships
   FOR INSERT WITH CHECK (
-    public.check_org_role(organization_id, auth.uid(), 'admin')
+    auth.check_org_role(organization_id, auth.uid(), 'admin')
   );
 
 CREATE POLICY "Organization admins can update memberships" ON memberships
   FOR UPDATE USING (
-    public.check_org_role(organization_id, auth.uid(), 'admin')
+    auth.check_org_role(organization_id, auth.uid(), 'admin')
     OR (user_id = auth.uid() AND accepted_at IS NULL) -- Users can accept their own invitations
   );
 
 CREATE POLICY "Organization owners can delete memberships" ON memberships
   FOR DELETE USING (
-    public.check_org_role(organization_id, auth.uid(), 'owner')
+    auth.check_org_role(organization_id, auth.uid(), 'owner')
     OR (user_id = auth.uid() AND role != 'owner') -- Users can remove themselves unless they're the owner
   );
 
@@ -1523,18 +1789,18 @@ CREATE POLICY "System admins can manage plans" ON plans
 -- Subscriptions policies
 CREATE POLICY "Organization members can view their subscription" ON subscriptions
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
   );
 
 CREATE POLICY "Organization owners can manage subscriptions" ON subscriptions
   FOR ALL USING (
-    public.check_org_role(organization_id, auth.uid(), 'owner')
+    auth.check_org_role(organization_id, auth.uid(), 'owner')
   );
 
 -- Invoices policies
 CREATE POLICY "Organization members can view invoices" ON invoices
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
   );
 
 CREATE POLICY "System can create invoices" ON invoices
@@ -1543,7 +1809,7 @@ CREATE POLICY "System can create invoices" ON invoices
 -- Payments policies
 CREATE POLICY "Organization admins can view payments" ON payments
   FOR SELECT USING (
-    public.check_org_role(organization_id, auth.uid(), 'admin')
+    auth.check_org_role(organization_id, auth.uid(), 'admin')
   );
 
 CREATE POLICY "System can create payments" ON payments
@@ -1552,7 +1818,7 @@ CREATE POLICY "System can create payments" ON payments
 -- Usage tracking policies
 CREATE POLICY "Organization members can view usage" ON usage_tracking
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
   );
 
 CREATE POLICY "System can manage usage tracking" ON usage_tracking
@@ -1565,66 +1831,66 @@ CREATE POLICY "System can manage usage tracking" ON usage_tracking
 -- Projects policies
 CREATE POLICY "Organization members can view projects" ON projects
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
     AND deleted_at IS NULL
   );
 
 CREATE POLICY "Organization members can create projects" ON projects
   FOR INSERT WITH CHECK (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
     AND created_by = auth.uid()
   );
 
 CREATE POLICY "Project creators and admins can update projects" ON projects
   FOR UPDATE USING (
-    public.check_org_membership(organization_id, auth.uid())
-    AND (created_by = auth.uid() OR public.check_org_role(organization_id, auth.uid(), 'admin'))
+    auth.check_org_membership(organization_id, auth.uid())
+    AND (created_by = auth.uid() OR auth.check_org_role(organization_id, auth.uid(), 'admin'))
     AND deleted_at IS NULL
   );
 
 CREATE POLICY "Project creators and admins can delete projects" ON projects
   FOR UPDATE USING (
-    public.check_org_membership(organization_id, auth.uid())
-    AND (created_by = auth.uid() OR public.check_org_role(organization_id, auth.uid(), 'admin'))
+    auth.check_org_membership(organization_id, auth.uid())
+    AND (created_by = auth.uid() OR auth.check_org_role(organization_id, auth.uid(), 'admin'))
     AND deleted_at IS NULL
   );
 
 -- Items policies
 CREATE POLICY "Organization members can view items" ON items
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
     AND deleted_at IS NULL
   );
 
 CREATE POLICY "Organization members can create items" ON items
   FOR INSERT WITH CHECK (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
     AND created_by = auth.uid()
   );
 
 CREATE POLICY "Item creators and assignees can update items" ON items
   FOR UPDATE USING (
-    public.check_org_membership(organization_id, auth.uid())
-    AND (created_by = auth.uid() OR assigned_to = auth.uid() OR public.check_org_role(organization_id, auth.uid(), 'admin'))
+    auth.check_org_membership(organization_id, auth.uid())
+    AND (created_by = auth.uid() OR assigned_to = auth.uid() OR auth.check_org_role(organization_id, auth.uid(), 'admin'))
     AND deleted_at IS NULL
   );
 
 CREATE POLICY "Item creators and admins can delete items" ON items
   FOR UPDATE USING (
-    public.check_org_membership(organization_id, auth.uid())
-    AND (created_by = auth.uid() OR public.check_org_role(organization_id, auth.uid(), 'admin'))
+    auth.check_org_membership(organization_id, auth.uid())
+    AND (created_by = auth.uid() OR auth.check_org_role(organization_id, auth.uid(), 'admin'))
     AND deleted_at IS NULL
   );
 
 -- Categories policies
 CREATE POLICY "Organization members can view categories" ON categories
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
   );
 
 CREATE POLICY "Organization admins can manage categories" ON categories
   FOR ALL USING (
-    public.check_org_role(organization_id, auth.uid(), 'admin')
+    auth.check_org_role(organization_id, auth.uid(), 'admin')
   );
 
 -- Item categories policies
@@ -1633,7 +1899,7 @@ CREATE POLICY "Organization members can view item categories" ON item_categories
     EXISTS (
       SELECT 1 FROM items
       WHERE items.id = item_id
-      AND public.check_org_membership(items.organization_id, auth.uid())
+      AND auth.check_org_membership(items.organization_id, auth.uid())
     )
   );
 
@@ -1642,20 +1908,20 @@ CREATE POLICY "Item creators can manage item categories" ON item_categories
     EXISTS (
       SELECT 1 FROM items
       WHERE items.id = item_id
-      AND public.check_org_membership(items.organization_id, auth.uid())
-      AND (items.created_by = auth.uid() OR public.check_org_role(items.organization_id, auth.uid(), 'admin'))
+      AND auth.check_org_membership(items.organization_id, auth.uid())
+      AND (items.created_by = auth.uid() OR auth.check_org_role(items.organization_id, auth.uid(), 'admin'))
     )
   );
 
 -- Attachments policies
 CREATE POLICY "Organization members can view attachments" ON attachments
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
   );
 
 CREATE POLICY "Organization members can create attachments" ON attachments
   FOR INSERT WITH CHECK (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
     AND uploaded_by = auth.uid()
   );
 
@@ -1667,12 +1933,12 @@ CREATE POLICY "Attachment uploaders can delete their attachments" ON attachments
 -- Custom fields policies
 CREATE POLICY "Organization members can view custom fields" ON custom_fields
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
   );
 
 CREATE POLICY "Organization admins can manage custom fields" ON custom_fields
   FOR ALL USING (
-    public.check_org_role(organization_id, auth.uid(), 'admin')
+    auth.check_org_role(organization_id, auth.uid(), 'admin')
   );
 
 -- Custom field values policies
@@ -1681,7 +1947,7 @@ CREATE POLICY "Organization members can view custom field values" ON custom_fiel
     EXISTS (
       SELECT 1 FROM custom_fields
       WHERE custom_fields.id = custom_field_id
-      AND public.check_org_membership(custom_fields.organization_id, auth.uid())
+      AND auth.check_org_membership(custom_fields.organization_id, auth.uid())
     )
   );
 
@@ -1690,7 +1956,7 @@ CREATE POLICY "Users with entity access can manage custom field values" ON custo
     EXISTS (
       SELECT 1 FROM custom_fields
       WHERE custom_fields.id = custom_field_id
-      AND public.check_org_membership(custom_fields.organization_id, auth.uid())
+      AND auth.check_org_membership(custom_fields.organization_id, auth.uid())
     )
   );
 
@@ -1702,7 +1968,7 @@ CREATE POLICY "Users with entity access can manage custom field values" ON custo
 CREATE POLICY "Organization members can view their org audit logs" ON audit_logs
   FOR SELECT USING (
     organization_id IS NOT NULL 
-    AND public.check_org_membership(organization_id, auth.uid())
+    AND auth.check_org_membership(organization_id, auth.uid())
   );
 
 CREATE POLICY "Users can view their own audit logs" ON audit_logs
@@ -1716,7 +1982,7 @@ CREATE POLICY "System can create audit logs" ON audit_logs
 -- Activities policies
 CREATE POLICY "Organization members can view activities" ON activities
   FOR SELECT USING (
-    public.check_org_membership(organization_id, auth.uid())
+    auth.check_org_membership(organization_id, auth.uid())
     AND (is_public = true OR user_id = auth.uid())
   );
 
@@ -1756,7 +2022,7 @@ CREATE POLICY "System admins can manage feature flags" ON feature_flags
 -- Feature flag overrides policies
 CREATE POLICY "Organization admins can view their feature overrides" ON feature_flag_overrides
   FOR SELECT USING (
-    public.check_org_role(organization_id, auth.uid(), 'admin')
+    auth.check_org_role(organization_id, auth.uid(), 'admin')
   );
 
 CREATE POLICY "System admins can manage feature flag overrides" ON feature_flag_overrides
@@ -1798,12 +2064,12 @@ CREATE POLICY "System admins can manage system settings" ON system_settings
 -- API keys policies
 CREATE POLICY "Organization admins can view API keys" ON api_keys
   FOR SELECT USING (
-    public.check_org_role(organization_id, auth.uid(), 'admin')
+    auth.check_org_role(organization_id, auth.uid(), 'admin')
   );
 
 CREATE POLICY "Organization admins can create API keys" ON api_keys
   FOR INSERT WITH CHECK (
-    public.check_org_role(organization_id, auth.uid(), 'admin')
+    auth.check_org_role(organization_id, auth.uid(), 'admin')
     AND created_by = auth.uid()
   );
 
@@ -1813,30 +2079,127 @@ CREATE POLICY "API key creators can revoke their keys" ON api_keys
     AND revoked_at IS NULL
   );
 
+-- ------------------------------------
+-- 007_auth_additions_policies.sql
+-- ------------------------------------
+
+-- RLS Policies for new authentication tables
+
+-- Enable RLS on new tables (if not already enabled)
+ALTER TABLE organization_invitations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE auth_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE organization_events ENABLE ROW LEVEL SECURITY;
+
+-- Organization Invitations Policies
+-- Drop existing policies if they exist to avoid conflicts
+DO $$ BEGIN
+  DROP POLICY IF EXISTS "Organization admins can view invitations" ON organization_invitations;
+  DROP POLICY IF EXISTS "Organization admins can create invitations" ON organization_invitations;
+  DROP POLICY IF EXISTS "Anyone with token can view invitation" ON organization_invitations;
+  DROP POLICY IF EXISTS "Organization admins can update invitations" ON organization_invitations;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
+-- Organization admins can view their org invitations
+CREATE POLICY "Organization admins can view invitations" ON organization_invitations
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM memberships
+      WHERE memberships.organization_id = organization_invitations.organization_id
+      AND memberships.user_id = auth.uid()
+      AND memberships.role IN ('owner', 'admin')
+      AND (memberships.status IS NULL OR memberships.status = 'active')
+    )
+  );
+
+-- Organization admins can create invitations
+CREATE POLICY "Organization admins can create invitations" ON organization_invitations
+  FOR INSERT WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM memberships
+      WHERE memberships.organization_id = organization_invitations.organization_id
+      AND memberships.user_id = auth.uid()
+      AND memberships.role IN ('owner', 'admin')
+      AND (memberships.status IS NULL OR memberships.status = 'active')
+    )
+    AND invited_by = auth.uid()
+  );
+
+-- Anyone with valid token can view invitation (for acceptance flow)
+CREATE POLICY "Anyone with token can view invitation" ON organization_invitations
+  FOR SELECT USING (true); -- Token validation happens in application layer
+
+-- Organization admins can update their invitations (cancel, etc)
+CREATE POLICY "Organization admins can update invitations" ON organization_invitations
+  FOR UPDATE USING (
+    EXISTS (
+      SELECT 1 FROM memberships
+      WHERE memberships.organization_id = organization_invitations.organization_id
+      AND memberships.user_id = auth.uid()
+      AND memberships.role IN ('owner', 'admin')
+      AND (memberships.status IS NULL OR memberships.status = 'active')
+    )
+  );
+
+-- Auth Events Policies
+-- Drop existing policies if they exist
+DO $$ BEGIN
+  DROP POLICY IF EXISTS "Users can view own auth events" ON auth_events;
+  DROP POLICY IF EXISTS "System can insert auth events" ON auth_events;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
+-- Users can only view their own auth events
+CREATE POLICY "Users can view own auth events" ON auth_events
+  FOR SELECT USING (user_id = auth.uid());
+
+-- System can insert auth events (controlled by application)
+CREATE POLICY "System can insert auth events" ON auth_events
+  FOR INSERT WITH CHECK (true); -- Application handles validation
+
+-- Organization Events Policies
+-- Drop existing policies if they exist
+DO $$ BEGIN
+  DROP POLICY IF EXISTS "Organization members can view events" ON organization_events;
+  DROP POLICY IF EXISTS "System can insert organization events" ON organization_events;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
+-- Organization members can view their org events
+CREATE POLICY "Organization members can view events" ON organization_events
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM memberships
+      WHERE memberships.organization_id = organization_events.organization_id
+      AND memberships.user_id = auth.uid()
+      AND (memberships.status IS NULL OR memberships.status = 'active')
+    )
+  );
+
+-- System can insert organization events (controlled by application)
+CREATE POLICY "System can insert organization events" ON organization_events
+  FOR INSERT WITH CHECK (true); -- Application handles validation
+
 
 -- ============================================
 -- FINAL SETUP
 -- ============================================
 
--- Grant necessary permissions
+-- Grant necessary permissions for the application
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO anon;
 GRANT ALL ON ALL TABLES IN SCHEMA public TO authenticated;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO authenticated;
 GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO authenticated;
 
--- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_organizations_slug ON organizations(slug);
-CREATE INDEX IF NOT EXISTS idx_memberships_user_org ON memberships(user_id, organization_id);
+-- Create migrations tracking table
+CREATE TABLE IF NOT EXISTS public._migrations (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL UNIQUE,
+  executed_at TIMESTAMPTZ DEFAULT NOW()
+);
 
--- Create a simple health check function
-CREATE OR REPLACE FUNCTION public.health_check()
-RETURNS text
-LANGUAGE sql
-AS $$
-  SELECT 'NextSaaS database is ready! 🎉'::text;
-$$;
+-- Mark this setup as complete
+INSERT INTO _migrations (name) VALUES ('complete_database_setup');
 
--- Test the setup
-SELECT public.health_check();
+-- Success!
+-- Your NextSaaS database is now ready to use! 🎉

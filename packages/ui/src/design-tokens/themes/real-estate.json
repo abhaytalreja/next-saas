@@ -1,0 +1,44 @@
+{
+  "theme": {
+    "name": "Real Estate",
+    "description": "Sophisticated design for real estate and property management",
+    "colors": {
+      "primary": {
+        "50": { "value": "#f0f9ff", "type": "color" },
+        "100": { "value": "#e0f2fe", "type": "color" },
+        "200": { "value": "#bae6fd", "type": "color" },
+        "300": { "value": "#7dd3fc", "type": "color" },
+        "400": { "value": "#38bdf8", "type": "color" },
+        "500": { "value": "#0ea5e9", "type": "color" },
+        "600": { "value": "#0284c7", "type": "color" },
+        "700": { "value": "#0369a1", "type": "color" },
+        "800": { "value": "#075985", "type": "color" },
+        "900": { "value": "#0c4a6e", "type": "color" }
+      },
+      "accent": {
+        "50": { "value": "#f7fee7", "type": "color" },
+        "500": { "value": "#65a30d", "type": "color" },
+        "600": { "value": "#4d7c0f", "type": "color" }
+      }
+    },
+    "typography": {
+      "fontFamily": {
+        "primary": { "value": "Playfair Display, Georgia, serif", "type": "fontFamily" },
+        "secondary": { "value": "Source Sans Pro, system-ui, sans-serif", "type": "fontFamily" }
+      }
+    },
+    "effects": {
+      "shadow": {
+        "sm": { "value": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)", "type": "boxShadow" },
+        "md": { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)", "type": "boxShadow" },
+        "lg": { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)", "type": "boxShadow" }
+      },
+      "borderRadius": {
+        "sm": { "value": "0.25rem", "type": "borderRadius" },
+        "md": { "value": "0.5rem", "type": "borderRadius" },
+        "lg": { "value": "0.75rem", "type": "borderRadius" },
+        "xl": { "value": "1rem", "type": "borderRadius" }
+      }
+    }
+  }
+}

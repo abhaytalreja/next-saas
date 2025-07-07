@@ -9,6 +9,11 @@ export interface AuthUser extends User {
     avatar_url?: string;
     provider?: string;
     email_verified?: boolean;
+    bio?: string;
+    phone?: string;
+    website?: string;
+    timezone?: string;
+    locale?: string;
   };
   app_metadata: {
     provider?: string;
@@ -104,6 +109,9 @@ export interface UpdateProfileData {
   avatarUrl?: string;
   timezone?: string;
   locale?: string;
+  bio?: string;
+  phone?: string;
+  website?: string;
 }
 
 // Security Types

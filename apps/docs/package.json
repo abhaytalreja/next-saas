@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "APP_NAME=docs node ../../scripts/dev-with-port.js --port 3001",
-    "dev:direct": "next dev --port 3001",
+    "dev": "APP_NAME=docs node ../../scripts/dev-with-port.js --port 3011",
+    "dev:direct": "next dev --port 3011",
     "build": "next build",
     "start": "next start",
     "lint": "echo 'Lint temporarily disabled for Docs app due to ESLint config migration'",
@@ -19,6 +19,7 @@
     "@nextsaas/utils": "*",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
+    "lucide-react": "^0.525.0",
     "next": "15.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0"

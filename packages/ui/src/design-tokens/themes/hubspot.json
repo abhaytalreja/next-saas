@@ -1,0 +1,44 @@
+{
+  "theme": {
+    "name": "HubSpot",
+    "description": "Professional, trustworthy design inspired by HubSpot's aesthetic",
+    "colors": {
+      "primary": {
+        "50": { "value": "#fef6f0", "type": "color" },
+        "100": { "value": "#fde8d7", "type": "color" },
+        "200": { "value": "#fbd1af", "type": "color" },
+        "300": { "value": "#f7b087", "type": "color" },
+        "400": { "value": "#f3885f", "type": "color" },
+        "500": { "value": "#f05a1a", "type": "color" },
+        "600": { "value": "#e0510f", "type": "color" },
+        "700": { "value": "#c0470e", "type": "color" },
+        "800": { "value": "#a03d0c", "type": "color" },
+        "900": { "value": "#782214", "type": "color" }
+      },
+      "accent": {
+        "50": { "value": "#eff6ff", "type": "color" },
+        "500": { "value": "#3b82f6", "type": "color" },
+        "600": { "value": "#2563eb", "type": "color" }
+      }
+    },
+    "typography": {
+      "fontFamily": {
+        "primary": { "value": "Avenir Next, Inter, system-ui, sans-serif", "type": "fontFamily" },
+        "secondary": { "value": "SF Mono, Monaco, Consolas, monospace", "type": "fontFamily" }
+      }
+    },
+    "effects": {
+      "shadow": {
+        "sm": { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "type": "boxShadow" },
+        "md": { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)", "type": "boxShadow" },
+        "lg": { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)", "type": "boxShadow" }
+      },
+      "borderRadius": {
+        "sm": { "value": "0.125rem", "type": "borderRadius" },
+        "md": { "value": "0.375rem", "type": "borderRadius" },
+        "lg": { "value": "0.5rem", "type": "borderRadius" },
+        "xl": { "value": "0.75rem", "type": "borderRadius" }
+      }
+    }
+  }
+}

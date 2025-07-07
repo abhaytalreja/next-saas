@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "APP_NAME=landing node ../../scripts/dev-with-port.js --port 3002",
-    "dev:direct": "next dev --port 3002",
+    "dev": "APP_NAME=landing node ../../scripts/dev-with-port.js --port 3012",
+    "dev:direct": "next dev --port 3012",
     "lint": "echo 'Lint temporarily disabled for Landing app due to ESLint config migration'",
     "start": "next start",
     "type-check": "tsc --noEmit"

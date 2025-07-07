@@ -12,17 +12,23 @@ const searchablePages = [
   // Features
   { title: 'Business Logic', href: '/features/business-logic', category: 'Features', keywords: ['logic', 'rules', 'workflow'] },
   { title: 'Pricing Sync', href: '/features/pricing-sync', category: 'Features', keywords: ['pricing', 'plans', 'billing'] },
-  { title: 'Authentication', href: '/features/authentication', category: 'Features', keywords: ['auth', 'login', 'signup'] },
+  { title: 'Authentication', href: '/features/authentication', category: 'Features', keywords: ['auth', 'login', 'signup', 'user', 'session'] },
+  { title: 'Auth Setup Guide', href: '/features/auth-setup', category: 'Features', keywords: ['auth', 'setup', 'configuration', 'supabase'] },
   { title: 'Database', href: '/features/database', category: 'Features', keywords: ['database', 'supabase', 'postgres'] },
   { title: 'UI Components', href: '/features/ui-components', category: 'Features', keywords: ['ui', 'components', 'design'] },
   
-  // Component Library
-  { title: 'Component Library', href: '/components', category: 'Components', keywords: ['components', 'ui', 'library', 'showcase'] },
-  { title: 'Buttons', href: '/components/buttons', category: 'Components', keywords: ['button', 'action', 'click'] },
-  { title: 'Inputs', href: '/components/inputs', category: 'Components', keywords: ['input', 'form', 'text', 'field'] },
-  { title: 'Cards', href: '/components/cards', category: 'Components', keywords: ['card', 'container', 'content'] },
-  { title: 'Alerts', href: '/components/alerts', category: 'Components', keywords: ['alert', 'notification', 'message'] },
-  { title: 'Tabs', href: '/components/tabs', category: 'Components', keywords: ['tabs', 'navigation', 'panels'] },
+  // UI Components
+  { title: 'Components Overview', href: '/components', category: 'UI Components', keywords: ['components', 'ui', 'library', 'showcase'] },
+  { title: 'Auth Components', href: '/components/auth-components', category: 'UI Components', keywords: ['auth', 'authentication', 'login', 'signup', 'form'] },
+  { title: 'Button', href: '/components/button', category: 'UI Components', keywords: ['button', 'action', 'click'] },
+  { title: 'Input', href: '/components/input', category: 'UI Components', keywords: ['input', 'form', 'text', 'field'] },
+  { title: 'Card', href: '/components/card', category: 'UI Components', keywords: ['card', 'container', 'content'] },
+  { title: 'Alert', href: '/components/alert', category: 'UI Components', keywords: ['alert', 'notification', 'message'] },
+  { title: 'Badge', href: '/components/badge', category: 'UI Components', keywords: ['badge', 'label', 'status'] },
+  { title: 'Progress', href: '/components/progress', category: 'UI Components', keywords: ['progress', 'loading', 'percentage'] },
+  { title: 'Spinner', href: '/components/spinner', category: 'UI Components', keywords: ['spinner', 'loading', 'async'] },
+  { title: 'Tooltip', href: '/components/tooltip', category: 'UI Components', keywords: ['tooltip', 'hover', 'help'] },
+  { title: 'Heading', href: '/components/heading', category: 'UI Components', keywords: ['heading', 'title', 'typography'] },
   
   // Architecture
   { title: 'Organization Modes', href: '/architecture/organization-modes', category: 'Architecture', keywords: ['organization', 'modes', 'multi-tenant'] },

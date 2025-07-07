@@ -13,6 +13,8 @@ export interface Organization {
   settings: OrganizationSettings;
   billing: BillingInfo;
   ownerId: string;
+  role?: MembershipRole; // User's role in this organization
+  memberships_count?: number; // Number of members in this organization
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;

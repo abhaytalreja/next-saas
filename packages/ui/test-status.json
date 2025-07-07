@@ -1,0 +1,456 @@
+{
+  "generated": "2025-07-07T03:49:23.023Z",
+  "summary": {
+    "totalComponents": 12,
+    "totalTests": 390,
+    "passedTests": 384,
+    "failedTests": 0,
+    "skippedTests": 6
+  },
+  "components": {
+    "Text": {
+      "name": "Text",
+      "category": "atoms",
+      "folder": "typography",
+      "tests": {
+        "total": 56,
+        "passed": 56,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-56%2F56%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/visual-pending-#9f9f9f"
+        }
+      }
+    },
+    "Card": {
+      "name": "Card",
+      "category": "molecules",
+      "folder": "cards",
+      "tests": {
+        "total": 21,
+        "passed": 21,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-21%2F21%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "tested",
+          "url": "https://img.shields.io/badge/visual-tested-#4c1"
+        }
+      }
+    },
+    "Divider": {
+      "name": "Divider",
+      "category": "atoms",
+      "folder": "dividers",
+      "tests": {
+        "total": 29,
+        "passed": 29,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-29%2F29%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/visual-pending-#9f9f9f"
+        }
+      }
+    },
+    "Avatar": {
+      "name": "Avatar",
+      "category": "atoms",
+      "folder": "avatars",
+      "tests": {
+        "total": 34,
+        "passed": 34,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-34%2F34%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/visual-pending-#9f9f9f"
+        }
+      }
+    },
+    "Badge": {
+      "name": "Badge",
+      "category": "atoms",
+      "folder": "badges",
+      "tests": {
+        "total": 27,
+        "passed": 27,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-27%2F27%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/visual-pending-#9f9f9f"
+        }
+      }
+    },
+    "Spinner": {
+      "name": "Spinner",
+      "category": "atoms",
+      "folder": "spinners",
+      "tests": {
+        "total": 28,
+        "passed": 28,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-28%2F28%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/visual-pending-#9f9f9f"
+        }
+      }
+    },
+    "Heading": {
+      "name": "Heading",
+      "category": "atoms",
+      "folder": "typography",
+      "tests": {
+        "total": 38,
+        "passed": 38,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": true,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-38%2F38%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "tested",
+          "url": "https://img.shields.io/badge/responsive-tested-#4c1"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/visual-pending-#9f9f9f"
+        }
+      }
+    },
+    "Icon": {
+      "name": "Icon",
+      "category": "atoms",
+      "folder": "icons",
+      "tests": {
+        "total": 31,
+        "passed": 31,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-31%2F31%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/visual-pending-#9f9f9f"
+        }
+      }
+    },
+    "Input": {
+      "name": "Input",
+      "category": "atoms",
+      "folder": "inputs",
+      "tests": {
+        "total": 31,
+        "passed": 26,
+        "failed": 0,
+        "skipped": 5
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "partial",
+          "url": "https://img.shields.io/badge/tests-26%2F31%20tests-#dfb317"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "tested",
+          "url": "https://img.shields.io/badge/visual-tested-#4c1"
+        }
+      }
+    },
+    "Button": {
+      "name": "Button",
+      "category": "atoms",
+      "folder": "buttons",
+      "tests": {
+        "total": 28,
+        "passed": 27,
+        "failed": 0,
+        "skipped": 1
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "partial",
+          "url": "https://img.shields.io/badge/tests-27%2F28%20tests-#dfb317"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "tested",
+          "url": "https://img.shields.io/badge/visual-tested-#4c1"
+        }
+      }
+    },
+    "Skeleton": {
+      "name": "Skeleton",
+      "category": "atoms",
+      "folder": "skeletons",
+      "tests": {
+        "total": 31,
+        "passed": 31,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-31%2F31%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/visual-pending-#9f9f9f"
+        }
+      }
+    },
+    "Switch": {
+      "name": "Switch",
+      "category": "atoms",
+      "folder": "toggles",
+      "tests": {
+        "total": 36,
+        "passed": 36,
+        "failed": 0,
+        "skipped": 0
+      },
+      "accessibility": true,
+      "responsive": false,
+      "performance": false,
+      "visual": false,
+      "badges": {
+        "tests": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/tests-36%2F36%20tests-#4c1"
+        },
+        "accessibility": {
+          "status": "passing",
+          "url": "https://img.shields.io/badge/accessibility-passing-#4c1"
+        },
+        "responsive": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/responsive-pending-#9f9f9f"
+        },
+        "performance": {
+          "status": "untested",
+          "url": "https://img.shields.io/badge/performance-untested-#9f9f9f"
+        },
+        "visual": {
+          "status": "pending",
+          "url": "https://img.shields.io/badge/visual-pending-#9f9f9f"
+        }
+      }
+    }
+  }
+}

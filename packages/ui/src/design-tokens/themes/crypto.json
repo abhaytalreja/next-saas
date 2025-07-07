@@ -1,0 +1,50 @@
+{
+  "theme": {
+    "name": "Crypto",
+    "description": "Modern, tech-forward design for cryptocurrency and DeFi applications",
+    "colors": {
+      "primary": {
+        "50": { "value": "#faf5ff", "type": "color" },
+        "100": { "value": "#f3e8ff", "type": "color" },
+        "200": { "value": "#e9d5ff", "type": "color" },
+        "300": { "value": "#d8b4fe", "type": "color" },
+        "400": { "value": "#c084fc", "type": "color" },
+        "500": { "value": "#a855f7", "type": "color" },
+        "600": { "value": "#9333ea", "type": "color" },
+        "700": { "value": "#7c3aed", "type": "color" },
+        "800": { "value": "#6b21d4", "type": "color" },
+        "900": { "value": "#581c87", "type": "color" }
+      },
+      "accent": {
+        "50": { "value": "#ecfdf5", "type": "color" },
+        "500": { "value": "#10b981", "type": "color" },
+        "600": { "value": "#059669", "type": "color" }
+      },
+      "warning": {
+        "50": { "value": "#fff7ed", "type": "color" },
+        "500": { "value": "#f97316", "type": "color" },
+        "600": { "value": "#ea580c", "type": "color" }
+      }
+    },
+    "typography": {
+      "fontFamily": {
+        "primary": { "value": "Space Grotesk, Inter, system-ui, sans-serif", "type": "fontFamily" },
+        "secondary": { "value": "JetBrains Mono, SF Mono, monospace", "type": "fontFamily" }
+      }
+    },
+    "effects": {
+      "shadow": {
+        "sm": { "value": "0 1px 2px 0 rgb(168 85 247 / 0.05)", "type": "boxShadow" },
+        "md": { "value": "0 4px 6px -1px rgb(168 85 247 / 0.1), 0 2px 4px -2px rgb(168 85 247 / 0.1)", "type": "boxShadow" },
+        "lg": { "value": "0 10px 15px -3px rgb(168 85 247 / 0.1), 0 4px 6px -4px rgb(168 85 247 / 0.1)", "type": "boxShadow" },
+        "glow": { "value": "0 0 20px rgb(168 85 247 / 0.3)", "type": "boxShadow" }
+      },
+      "borderRadius": {
+        "sm": { "value": "0.125rem", "type": "borderRadius" },
+        "md": { "value": "0.25rem", "type": "borderRadius" },
+        "lg": { "value": "0.375rem", "type": "borderRadius" },
+        "xl": { "value": "0.5rem", "type": "borderRadius" }
+      }
+    }
+  }
+}

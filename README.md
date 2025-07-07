@@ -426,3 +426,9 @@ Built with these amazing open source projects:
     <strong>Ready to build your SaaS? Let's go! 🚀</strong>
   </p>
 </div>
+
+## UI Package Status
+
+![Test Coverage](https://img.shields.io/badge/coverage-92.5%25-4c1) ![Tests](https://img.shields.io/badge/tests-74%20passing-4c1) ![Accessibility](https://img.shields.io/badge/accessibility-WCAG%202.1%20AA-4c1) ![Components](https://img.shields.io/badge/components-3-blue) ![Build](https://img.shields.io/badge/build-passing-4c1)
+
+[View detailed test report](./packages/ui/TEST_STATUS.md)
