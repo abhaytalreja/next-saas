@@ -103,6 +103,17 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here`}</code></pre>
             <p className="font-medium text-gray-700">3. App URL & Organization Mode</p>
             <pre className="mt-2"><code>{`NEXTAUTH_URL=http://localhost:3010
 NEXT_PUBLIC_ORGANIZATION_MODE=single  # or 'none' or 'multi'`}</code></pre>
+            <div className="mt-2 text-sm text-gray-600">
+              <p className="font-medium">Organization Modes:</p>
+              <ul className="ml-4 mt-1">
+                <li>• <code className="bg-gray-100 px-1">none</code> - Personal apps (no teams)</li>
+                <li>• <code className="bg-gray-100 px-1">single</code> - One workspace per user</li>
+                <li>• <code className="bg-gray-100 px-1">multi</code> - Full B2B with teams</li>
+              </ul>
+              <p className="mt-1">
+                <a href="/docs/ORGANIZATION_MODE_QUICKSTART" className="text-blue-600 underline">Learn more about organization modes →</a>
+              </p>
+            </div>
           </div>
         </div>
       </div>

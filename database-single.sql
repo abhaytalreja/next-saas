@@ -1,6 +1,6 @@
 -- NextSaaS Database Schema
 -- Organization Mode: single
--- Generated on: 2025-07-07T03:12:56.962Z
+-- Generated on: 2025-07-07T18:33:16.498Z
 
 
 -- Enable necessary extensions
