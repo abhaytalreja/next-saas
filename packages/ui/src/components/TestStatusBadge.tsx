@@ -15,7 +15,7 @@ export const TestStatusBadge: React.FC<TestStatusBadgeProps> = ({
   showDetails = false,
   className
 }) => {
-  const componentData = testStatus.components[component]
+  const componentData = testStatus.components[component as keyof typeof testStatus.components]
   
   if (!componentData) {
     return null
@@ -120,7 +120,7 @@ export const TestStatusBadge: React.FC<TestStatusBadgeProps> = ({
 
 // Hook to get test status for a component
 export const useTestStatus = (component: string) => {
-  const componentData = testStatus.components[component]
+  const componentData = testStatus.components[component as keyof typeof testStatus.components]
   
   if (!componentData) {
     return null
