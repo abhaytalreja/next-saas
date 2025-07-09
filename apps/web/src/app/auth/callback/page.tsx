@@ -2,15 +2,17 @@
 
 import React, { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { AuthLayout } from '@/packages/auth'
-import { Spinner, Alert } from '@/packages/ui'
+import { AuthLayout } from '@nextsaas/auth'
+import { Spinner, Alert } from '@nextsaas/ui'
 import { createBrowserClient } from '@supabase/ssr'
 
 export default function AuthCallbackPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [error, setError] = useState<string | null>(null)
-  const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing')
+  const [status, setStatus] = useState<'processing' | 'success' | 'error'>(
+    'processing'
+  )
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -41,7 +43,8 @@ export default function AuthCallbackPage() {
         )
 
         // Exchange code for session
-        const { error: sessionError } = await supabase.auth.exchangeCodeForSession(code)
+        const { error: sessionError } =
+          await supabase.auth.exchangeCodeForSession(code)
 
         if (sessionError) {
           console.error('Session exchange error:', sessionError)
@@ -51,7 +54,10 @@ export default function AuthCallbackPage() {
         }
 
         // Get the updated session
-        const { data: { session }, error: getSessionError } = await supabase.auth.getSession()
+        const {
+          data: { session },
+          error: getSessionError,
+        } = await supabase.auth.getSession()
 
         if (getSessionError || !session) {
           setError('Failed to establish session')
@@ -75,7 +81,7 @@ export default function AuthCallbackPage() {
 
         // Determine redirect path
         let redirectPath = '/dashboard'
-        
+
         if (!profile?.first_name || !profile?.last_name) {
           // User needs to complete profile
           redirectPath = '/onboarding/profile'
@@ -85,8 +91,9 @@ export default function AuthCallbackPage() {
         }
 
         // Get the intended redirect from state or session storage
-        const intendedRedirect = searchParams.get('redirect_to') || 
-          sessionStorage.getItem('auth_redirect') || 
+        const intendedRedirect =
+          searchParams.get('redirect_to') ||
+          sessionStorage.getItem('auth_redirect') ||
           redirectPath
 
         // Clear stored redirect
@@ -182,7 +189,11 @@ export default function AuthCallbackPage() {
       title="Completing Authentication"
       subtitle={status === 'processing' ? 'Please wait...' : undefined}
     >
-      <div className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10" role="main" aria-live="polite">
+      <div
+        className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10"
+        role="main"
+        aria-live="polite"
+      >
         {renderContent()}
       </div>
 
@@ -191,8 +202,8 @@ export default function AuthCallbackPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Having trouble signing in?{' '}
-            <a 
-              href="/support" 
+            <a
+              href="/support"
               className="font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:underline"
             >
               Contact support

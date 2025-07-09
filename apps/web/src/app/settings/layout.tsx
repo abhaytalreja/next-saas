@@ -3,10 +3,10 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ProtectedLayout } from '@/packages/auth'
-import { 
-  UserCircleIcon, 
-  ShieldCheckIcon, 
+import { ProtectedLayout } from '@nextsaas/auth'
+import {
+  UserCircleIcon,
+  ShieldCheckIcon,
   BuildingOfficeIcon,
   CreditCardIcon,
   BellIcon,
@@ -18,9 +18,21 @@ const navigation = [
   { name: 'Profile', href: '/settings/profile', icon: UserCircleIcon },
   { name: 'Security', href: '/settings/security', icon: ShieldCheckIcon },
   { name: 'Notifications', href: '/settings/notifications', icon: BellIcon },
-  { name: 'Organization', href: '/settings/organization', icon: BuildingOfficeIcon },
-  { name: 'Team Members', href: '/settings/organization/members', icon: UserGroupIcon },
-  { name: 'Billing', href: '/settings/organization/billing', icon: CreditCardIcon },
+  {
+    name: 'Organization',
+    href: '/settings/organization',
+    icon: BuildingOfficeIcon,
+  },
+  {
+    name: 'Team Members',
+    href: '/settings/organization/members',
+    icon: UserGroupIcon,
+  },
+  {
+    name: 'Billing',
+    href: '/settings/organization/billing',
+    icon: CreditCardIcon,
+  },
   { name: 'Preferences', href: '/settings/preferences', icon: Cog6ToothIcon },
 ]
 
@@ -46,10 +58,12 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
             {/* Sidebar Navigation */}
             <aside className="lg:col-span-3">
               <nav className="space-y-1" aria-label="Settings navigation">
-                {navigation.map((item) => {
-                  const isActive = pathname === item.href || 
-                    (item.href !== '/settings/organization' && pathname.startsWith(item.href))
-                  
+                {navigation.map(item => {
+                  const isActive =
+                    pathname === item.href ||
+                    (item.href !== '/settings/organization' &&
+                      pathname.startsWith(item.href))
+
                   return (
                     <Link
                       key={item.name}
@@ -91,9 +105,9 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
                   id="settings-nav"
                   className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm"
                   value={pathname}
-                  onChange={(e) => window.location.href = e.target.value}
+                  onChange={e => (window.location.href = e.target.value)}
                 >
-                  {navigation.map((item) => (
+                  {navigation.map(item => (
                     <option key={item.href} value={item.href}>
                       {item.name}
                     </option>
@@ -104,9 +118,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
 
             {/* Main Content */}
             <main className="mt-8 lg:mt-0 lg:col-span-9">
-              <div className="bg-white shadow rounded-lg">
-                {children}
-              </div>
+              <div className="bg-white shadow rounded-lg">{children}</div>
             </main>
           </div>
         </div>

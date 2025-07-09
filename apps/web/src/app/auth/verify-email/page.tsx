@@ -2,18 +2,26 @@
 
 import React, { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { AuthLayout } from '@/packages/auth'
-import { Button, Alert, Spinner } from '@/packages/ui'
+import { AuthLayout } from '@nextsaas/auth'
+import { Button, Alert, Spinner } from '@nextsaas/ui'
 import Link from 'next/link'
-import { CheckCircleIcon, XCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
+import {
+  CheckCircleIcon,
+  XCircleIcon,
+  EnvelopeIcon,
+} from '@heroicons/react/24/outline'
 
 export default function VerifyEmailPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  
-  const [verificationState, setVerificationState] = useState<'loading' | 'success' | 'error' | 'expired'>('loading')
+
+  const [verificationState, setVerificationState] = useState<
+    'loading' | 'success' | 'error' | 'expired'
+  >('loading')
   const [errorMessage, setErrorMessage] = useState<string>('')
-  const [resendState, setResendState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [resendState, setResendState] = useState<
+    'idle' | 'sending' | 'sent' | 'error'
+  >('idle')
   const [resendCooldown, setResendCooldown] = useState(0)
 
   const token = searchParams.get('token')
@@ -30,7 +38,10 @@ export default function VerifyEmailPage() {
 
   useEffect(() => {
     if (resendCooldown > 0) {
-      const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000)
+      const timer = setTimeout(
+        () => setResendCooldown(resendCooldown - 1),
+        1000
+      )
       return () => clearTimeout(timer)
     }
   }, [resendCooldown])
@@ -38,7 +49,7 @@ export default function VerifyEmailPage() {
   const handleVerification = async () => {
     try {
       setVerificationState('loading')
-      
+
       const response = await fetch('/api/auth/verify-email', {
         method: 'POST',
         headers: {
@@ -46,9 +57,9 @@ export default function VerifyEmailPage() {
         },
         body: JSON.stringify({ token }),
       })
-      
+
       const result = await response.json()
-      
+
       if (result.success) {
         setVerificationState('success')
         // Redirect to dashboard after 3 seconds
@@ -73,7 +84,7 @@ export default function VerifyEmailPage() {
 
     try {
       setResendState('sending')
-      
+
       const response = await fetch('/api/auth/resend-verification', {
         method: 'POST',
         headers: {
@@ -81,9 +92,9 @@ export default function VerifyEmailPage() {
         },
         body: JSON.stringify({ email }),
       })
-      
+
       const result = await response.json()
-      
+
       if (result.success) {
         setResendState('sent')
         setResendCooldown(60) // 60 second cooldown
@@ -114,7 +125,10 @@ export default function VerifyEmailPage() {
         return (
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-              <CheckCircleIcon className="h-10 w-10 text-green-600" aria-hidden="true" />
+              <CheckCircleIcon
+                className="h-10 w-10 text-green-600"
+                aria-hidden="true"
+              />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Email verified successfully!
@@ -136,7 +150,10 @@ export default function VerifyEmailPage() {
         return (
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-4">
-              <XCircleIcon className="h-10 w-10 text-yellow-600" aria-hidden="true" />
+              <XCircleIcon
+                className="h-10 w-10 text-yellow-600"
+                aria-hidden="true"
+              />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Verification link expired
@@ -151,7 +168,11 @@ export default function VerifyEmailPage() {
                   disabled={resendState === 'sending' || resendCooldown > 0}
                   className="w-full mb-4"
                   variant={resendState === 'sent' ? 'success' : 'primary'}
-                  aria-label={resendCooldown > 0 ? `Resend available in ${resendCooldown} seconds` : 'Resend verification email'}
+                  aria-label={
+                    resendCooldown > 0
+                      ? `Resend available in ${resendCooldown} seconds`
+                      : 'Resend verification email'
+                  }
                 >
                   {resendState === 'sending' ? (
                     <>
@@ -186,13 +207,16 @@ export default function VerifyEmailPage() {
         return (
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
-              <XCircleIcon className="h-10 w-10 text-red-600" aria-hidden="true" />
+              <XCircleIcon
+                className="h-10 w-10 text-red-600"
+                aria-hidden="true"
+              />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Verification failed
             </h3>
             <p className="text-sm text-gray-600 mb-6">
-              {errorMessage || 'We couldn\'t verify your email address.'}
+              {errorMessage || "We couldn't verify your email address."}
             </p>
             <div className="space-y-3">
               <Link href="/auth/sign-in" className="block">
@@ -217,9 +241,17 @@ export default function VerifyEmailPage() {
   return (
     <AuthLayout
       title="Email Verification"
-      subtitle={verificationState === 'loading' ? 'Verifying your email address...' : undefined}
+      subtitle={
+        verificationState === 'loading'
+          ? 'Verifying your email address...'
+          : undefined
+      }
     >
-      <div className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10" role="main" aria-live="polite">
+      <div
+        className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10"
+        role="main"
+        aria-live="polite"
+      >
         {renderContent()}
       </div>
 
@@ -227,7 +259,10 @@ export default function VerifyEmailPage() {
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600">
           Having trouble?{' '}
-          <Link href="/support" className="font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
+          <Link
+            href="/support"
+            className="font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:underline"
+          >
             Contact support
           </Link>
         </p>

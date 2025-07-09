@@ -3,9 +3,9 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { AuthLayout } from '@/packages/auth'
-import { ForgotPasswordForm } from '@/packages/auth'
-import { Alert } from '@/packages/ui'
+import { AuthLayout } from '@nextsaas/auth'
+import { ForgotPasswordForm } from '@nextsaas/auth'
+import { Alert } from '@nextsaas/ui'
 import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 
 export default function ForgotPasswordPage() {
@@ -42,19 +42,21 @@ export default function ForgotPasswordPage() {
                 />
               </svg>
             </div>
-            
+
             <Alert type="success" className="mb-6 text-left">
               <p className="text-sm">
-                We've sent a password reset link to <strong>{email}</strong>. 
-                Please check your email and follow the instructions to reset your password.
+                We've sent a password reset link to <strong>{email}</strong>.
+                Please check your email and follow the instructions to reset
+                your password.
               </p>
             </Alert>
 
             <div className="space-y-4">
               <p className="text-sm text-gray-600">
-                Didn't receive the email? Check your spam folder or try again with a different email address.
+                Didn't receive the email? Check your spam folder or try again
+                with a different email address.
               </p>
-              
+
               <button
                 onClick={() => setSuccess(false)}
                 className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
@@ -77,8 +79,8 @@ export default function ForgotPasswordPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Remember your password?{' '}
-            <Link 
-              href="/auth/sign-in" 
+            <Link
+              href="/auth/sign-in"
               className="font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:underline"
             >
               Sign in instead
@@ -105,26 +107,24 @@ export default function ForgotPasswordPage() {
         </div>
       }
     >
-      <ForgotPasswordForm 
-        onSuccess={handleSuccess}
-        className="space-y-6"
-      />
+      <ForgotPasswordForm onSuccess={handleSuccess} className="space-y-6" />
 
       {/* Additional help section */}
       <div className="mt-8 border-t border-gray-200 pt-6">
         <div className="text-sm text-gray-600 space-y-4">
           <p>
-            <strong>Tip:</strong> Password reset links expire after 1 hour for security reasons.
+            <strong>Tip:</strong> Password reset links expire after 1 hour for
+            security reasons.
           </p>
-          <p>
-            If you're having trouble accessing your account, you can also:
-          </p>
+          <p>If you're having trouble accessing your account, you can also:</p>
           <ul className="list-disc list-inside space-y-1 ml-2">
             <li>Check if you signed up with a different email address</li>
-            <li>Try signing in with Google, GitHub, or other social providers</li>
             <li>
-              <Link 
-                href="/support" 
+              Try signing in with Google, GitHub, or other social providers
+            </li>
+            <li>
+              <Link
+                href="/support"
                 className="text-primary-600 hover:text-primary-500 focus:outline-none focus:underline"
               >
                 Contact our support team

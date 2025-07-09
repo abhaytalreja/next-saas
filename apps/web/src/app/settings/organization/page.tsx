@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useOrganization } from '@/packages/auth'
-import { Button, Input, Alert } from '@/packages/ui'
+import { useOrganization } from '@nextsaas/auth'
+import { Button, Input, Alert } from '@nextsaas/ui'
 import { BuildingOfficeIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 export default function OrganizationSettingsPage() {
@@ -10,11 +10,19 @@ export default function OrganizationSettingsPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  
-  const [organizationName, setOrganizationName] = useState(currentOrganization?.name || '')
-  const [organizationSlug, setOrganizationSlug] = useState(currentOrganization?.slug || '')
-  const [organizationWebsite, setOrganizationWebsite] = useState(currentOrganization?.website || '')
-  const [organizationDescription, setOrganizationDescription] = useState(currentOrganization?.description || '')
+
+  const [organizationName, setOrganizationName] = useState(
+    currentOrganization?.name || ''
+  )
+  const [organizationSlug, setOrganizationSlug] = useState(
+    currentOrganization?.slug || ''
+  )
+  const [organizationWebsite, setOrganizationWebsite] = useState(
+    currentOrganization?.website || ''
+  )
+  const [organizationDescription, setOrganizationDescription] = useState(
+    currentOrganization?.description || ''
+  )
 
   const handleUpdateOrganization = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,7 +60,9 @@ export default function OrganizationSettingsPage() {
     <div className="px-6 py-6 sm:px-8 sm:py-8 space-y-8">
       {/* Page Header */}
       <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-2xl font-semibold text-gray-900">Organization Settings</h2>
+        <h2 className="text-2xl font-semibold text-gray-900">
+          Organization Settings
+        </h2>
         <p className="mt-2 text-sm text-gray-600">
           Manage your organization's details and preferences.
         </p>
@@ -99,7 +109,7 @@ export default function OrganizationSettingsPage() {
                   label="Organization Name"
                   type="text"
                   value={organizationName}
-                  onChange={(e) => setOrganizationName(e.target.value)}
+                  onChange={e => setOrganizationName(e.target.value)}
                   required
                 />
               </div>
@@ -110,7 +120,7 @@ export default function OrganizationSettingsPage() {
                   label="Organization Slug"
                   type="text"
                   value={organizationSlug}
-                  onChange={(e) => setOrganizationSlug(e.target.value)}
+                  onChange={e => setOrganizationSlug(e.target.value)}
                   helperText="Used in URLs and must be unique"
                   required
                 />
@@ -122,14 +132,17 @@ export default function OrganizationSettingsPage() {
                   label="Website"
                   type="url"
                   value={organizationWebsite}
-                  onChange={(e) => setOrganizationWebsite(e.target.value)}
+                  onChange={e => setOrganizationWebsite(e.target.value)}
                   placeholder="https://example.com"
                 />
               </div>
 
               {/* Description */}
               <div className="sm:col-span-6">
-                <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
                   Description
                 </label>
                 <div className="mt-2">
@@ -138,7 +151,7 @@ export default function OrganizationSettingsPage() {
                     rows={3}
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
                     value={organizationDescription}
-                    onChange={(e) => setOrganizationDescription(e.target.value)}
+                    onChange={e => setOrganizationDescription(e.target.value)}
                     placeholder="What does your organization do?"
                   />
                 </div>
@@ -147,11 +160,7 @@ export default function OrganizationSettingsPage() {
           </div>
 
           <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
-            <Button
-              type="submit"
-              loading={loading}
-              disabled={loading}
-            >
+            <Button type="submit" loading={loading} disabled={loading}>
               Save Changes
             </Button>
           </div>
@@ -170,7 +179,9 @@ export default function OrganizationSettingsPage() {
                 Organization ID
               </dt>
               <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                <div className="text-gray-900 font-mono">{currentOrganization.id}</div>
+                <div className="text-gray-900 font-mono">
+                  {currentOrganization.id}
+                </div>
               </dd>
             </div>
             <div className="pt-6 sm:flex">
@@ -179,11 +190,14 @@ export default function OrganizationSettingsPage() {
               </dt>
               <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
                 <div className="text-gray-900">
-                  {new Date(currentOrganization.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
+                  {new Date(currentOrganization.created_at).toLocaleDateString(
+                    'en-US',
+                    {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    }
+                  )}
                 </div>
               </dd>
             </div>
@@ -195,7 +209,10 @@ export default function OrganizationSettingsPage() {
                 <div className="text-gray-900">
                   Free Plan
                   <span className="ml-2 text-sm text-gray-500">
-                    <a href="/settings/organization/billing" className="text-primary-600 hover:text-primary-500">
+                    <a
+                      href="/settings/organization/billing"
+                      className="text-primary-600 hover:text-primary-500"
+                    >
                       Upgrade
                     </a>
                   </span>
@@ -213,7 +230,8 @@ export default function OrganizationSettingsPage() {
             Danger Zone
           </h3>
           <p className="mt-2 text-sm text-red-700">
-            Once you delete an organization, there is no going back. Please be certain.
+            Once you delete an organization, there is no going back. Please be
+            certain.
           </p>
           <div className="mt-6">
             <Button

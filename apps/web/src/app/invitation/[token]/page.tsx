@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { AuthLayout } from '@/packages/auth'
-import { useAuth } from '@/packages/auth'
-import { Button, Alert, Spinner } from '@/packages/ui'
-import { 
-  CheckCircleIcon, 
-  XCircleIcon, 
+import { AuthLayout } from '@nextsaas/auth'
+import { useAuth } from '@nextsaas/auth'
+import { Button, Alert, Spinner } from '@nextsaas/ui'
+import {
+  CheckCircleIcon,
+  XCircleIcon,
   BuildingOfficeIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline'
@@ -41,7 +41,7 @@ export default function InvitationPage() {
   const fetchInvitationDetails = async () => {
     try {
       setLoading(true)
-      
+
       // In production, this would be an API call
       // Simulating API response
       setTimeout(() => {
@@ -52,7 +52,9 @@ export default function InvitationPage() {
           inviterName: 'John Doe',
           inviterEmail: 'john@acme.com',
           role: 'member',
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          expiresAt: new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toISOString(),
         })
         setLoading(false)
       }, 1000)
@@ -72,7 +74,7 @@ export default function InvitationPage() {
 
     try {
       setAccepting(true)
-      
+
       // In production, this would call the accept invitation API
       const response = await fetch('/api/organization/invite/accept', {
         method: 'POST',
@@ -87,7 +89,7 @@ export default function InvitationPage() {
       }
 
       setAccepted(true)
-      
+
       // Redirect to organization after 2 seconds
       setTimeout(() => {
         router.push('/dashboard')
@@ -104,10 +106,7 @@ export default function InvitationPage() {
 
   if (loading) {
     return (
-      <AuthLayout
-        title="Loading Invitation..."
-        showLogo={true}
-      >
+      <AuthLayout title="Loading Invitation..." showLogo={true}>
         <div className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10">
           <div className="text-center">
             <Spinner size="lg" className="mx-auto mb-4" />
@@ -122,18 +121,13 @@ export default function InvitationPage() {
 
   if (error && !invitation) {
     return (
-      <AuthLayout
-        title="Invalid Invitation"
-        showLogo={true}
-      >
+      <AuthLayout title="Invalid Invitation" showLogo={true}>
         <div className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10">
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <XCircleIcon className="h-10 w-10 text-red-600" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {error}
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">{error}</h3>
             <p className="text-sm text-gray-600 mb-6">
               This invitation link may have expired or already been used.
             </p>
@@ -148,10 +142,7 @@ export default function InvitationPage() {
 
   if (accepted) {
     return (
-      <AuthLayout
-        title="Invitation Accepted!"
-        showLogo={true}
-      >
+      <AuthLayout title="Invitation Accepted!" showLogo={true}>
         <div className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10">
           <div className="text-center">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
@@ -193,9 +184,12 @@ export default function InvitationPage() {
                 {invitation.organizationName}
               </h2>
               <p className="text-sm text-gray-600">
-                {invitation.inviterName} ({invitation.inviterEmail}) has invited you to join as a{' '}
+                {invitation.inviterName} ({invitation.inviterEmail}) has invited
+                you to join as a{' '}
                 <span className="font-medium text-gray-900">
-                  {invitation.role === 'admin' ? 'Administrator' : 'Team Member'}
+                  {invitation.role === 'admin'
+                    ? 'Administrator'
+                    : 'Team Member'}
                 </span>
               </p>
             </div>
@@ -206,12 +200,14 @@ export default function InvitationPage() {
                 <UserGroupIcon className="h-5 w-5 text-gray-400 mt-0.5" />
                 <div className="ml-3">
                   <h4 className="text-sm font-medium text-gray-900">
-                    {invitation.role === 'admin' ? 'Administrator Access' : 'Member Access'}
+                    {invitation.role === 'admin'
+                      ? 'Administrator Access'
+                      : 'Member Access'}
                   </h4>
                   <p className="mt-1 text-sm text-gray-600">
                     {invitation.role === 'admin'
-                      ? 'You\'ll have access to manage team members, organization settings, and all features.'
-                      : 'You\'ll have access to organization resources and can collaborate with your team.'}
+                      ? "You'll have access to manage team members, organization settings, and all features."
+                      : "You'll have access to organization resources and can collaborate with your team."}
                   </p>
                 </div>
               </div>
@@ -221,10 +217,11 @@ export default function InvitationPage() {
             <div className="space-y-3">
               {!user && (
                 <p className="text-sm text-gray-600 text-center mb-4">
-                  You'll need to create an account or sign in to accept this invitation.
+                  You'll need to create an account or sign in to accept this
+                  invitation.
                 </p>
               )}
-              
+
               <Button
                 onClick={handleAcceptInvitation}
                 loading={accepting}
@@ -233,7 +230,7 @@ export default function InvitationPage() {
               >
                 {user ? 'Accept Invitation' : 'Sign Up & Accept'}
               </Button>
-              
+
               {user && (
                 <Button
                   onClick={() => router.push('/auth/sign-in')}
@@ -243,7 +240,7 @@ export default function InvitationPage() {
                   Sign In with Different Account
                 </Button>
               )}
-              
+
               <button
                 onClick={handleDeclineInvitation}
                 className="w-full text-sm text-gray-500 hover:text-gray-700"

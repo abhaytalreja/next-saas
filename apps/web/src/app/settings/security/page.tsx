@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-import { UpdatePasswordForm } from '@/packages/auth'
-import { useAuth } from '@/packages/auth'
-import { Button, Alert } from '@/packages/ui'
-import { 
-  ShieldCheckIcon, 
-  KeyIcon, 
+import { UpdatePasswordForm } from '@nextsaas/auth'
+import { useAuth } from '@nextsaas/auth'
+import { Button, Alert } from '@nextsaas/ui'
+import {
+  ShieldCheckIcon,
+  KeyIcon,
   DevicePhoneMobileIcon,
   ComputerDesktopIcon,
   GlobeAltIcon,
@@ -41,7 +41,11 @@ export default function SecuritySettingsPage() {
   ]
 
   const handleSignOutAllDevices = async () => {
-    if (confirm('Are you sure you want to sign out from all devices? You will need to sign in again.')) {
+    if (
+      confirm(
+        'Are you sure you want to sign out from all devices? You will need to sign in again.'
+      )
+    ) {
       await signOut()
     }
   }
@@ -50,9 +54,12 @@ export default function SecuritySettingsPage() {
     <div className="px-6 py-6 sm:px-8 sm:py-8 space-y-8">
       {/* Page Header */}
       <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-2xl font-semibold text-gray-900">Security Settings</h2>
+        <h2 className="text-2xl font-semibold text-gray-900">
+          Security Settings
+        </h2>
         <p className="mt-2 text-sm text-gray-600">
-          Manage your password and security preferences to keep your account safe.
+          Manage your password and security preferences to keep your account
+          safe.
         </p>
       </div>
 
@@ -71,7 +78,9 @@ export default function SecuritySettingsPage() {
       <div>
         <div className="flex items-center mb-4">
           <ShieldCheckIcon className="h-5 w-5 text-gray-400 mr-2" />
-          <h3 className="text-lg font-medium text-gray-900">Two-Factor Authentication</h3>
+          <h3 className="text-lg font-medium text-gray-900">
+            Two-Factor Authentication
+          </h3>
         </div>
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="flex items-start">
@@ -83,8 +92,9 @@ export default function SecuritySettingsPage() {
                 Two-factor authentication is not enabled
               </h4>
               <p className="mt-1 text-sm text-gray-600">
-                Add an extra layer of security to your account by enabling two-factor authentication.
-                You'll need to enter a code from your authenticator app when you sign in.
+                Add an extra layer of security to your account by enabling
+                two-factor authentication. You'll need to enter a code from your
+                authenticator app when you sign in.
               </p>
               <div className="mt-4">
                 <Button variant="outline" size="sm">
@@ -96,7 +106,8 @@ export default function SecuritySettingsPage() {
 
           <Alert type="info" className="mt-4">
             <p className="text-sm">
-              <strong>Coming Soon:</strong> Two-factor authentication will be available in the next update.
+              <strong>Coming Soon:</strong> Two-factor authentication will be
+              available in the next update.
             </p>
           </Alert>
         </div>
@@ -107,7 +118,9 @@ export default function SecuritySettingsPage() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <ComputerDesktopIcon className="h-5 w-5 text-gray-400 mr-2" />
-            <h3 className="text-lg font-medium text-gray-900">Active Sessions</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              Active Sessions
+            </h3>
           </div>
           <button
             onClick={() => setShowSessions(!showSessions)}
@@ -119,7 +132,7 @@ export default function SecuritySettingsPage() {
 
         {showSessions && (
           <div className="bg-white border border-gray-200 rounded-lg divide-y divide-gray-200">
-            {sessions.map((session) => (
+            {sessions.map(session => (
               <div key={session.id} className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start">
@@ -170,7 +183,9 @@ export default function SecuritySettingsPage() {
       <div>
         <div className="flex items-center mb-4">
           <ClockIcon className="h-5 w-5 text-gray-400 mr-2" />
-          <h3 className="text-lg font-medium text-gray-900">Recent Security Activity</h3>
+          <h3 className="text-lg font-medium text-gray-900">
+            Recent Security Activity
+          </h3>
         </div>
         <div className="bg-white border border-gray-200 rounded-lg">
           <ul className="divide-y divide-gray-200">
@@ -182,8 +197,12 @@ export default function SecuritySettingsPage() {
                   </div>
                 </div>
                 <div className="ml-3 flex-1">
-                  <p className="text-sm text-gray-900">Successful login from Chrome on MacOS</p>
-                  <p className="text-xs text-gray-500">San Francisco, CA • 2 hours ago</p>
+                  <p className="text-sm text-gray-900">
+                    Successful login from Chrome on MacOS
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    San Francisco, CA • 2 hours ago
+                  </p>
                 </div>
               </div>
             </li>
@@ -206,23 +225,35 @@ export default function SecuritySettingsPage() {
 
       {/* Account Security Tips */}
       <div className="mt-8 bg-blue-50 rounded-lg p-6">
-        <h3 className="text-sm font-medium text-blue-900 mb-3">Keep your account secure</h3>
+        <h3 className="text-sm font-medium text-blue-900 mb-3">
+          Keep your account secure
+        </h3>
         <ul className="space-y-2 text-sm text-blue-700">
           <li className="flex items-start">
             <span className="block mt-0.5 mr-2">•</span>
-            <span>Use a strong, unique password that you don't use on other websites</span>
+            <span>
+              Use a strong, unique password that you don't use on other websites
+            </span>
           </li>
           <li className="flex items-start">
             <span className="block mt-0.5 mr-2">•</span>
-            <span>Enable two-factor authentication for an extra layer of security</span>
+            <span>
+              Enable two-factor authentication for an extra layer of security
+            </span>
           </li>
           <li className="flex items-start">
             <span className="block mt-0.5 mr-2">•</span>
-            <span>Review your active sessions regularly and revoke access for unrecognized devices</span>
+            <span>
+              Review your active sessions regularly and revoke access for
+              unrecognized devices
+            </span>
           </li>
           <li className="flex items-start">
             <span className="block mt-0.5 mr-2">•</span>
-            <span>Be cautious of phishing emails asking for your password or personal information</span>
+            <span>
+              Be cautious of phishing emails asking for your password or
+              personal information
+            </span>
           </li>
         </ul>
       </div>

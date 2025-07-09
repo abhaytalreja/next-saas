@@ -5,7 +5,7 @@ import { ProtectedLayout } from '@nextsaas/auth'
 
 export default function HomePage() {
   return (
-    <ProtectedLayout>
+    <ProtectedLayout fallback={<div>Loading...</div>}>
       <div className="min-h-full">
         <div className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
           <Container>
@@ -77,7 +77,8 @@ export default function HomePage() {
                   <CardContent className="p-6">
                     <h3 className="font-semibold mb-2">📚 Documentation</h3>
                     <p className="text-gray-600 dark:text-gray-400 mb-4">
-                      Learn about the architecture, features, and best practices.
+                      Learn about the architecture, features, and best
+                      practices.
                     </p>
                     <a
                       href="http://localhost:3001"

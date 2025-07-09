@@ -3,8 +3,12 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ProtectedLayout, AccountDropdown, OrganizationSwitcher } from '@/packages/auth'
-import { 
+import {
+  ProtectedLayout,
+  AccountDropdown,
+  OrganizationSwitcher,
+} from '@nextsaas/auth'
+import {
   HomeIcon,
   ChartBarIcon,
   FolderIcon,
@@ -20,7 +24,11 @@ const navigation = [
   { name: 'Analytics', href: '/dashboard/analytics', icon: ChartBarIcon },
   { name: 'Projects', href: '/dashboard/projects', icon: FolderIcon },
   { name: 'Team', href: '/dashboard/team', icon: UsersIcon },
-  { name: 'Documents', href: '/dashboard/documents', icon: DocumentDuplicateIcon },
+  {
+    name: 'Documents',
+    href: '/dashboard/documents',
+    icon: DocumentDuplicateIcon,
+  },
   { name: 'Settings', href: '/settings', icon: Cog6ToothIcon },
 ]
 
@@ -39,9 +47,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className={`${sidebarOpen ? 'block' : 'hidden'} lg:hidden`}>
           <div className="fixed inset-0 z-40 flex">
             <div className="fixed inset-0" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-600 opacity-75" onClick={() => setSidebarOpen(false)} />
+              <div
+                className="absolute inset-0 bg-gray-600 opacity-75"
+                onClick={() => setSidebarOpen(false)}
+              />
             </div>
-            
+
             <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
               <div className="absolute top-0 right-0 -mr-12 pt-2">
                 <button
@@ -50,21 +61,29 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   onClick={() => setSidebarOpen(false)}
                 >
                   <span className="sr-only">Close sidebar</span>
-                  <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                  <XMarkIcon
+                    className="h-6 w-6 text-white"
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
-              
+
               <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
                 <div className="flex-shrink-0 flex items-center px-4">
-                  <Link href="/" className="text-2xl font-bold text-primary-600">
+                  <Link
+                    href="/"
+                    className="text-2xl font-bold text-primary-600"
+                  >
                     NextSaaS
                   </Link>
                 </div>
-                
+
                 <nav className="mt-8 px-2 space-y-1">
-                  {navigation.map((item) => {
-                    const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
-                    
+                  {navigation.map(item => {
+                    const isActive =
+                      pathname === item.href ||
+                      pathname.startsWith(item.href + '/')
+
                     return (
                       <Link
                         key={item.name}
@@ -92,12 +111,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   })}
                 </nav>
               </div>
-              
+
               <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
                 <OrganizationSwitcher className="w-full" />
               </div>
             </div>
-            
+
             <div className="flex-shrink-0 w-14" aria-hidden="true" />
           </div>
         </div>
@@ -111,12 +130,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   NextSaaS
                 </Link>
               </div>
-              
+
               <nav className="mt-8 flex-1 px-2 space-y-1" aria-label="Sidebar">
-                {navigation.map((item) => {
-                  const isActive = pathname === item.href || 
-                    (item.href !== '/dashboard' && pathname.startsWith(item.href))
-                  
+                {navigation.map(item => {
+                  const isActive =
+                    pathname === item.href ||
+                    (item.href !== '/dashboard' &&
+                      pathname.startsWith(item.href))
+
                   return (
                     <Link
                       key={item.name}
@@ -144,7 +165,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 })}
               </nav>
             </div>
-            
+
             <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
               <OrganizationSwitcher className="w-full" />
             </div>
@@ -166,14 +187,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     <span className="sr-only">Open sidebar</span>
                     <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                   </button>
-                  
+
                   <h1 className="text-lg font-semibold text-gray-900 lg:hidden">
-                    {navigation.find(item => 
-                      pathname === item.href || pathname.startsWith(item.href + '/')
+                    {navigation.find(
+                      item =>
+                        pathname === item.href ||
+                        pathname.startsWith(item.href + '/')
                     )?.name || 'Dashboard'}
                   </h1>
                 </div>
-                
+
                 <div className="flex items-center space-x-4">
                   {/* Add notification bell, search, etc. here */}
                   <AccountDropdown />
@@ -183,9 +206,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </header>
 
           {/* Page content */}
-          <main className="flex-1">
-            {children}
-          </main>
+          <main className="flex-1">{children}</main>
         </div>
       </div>
     </ProtectedLayout>

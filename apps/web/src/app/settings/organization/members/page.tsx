@@ -1,15 +1,26 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAuth, useOrganization, MembersList, InvitationForm } from '@/packages/auth'
-import { Button, Alert } from '@/packages/ui'
+import {
+  useAuth,
+  useOrganization,
+  MembersList,
+  InvitationForm,
+} from '@nextsaas/auth'
+import { Button, Alert } from '@nextsaas/ui'
 import { UserPlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 
 export default function OrganizationMembersPage() {
   const { user } = useAuth()
-  const { currentOrganization, members, inviteMember, removeMember, updateMemberRole } = useOrganization()
+  const {
+    currentOrganization,
+    members,
+    inviteMember,
+    removeMember,
+    updateMemberRole,
+  } = useOrganization()
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [inviteSuccess, setInviteSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -52,13 +63,16 @@ export default function OrganizationMembersPage() {
     },
   ]
 
-  const handleInviteMembers = async (data: { emails: Array<{ email: string; role: 'admin' | 'member' }>, message?: string }) => {
+  const handleInviteMembers = async (data: {
+    emails: Array<{ email: string; role: 'admin' | 'member' }>
+    message?: string
+  }) => {
     try {
       // In production, this would call the actual invite API
       for (const invite of data.emails) {
         await inviteMember(invite.email, invite.role)
       }
-      
+
       setShowInviteModal(false)
       setInviteSuccess(true)
       setTimeout(() => setInviteSuccess(false), 5000)
@@ -75,7 +89,10 @@ export default function OrganizationMembersPage() {
     }
   }
 
-  const handleChangeRole = async (memberId: string, role: 'admin' | 'member') => {
+  const handleChangeRole = async (
+    memberId: string,
+    role: 'admin' | 'member'
+  ) => {
     try {
       await updateMemberRole(memberId, role)
     } catch (err: any) {
@@ -92,8 +109,10 @@ export default function OrganizationMembersPage() {
     }
   }
 
-  const currentUserRole = mockMembers.find(m => m.id === user?.id)?.role || 'member'
-  const canManageMembers = currentUserRole === 'owner' || currentUserRole === 'admin'
+  const currentUserRole =
+    mockMembers.find(m => m.id === user?.id)?.role || 'member'
+  const canManageMembers =
+    currentUserRole === 'owner' || currentUserRole === 'admin'
 
   return (
     <div className="px-6 py-6 sm:px-8 sm:py-8 space-y-8">
@@ -101,9 +120,12 @@ export default function OrganizationMembersPage() {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900">Team Members</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Team Members
+            </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Manage who has access to {currentOrganization?.name || 'your organization'}.
+              Manage who has access to{' '}
+              {currentOrganization?.name || 'your organization'}.
             </p>
           </div>
           {canManageMembers && (
@@ -123,7 +145,8 @@ export default function OrganizationMembersPage() {
 
       {inviteSuccess && (
         <Alert type="success" onClose={() => setInviteSuccess(false)}>
-          Invitations sent successfully! New members will receive an email to join your organization.
+          Invitations sent successfully! New members will receive an email to
+          join your organization.
         </Alert>
       )}
 
@@ -135,10 +158,11 @@ export default function OrganizationMembersPage() {
               Members ({mockMembers.length})
             </h3>
             <span className="text-sm text-gray-500">
-              {mockMembers.filter(m => m.status === 'invited').length} pending invitations
+              {mockMembers.filter(m => m.status === 'invited').length} pending
+              invitations
             </span>
           </div>
-          
+
           <MembersList
             members={mockMembers}
             currentUserId={user?.id}
@@ -153,7 +177,11 @@ export default function OrganizationMembersPage() {
 
       {/* Invite Modal */}
       <Transition appear show={showInviteModal} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setShowInviteModal(false)}>
+        <Dialog
+          as="div"
+          className="relative z-50"
+          onClose={() => setShowInviteModal(false)}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
