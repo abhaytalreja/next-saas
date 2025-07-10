@@ -1,7 +1,15 @@
-import { CommandPalette, Button } from '@nextsaas/ui'
+import { CommandPalette, Button, type CommandItem } from '@nextsaas/ui'
 import { ComponentLayout } from '../../components/ComponentLayout'
 import { useState } from 'react'
-import { Search, Home, Users, Settings, FileText, Plus, Mail } from 'lucide-react'
+import {
+  Search,
+  Home,
+  Users,
+  Settings,
+  FileText,
+  Plus,
+  Mail,
+} from 'lucide-react'
 
 const BasicExample = () => {
   const [open, setOpen] = useState(false)
@@ -54,10 +62,8 @@ const BasicExample = () => {
 
   return (
     <div>
-      <Button onClick={() => setOpen(true)}>
-        Open Command Palette
-      </Button>
-      
+      <Button onClick={() => setOpen(true)}>Open Command Palette</Button>
+
       <CommandPalette
         open={open}
         onOpenChange={setOpen}
@@ -134,7 +140,7 @@ const WithGroupsExample = () => {
       <Button onClick={() => setOpen(true)}>
         Open Grouped Command Palette
       </Button>
-      
+
       <CommandPalette
         open={open}
         onOpenChange={setOpen}
@@ -148,7 +154,7 @@ const WithGroupsExample = () => {
 
 const WithRecentItemsExample = () => {
   const [open, setOpen] = useState(false)
-  const [recentItems, setRecentItems] = useState([
+  const [recentItems, setRecentItems] = useState<CommandItem[]>([
     {
       id: 'recent-dashboard',
       label: 'Dashboard',
@@ -188,10 +194,8 @@ const WithRecentItemsExample = () => {
 
   return (
     <div>
-      <Button onClick={() => setOpen(true)}>
-        Open with Recent Items
-      </Button>
-      
+      <Button onClick={() => setOpen(true)}>Open with Recent Items</Button>
+
       <CommandPalette
         open={open}
         onOpenChange={setOpen}

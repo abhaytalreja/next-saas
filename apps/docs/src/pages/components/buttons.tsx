@@ -14,7 +14,8 @@ export default function ButtonsPage() {
 
       <h2>Button Variants</h2>
       <p>
-        The Button component supports multiple variants to convey different actions and importance levels.
+        The Button component supports multiple variants to convey different
+        actions and importance levels.
       </p>
 
       <div className="not-prose">
@@ -57,9 +58,7 @@ export default function ButtonsPage() {
       </pre>
 
       <h2>Button Sizes</h2>
-      <p>
-        Buttons come in three sizes to fit different UI contexts.
-      </p>
+      <p>Buttons come in three sizes to fit different UI contexts.</p>
 
       <div className="not-prose">
         <div className="border border-gray-200 rounded-lg p-6 mb-8">
@@ -87,7 +86,8 @@ export default function ButtonsPage() {
 
       <h2>Buttons with Icons</h2>
       <p>
-        Enhance buttons with icons to provide visual context and improve usability.
+        Enhance buttons with icons to provide visual context and improve
+        usability.
       </p>
 
       <div className="not-prose">
@@ -131,20 +131,30 @@ export default function ButtonsPage() {
 
       <h2>Disabled State</h2>
       <p>
-        Buttons can be disabled to prevent user interaction when an action is not available.
+        Buttons can be disabled to prevent user interaction when an action is
+        not available.
       </p>
 
       <div className="not-prose">
         <div className="border border-gray-200 rounded-lg p-6 mb-8">
           <h3 className="text-lg font-semibold mb-4">Live Example</h3>
           <div className="flex flex-wrap gap-4 mb-6">
-            <button disabled className="px-4 py-2 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed">
+            <button
+              disabled
+              className="px-4 py-2 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed"
+            >
               Default Disabled
             </button>
-            <button disabled className="px-4 py-2 border border-gray-200 text-gray-400 rounded-md cursor-not-allowed">
+            <button
+              disabled
+              className="px-4 py-2 border border-gray-200 text-gray-400 rounded-md cursor-not-allowed"
+            >
               Outline Disabled
             </button>
-            <button disabled className="px-4 py-2 bg-gray-100 text-gray-400 rounded-md cursor-not-allowed">
+            <button
+              disabled
+              className="px-4 py-2 bg-gray-100 text-gray-400 rounded-md cursor-not-allowed"
+            >
               Secondary Disabled
             </button>
           </div>
@@ -160,18 +170,25 @@ export default function ButtonsPage() {
 
       <h2>Loading State</h2>
       <p>
-        Display loading states to provide feedback during asynchronous operations.
+        Display loading states to provide feedback during asynchronous
+        operations.
       </p>
 
       <div className="not-prose">
         <div className="border border-gray-200 rounded-lg p-6 mb-8">
           <h3 className="text-lg font-semibold mb-4">Live Example</h3>
           <div className="flex flex-wrap gap-4 mb-6">
-            <button disabled className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md cursor-not-allowed">
+            <button
+              disabled
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md cursor-not-allowed"
+            >
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"></div>
               Loading...
             </button>
-            <button disabled className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-md cursor-not-allowed">
+            <button
+              disabled
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-md cursor-not-allowed"
+            >
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"></div>
               Processing
             </button>
@@ -193,9 +210,7 @@ export default function ButtonsPage() {
       </pre>
 
       <h2>Button Groups</h2>
-      <p>
-        Group related buttons together for a cohesive interface.
-      </p>
+      <p>Group related buttons together for a cohesive interface.</p>
 
       <div className="not-prose">
         <div className="border border-gray-200 rounded-lg p-6 mb-8">
@@ -212,7 +227,7 @@ export default function ButtonsPage() {
                 Right
               </button>
             </div>
-            
+
             <div className="flex gap-2">
               <button className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
                 Option 1
@@ -258,46 +273,83 @@ export default function ButtonsPage() {
           <table className="min-w-full border border-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Prop</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Type</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Default</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">Description</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Prop
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Type
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Default
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-900">
+                  Description
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900">variant</td>
+                <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                  variant
+                </td>
                 <td className="px-4 py-3 text-sm text-gray-600">
-                  <code>"default" | "destructive" | "outline" | "secondary" | "ghost" | "link"</code>
+                  <code>
+                    "default" | "destructive" | "outline" | "secondary" |
+                    "ghost" | "link"
+                  </code>
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600">"default"</td>
-                <td className="px-4 py-3 text-sm text-gray-600">The visual style variant</td>
+                <td className="px-4 py-3 text-sm text-gray-600">
+                  The visual style variant
+                </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900">size</td>
+                <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                  size
+                </td>
                 <td className="px-4 py-3 text-sm text-gray-600">
                   <code>"sm" | "default" | "lg"</code>
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600">"default"</td>
-                <td className="px-4 py-3 text-sm text-gray-600">The size of the button</td>
+                <td className="px-4 py-3 text-sm text-gray-600">
+                  The size of the button
+                </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900">disabled</td>
-                <td className="px-4 py-3 text-sm text-gray-600"><code>boolean</code></td>
+                <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                  disabled
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600">
+                  <code>boolean</code>
+                </td>
                 <td className="px-4 py-3 text-sm text-gray-600">false</td>
-                <td className="px-4 py-3 text-sm text-gray-600">Whether the button is disabled</td>
+                <td className="px-4 py-3 text-sm text-gray-600">
+                  Whether the button is disabled
+                </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900">children</td>
-                <td className="px-4 py-3 text-sm text-gray-600"><code>ReactNode</code></td>
+                <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                  children
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600">
+                  <code>ReactNode</code>
+                </td>
                 <td className="px-4 py-3 text-sm text-gray-600">-</td>
-                <td className="px-4 py-3 text-sm text-gray-600">The button content</td>
+                <td className="px-4 py-3 text-sm text-gray-600">
+                  The button content
+                </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900">onClick</td>
-                <td className="px-4 py-3 text-sm text-gray-600"><code>(event: MouseEvent) => void</code></td>
+                <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                  onClick
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600">
+                  <code>(event: MouseEvent) =&gt; void</code>
+                </td>
                 <td className="px-4 py-3 text-sm text-gray-600">-</td>
-                <td className="px-4 py-3 text-sm text-gray-600">Click event handler</td>
+                <td className="px-4 py-3 text-sm text-gray-600">
+                  Click event handler
+                </td>
               </tr>
             </tbody>
           </table>

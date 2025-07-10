@@ -1,16 +1,27 @@
 import { ContextMenu } from '@nextsaas/ui'
 import { ComponentLayout } from '../../components/ComponentLayout'
 import { useState } from 'react'
-import { 
-  Copy, Cut, Paste, Trash, Edit, Share, Download, 
-  Star, Heart, Bookmark, Eye, EyeOff, RefreshCw
+import {
+  Copy,
+  Scissors,
+  Clipboard,
+  Trash,
+  Edit,
+  Share,
+  Download,
+  Star,
+  Heart,
+  Bookmark,
+  Eye,
+  EyeOff,
+  RefreshCw,
 } from 'lucide-react'
 
 const BasicExample = () => {
   const menuItems = [
-    { label: 'Cut', onClick: () => console.log('Cut') },
+    { label: 'Scissors', onClick: () => console.log('Scissors') },
     { label: 'Copy', onClick: () => console.log('Copy') },
-    { label: 'Paste', onClick: () => console.log('Paste') },
+    { label: 'Clipboard', onClick: () => console.log('Clipboard') },
     { type: 'separator' as const },
     { label: 'Delete', onClick: () => console.log('Delete') },
   ]
@@ -26,14 +37,27 @@ const BasicExample = () => {
 
 const WithIconsExample = () => {
   const menuItems = [
-    { label: 'Cut', icon: Cut, onClick: () => console.log('Cut') },
+    {
+      label: 'Scissors',
+      icon: Scissors,
+      onClick: () => console.log('Scissors'),
+    },
     { label: 'Copy', icon: Copy, onClick: () => console.log('Copy') },
-    { label: 'Paste', icon: Paste, onClick: () => console.log('Paste') },
+    {
+      label: 'Clipboard',
+      icon: Clipboard,
+      onClick: () => console.log('Clipboard'),
+    },
     { type: 'separator' as const },
     { label: 'Edit', icon: Edit, onClick: () => console.log('Edit') },
     { label: 'Share', icon: Share, onClick: () => console.log('Share') },
     { type: 'separator' as const },
-    { label: 'Delete', icon: Trash, onClick: () => console.log('Delete'), destructive: true },
+    {
+      label: 'Delete',
+      icon: Trash,
+      onClick: () => console.log('Delete'),
+      destructive: true,
+    },
   ]
 
   return (
@@ -57,7 +81,7 @@ const FileManagerExample = () => {
   const handleFileAction = (action: string, fileId: string) => {
     const file = files.find(f => f.id === fileId)
     console.log(`${action}: ${file?.name}`)
-    
+
     if (action === 'Delete') {
       setFiles(files.filter(f => f.id !== fileId))
     }
@@ -69,20 +93,41 @@ const FileManagerExample = () => {
         <h4 className="text-sm font-medium text-gray-700">File Manager</h4>
       </div>
       <div className="divide-y divide-gray-200">
-        {files.map((file) => (
+        {files.map(file => (
           <ContextMenu
             key={file.id}
             items={[
-              { label: 'Open', icon: Eye, onClick: () => handleFileAction('Open', file.id) },
-              { label: 'Download', icon: Download, onClick: () => handleFileAction('Download', file.id) },
+              {
+                label: 'Open',
+                icon: Eye,
+                onClick: () => handleFileAction('Open', file.id),
+              },
+              {
+                label: 'Download',
+                icon: Download,
+                onClick: () => handleFileAction('Download', file.id),
+              },
               { type: 'separator' as const },
-              { label: 'Copy', icon: Copy, onClick: () => handleFileAction('Copy', file.id) },
-              { label: 'Share', icon: Share, onClick: () => handleFileAction('Share', file.id) },
+              {
+                label: 'Copy',
+                icon: Copy,
+                onClick: () => handleFileAction('Copy', file.id),
+              },
+              {
+                label: 'Share',
+                icon: Share,
+                onClick: () => handleFileAction('Share', file.id),
+              },
               { type: 'separator' as const },
-              { label: 'Delete', icon: Trash, onClick: () => handleFileAction('Delete', file.id), destructive: true },
+              {
+                label: 'Delete',
+                icon: Trash,
+                onClick: () => handleFileAction('Delete', file.id),
+                destructive: true,
+              },
             ]}
           >
-            <div 
+            <div
               className={`p-4 cursor-pointer hover:bg-gray-50 ${selectedFile === file.id ? 'bg-blue-50' : ''}`}
               onClick={() => setSelectedFile(file.id)}
             >
@@ -91,7 +136,9 @@ const FileManagerExample = () => {
                   <p className="font-medium text-gray-900">{file.name}</p>
                   <p className="text-sm text-gray-500">{file.size}</p>
                 </div>
-                <span className="text-xs text-gray-400 uppercase">{file.type}</span>
+                <span className="text-xs text-gray-400 uppercase">
+                  {file.type}
+                </span>
               </div>
             </div>
           </ContextMenu>
@@ -112,8 +159,11 @@ const NestedMenuExample = () => {
       children: [
         { label: 'Email', onClick: () => console.log('Share via Email') },
         { label: 'Link', onClick: () => console.log('Share via Link') },
-        { label: 'Social Media', onClick: () => console.log('Share via Social') },
-      ]
+        {
+          label: 'Social Media',
+          onClick: () => console.log('Share via Social'),
+        },
+      ],
     },
     {
       label: 'Export',
@@ -122,10 +172,15 @@ const NestedMenuExample = () => {
         { label: 'PDF', onClick: () => console.log('Export as PDF') },
         { label: 'PNG', onClick: () => console.log('Export as PNG') },
         { label: 'CSV', onClick: () => console.log('Export as CSV') },
-      ]
+      ],
     },
     { type: 'separator' as const },
-    { label: 'Delete', icon: Trash, onClick: () => console.log('Delete'), destructive: true },
+    {
+      label: 'Delete',
+      icon: Trash,
+      onClick: () => console.log('Delete'),
+      destructive: true,
+    },
   ]
 
   return (
@@ -138,7 +193,9 @@ const NestedMenuExample = () => {
 }
 
 const TextEditorExample = () => {
-  const [text, setText] = useState('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Select some text and right-click to see context menu options.')
+  const [text, setText] = useState(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Select some text and right-click to see context menu options.'
+  )
   const [selectedText, setSelectedText] = useState('')
 
   const handleMouseUp = () => {
@@ -147,37 +204,39 @@ const TextEditorExample = () => {
   }
 
   const menuItems = [
-    { 
-      label: 'Cut', 
-      icon: Cut, 
-      onClick: () => console.log('Cut:', selectedText),
-      disabled: !selectedText
+    {
+      label: 'Scissors',
+      icon: Scissors,
+      onClick: () => console.log('Scissors:', selectedText),
+      disabled: !selectedText,
     },
-    { 
-      label: 'Copy', 
-      icon: Copy, 
+    {
+      label: 'Copy',
+      icon: Copy,
       onClick: () => console.log('Copy:', selectedText),
-      disabled: !selectedText
+      disabled: !selectedText,
     },
-    { label: 'Paste', icon: Paste, onClick: () => console.log('Paste') },
+    {
+      label: 'Clipboard',
+      icon: Clipboard,
+      onClick: () => console.log('Clipboard'),
+    },
     { type: 'separator' as const },
     { label: 'Select All', onClick: () => console.log('Select All') },
-    { 
-      label: 'Find', 
+    {
+      label: 'Find',
       onClick: () => console.log('Find:', selectedText),
-      disabled: !selectedText
+      disabled: !selectedText,
     },
   ]
 
   return (
     <ContextMenu items={menuItems}>
-      <div 
+      <div
         className="p-6 bg-white border border-gray-200 rounded-lg"
         onMouseUp={handleMouseUp}
       >
-        <p className="text-gray-700 leading-relaxed select-text">
-          {text}
-        </p>
+        <p className="text-gray-700 leading-relaxed select-text">{text}</p>
       </div>
     </ContextMenu>
   )
@@ -200,47 +259,57 @@ const DynamicMenuExample = () => {
     return [
       { label: 'Open', icon: Eye, onClick: () => console.log('Open:', itemId) },
       { type: 'separator' as const },
-      { 
-        label: isFavorite ? 'Remove from Favorites' : 'Add to Favorites', 
+      {
+        label: isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
         icon: isFavorite ? Heart : Star,
         onClick: () => {
-          setFavorites(prev => 
+          setFavorites(prev =>
             isFavorite ? prev.filter(id => id !== itemId) : [...prev, itemId]
           )
-        }
+        },
       },
-      { 
-        label: isHidden ? 'Show' : 'Hide', 
+      {
+        label: isHidden ? 'Show' : 'Hide',
         icon: isHidden ? Eye : EyeOff,
         onClick: () => {
-          setHidden(prev => 
+          setHidden(prev =>
             isHidden ? prev.filter(id => id !== itemId) : [...prev, itemId]
           )
-        }
+        },
       },
       { type: 'separator' as const },
-      { label: 'Refresh', icon: RefreshCw, onClick: () => console.log('Refresh:', itemId) },
+      {
+        label: 'Refresh',
+        icon: RefreshCw,
+        onClick: () => console.log('Refresh:', itemId),
+      },
     ]
   }
 
   return (
     <div className="space-y-2">
-      {items.map((item) => {
+      {items.map(item => {
         const isFavorite = favorites.includes(item.id)
         const isHidden = hidden.includes(item.id)
-        
+
         return (
           <ContextMenu key={item.id} items={getMenuItems(item.id)}>
-            <div className={`p-4 rounded-lg border ${isHidden ? 'opacity-50' : ''} ${
-              isFavorite ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200 bg-white'
-            } cursor-context-menu`}>
+            <div
+              className={`p-4 rounded-lg border ${isHidden ? 'opacity-50' : ''} ${
+                isFavorite
+                  ? 'border-yellow-300 bg-yellow-50'
+                  : 'border-gray-200 bg-white'
+              } cursor-context-menu`}
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium text-gray-900">{item.name}</p>
                   <p className="text-sm text-gray-500">{item.type}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  {isFavorite && <Heart className="w-4 h-4 text-yellow-500 fill-yellow-500" />}
+                  {isFavorite && (
+                    <Heart className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                  )}
                   {isHidden && <EyeOff className="w-4 h-4 text-gray-400" />}
                 </div>
               </div>
@@ -257,9 +326,18 @@ const DisabledExample = () => {
     { label: 'Undo', onClick: () => console.log('Undo'), disabled: true },
     { label: 'Redo', onClick: () => console.log('Redo'), disabled: true },
     { type: 'separator' as const },
-    { label: 'Cut', icon: Cut, onClick: () => console.log('Cut') },
+    {
+      label: 'Scissors',
+      icon: Scissors,
+      onClick: () => console.log('Scissors'),
+    },
     { label: 'Copy', icon: Copy, onClick: () => console.log('Copy') },
-    { label: 'Paste', icon: Paste, onClick: () => console.log('Paste'), disabled: true },
+    {
+      label: 'Clipboard',
+      icon: Clipboard,
+      onClick: () => console.log('Clipboard'),
+      disabled: true,
+    },
   ]
 
   return (
@@ -275,9 +353,9 @@ const examples = [
   {
     title: 'Basic Context Menu',
     code: `const menuItems = [
-  { label: 'Cut', onClick: () => console.log('Cut') },
+  { label: 'Scissors', onClick: () => console.log('Scissors') },
   { label: 'Copy', onClick: () => console.log('Copy') },
-  { label: 'Paste', onClick: () => console.log('Paste') },
+  { label: 'Clipboard', onClick: () => console.log('Clipboard') },
   { type: 'separator' },
   { label: 'Delete', onClick: () => console.log('Delete') },
 ]
@@ -292,9 +370,9 @@ const examples = [
   {
     title: 'With Icons',
     code: `const menuItems = [
-  { label: 'Cut', icon: Cut, onClick: () => console.log('Cut') },
+  { label: 'Scissors', icon: Scissors, onClick: () => console.log('Scissors') },
   { label: 'Copy', icon: Copy, onClick: () => console.log('Copy') },
-  { label: 'Paste', icon: Paste, onClick: () => console.log('Paste') },
+  { label: 'Clipboard', icon: Clipboard, onClick: () => console.log('Clipboard') },
   { type: 'separator' },
   { label: 'Edit', icon: Edit, onClick: () => console.log('Edit') },
   { label: 'Share', icon: Share, onClick: () => console.log('Share') },
@@ -381,9 +459,9 @@ const handleMouseUp = () => {
 
 const menuItems = [
   { 
-    label: 'Cut', 
-    icon: Cut, 
-    onClick: () => console.log('Cut:', selectedText),
+    label: 'Scissors', 
+    icon: Scissors, 
+    onClick: () => console.log('Scissors:', selectedText),
     disabled: !selectedText
   },
   { 
@@ -392,7 +470,7 @@ const menuItems = [
     onClick: () => console.log('Copy:', selectedText),
     disabled: !selectedText
   },
-  { label: 'Paste', icon: Paste, onClick: () => console.log('Paste') },
+  { label: 'Clipboard', icon: Clipboard, onClick: () => console.log('Clipboard') },
   { type: 'separator' },
   { label: 'Select All', onClick: () => console.log('Select All') },
 ]
@@ -444,9 +522,9 @@ const getMenuItems = (itemId) => {
   { label: 'Undo', onClick: () => console.log('Undo'), disabled: true },
   { label: 'Redo', onClick: () => console.log('Redo'), disabled: true },
   { type: 'separator' },
-  { label: 'Cut', icon: Cut, onClick: () => console.log('Cut') },
+  { label: 'Scissors', icon: Scissors, onClick: () => console.log('Scissors') },
   { label: 'Copy', icon: Copy, onClick: () => console.log('Copy') },
-  { label: 'Paste', icon: Paste, onClick: () => console.log('Paste'), disabled: true },
+  { label: 'Clipboard', icon: Clipboard, onClick: () => console.log('Clipboard'), disabled: true },
 ]
 
 <ContextMenu items={menuItems}>

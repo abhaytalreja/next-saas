@@ -1,3 +1,4 @@
+import React from 'react'
 import { Breadcrumb } from '@nextsaas/ui'
 import { ComponentLayout } from '../../components/ComponentLayout'
 import { Home, ChevronRight, Folder, File } from 'lucide-react'
@@ -7,7 +8,7 @@ const BasicExample = () => {
     { label: 'Home', href: '/' },
     { label: 'Products', href: '/products' },
     { label: 'Laptops', href: '/products/laptops' },
-    { label: 'MacBook Pro', href: '/products/laptops/macbook-pro' }
+    { label: 'MacBook Pro', href: '/products/laptops/macbook-pro' },
   ]
 
   return <Breadcrumb items={items} />
@@ -18,7 +19,11 @@ const WithIconsExample = () => {
     { label: 'Home', href: '/', icon: Home },
     { label: 'Documents', href: '/documents', icon: Folder },
     { label: 'Projects', href: '/documents/projects', icon: Folder },
-    { label: 'project-readme.md', href: '/documents/projects/readme', icon: File }
+    {
+      label: 'project-readme.md',
+      href: '/documents/projects/readme',
+      icon: File,
+    },
   ]
 
   return <Breadcrumb items={items} />
@@ -29,29 +34,40 @@ const SeparatorExample = () => {
     { label: 'Home', href: '/' },
     { label: 'Category', href: '/category' },
     { label: 'Subcategory', href: '/category/subcategory' },
-    { label: 'Current Page' }
+    { label: 'Current Page' },
   ]
 
   return (
     <div className="space-y-4">
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Chevron Separator (Default)</h4>
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Chevron Separator (Default)
+        </h4>
         <Breadcrumb items={items} />
       </div>
-      
+
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Slash Separator</h4>
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Slash Separator
+        </h4>
         <Breadcrumb items={items} separator="/" />
       </div>
-      
+
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Arrow Separator</h4>
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Arrow Separator
+        </h4>
         <Breadcrumb items={items} separator="→" />
       </div>
-      
+
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Custom Icon Separator</h4>
-        <Breadcrumb items={items} separator={<ChevronRight className="w-4 h-4 text-gray-400" />} />
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Custom Icon Separator
+        </h4>
+        <Breadcrumb
+          items={items}
+          separator={<ChevronRight className="w-4 h-4 text-gray-400" />}
+        />
       </div>
     </div>
   )
@@ -61,24 +77,26 @@ const SizesExample = () => {
   const items = [
     { label: 'Home', href: '/' },
     { label: 'Category', href: '/category' },
-    { label: 'Current Page' }
+    { label: 'Current Page' },
   ]
 
   return (
     <div className="space-y-4">
       <div>
         <h4 className="text-sm font-medium text-gray-700 mb-2">Small</h4>
-        <Breadcrumb items={items} size="sm" />
+        <Breadcrumb items={items} className="text-xs" />
       </div>
-      
+
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Medium (Default)</h4>
-        <Breadcrumb items={items} size="md" />
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Medium (Default)
+        </h4>
+        <Breadcrumb items={items} className="text-sm" />
       </div>
-      
+
       <div>
         <h4 className="text-sm font-medium text-gray-700 mb-2">Large</h4>
-        <Breadcrumb items={items} size="lg" />
+        <Breadcrumb items={items} className="text-base" />
       </div>
     </div>
   )
@@ -92,21 +110,23 @@ const CollapsedExample = () => {
     { label: 'Level 3', href: '/level1/level2/level3' },
     { label: 'Level 4', href: '/level1/level2/level3/level4' },
     { label: 'Level 5', href: '/level1/level2/level3/level4/level5' },
-    { label: 'Current Page' }
+    { label: 'Current Page' },
   ]
 
   return (
     <div className="space-y-4">
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">All Items Visible</h4>
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          All Items Visible
+        </h4>
         <Breadcrumb items={items} />
       </div>
-      
+
       <div>
         <h4 className="text-sm font-medium text-gray-700 mb-2">Max 4 Items</h4>
         <Breadcrumb items={items} maxItems={4} />
       </div>
-      
+
       <div>
         <h4 className="text-sm font-medium text-gray-700 mb-2">Max 3 Items</h4>
         <Breadcrumb items={items} maxItems={3} />
@@ -116,8 +136,10 @@ const CollapsedExample = () => {
 }
 
 const InteractiveExample = () => {
-  const [currentPath, setCurrentPath] = React.useState('/products/laptops/macbook-pro')
-  
+  const [currentPath, setCurrentPath] = React.useState(
+    '/products/laptops/macbook-pro'
+  )
+
   const allPaths = {
     '/': 'Home',
     '/products': 'Products',
@@ -130,16 +152,16 @@ const InteractiveExample = () => {
   const generateBreadcrumbItems = (path: string) => {
     const segments = path.split('/').filter(Boolean)
     const items = [{ label: 'Home', href: '/' }]
-    
+
     let currentPath = ''
     segments.forEach(segment => {
       currentPath += `/${segment}`
       items.push({
         label: allPaths[currentPath as keyof typeof allPaths] || segment,
-        href: currentPath
+        href: currentPath,
       })
     })
-    
+
     return items
   }
 
@@ -152,17 +174,21 @@ const InteractiveExample = () => {
   return (
     <div className="space-y-4">
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Interactive Breadcrumb</h4>
-        <Breadcrumb 
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Interactive Breadcrumb
+        </h4>
+        <Breadcrumb
           items={items.map(item => ({
             ...item,
-            onClick: () => handleItemClick(item.href)
-          }))} 
+            onClick: () => handleItemClick(item.href),
+          }))}
         />
       </div>
-      
+
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Quick Navigation</h4>
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Quick Navigation
+        </h4>
         <div className="flex flex-wrap gap-2">
           {Object.entries(allPaths).map(([path, label]) => (
             <button
@@ -179,9 +205,10 @@ const InteractiveExample = () => {
           ))}
         </div>
       </div>
-      
+
       <div className="text-sm text-gray-600">
-        Current path: <code className="bg-gray-100 px-2 py-1 rounded">{currentPath}</code>
+        Current path:{' '}
+        <code className="bg-gray-100 px-2 py-1 rounded">{currentPath}</code>
       </div>
     </div>
   )
@@ -191,34 +218,31 @@ const CustomStyleExample = () => {
   const items = [
     { label: 'Home', href: '/' },
     { label: 'Products', href: '/products' },
-    { label: 'Current Page' }
+    { label: 'Current Page' },
   ]
 
   return (
     <div className="space-y-4">
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Default Style</h4>
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Default Style
+        </h4>
         <Breadcrumb items={items} />
       </div>
-      
+
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Custom Colors</h4>
-        <Breadcrumb 
-          items={items}
-          className="text-purple-600"
-          linkClassName="hover:text-purple-800"
-          separatorClassName="text-purple-400"
-        />
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Custom Colors
+        </h4>
+        <Breadcrumb items={items} className="text-purple-600" />
       </div>
-      
+
       <div>
-        <h4 className="text-sm font-medium text-gray-700 mb-2">Background Style</h4>
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
+          Background Style
+        </h4>
         <div className="bg-gray-100 p-3 rounded">
-          <Breadcrumb 
-            items={items}
-            className="text-gray-700"
-            linkClassName="hover:text-gray-900 hover:underline"
-          />
+          <Breadcrumb items={items} className="text-gray-700" />
         </div>
       </div>
     </div>
@@ -339,15 +363,12 @@ const items = generateBreadcrumbItems(currentPath)
 <Breadcrumb 
   items={items}
   className="text-purple-600"
-  linkClassName="hover:text-purple-800"
-  separatorClassName="text-purple-400"
 />
 
 <div className="bg-gray-100 p-3 rounded">
   <Breadcrumb 
     items={items}
     className="text-gray-700"
-    linkClassName="hover:text-gray-900 hover:underline"
   />
 </div>`,
     component: <CustomStyleExample />,

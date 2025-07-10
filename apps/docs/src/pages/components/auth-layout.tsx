@@ -1,6 +1,6 @@
 import { AuthLayout, Button, Input, Checkbox } from '@nextsaas/ui'
 import { ComponentLayout } from '../../components/ComponentLayout'
-import { Mail, Lock, Eye, EyeOff, Github, Google } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, Github } from 'lucide-react'
 import { useState } from 'react'
 
 const LoginForm = () => {
@@ -10,13 +10,9 @@ const LoginForm = () => {
     <div className="space-y-4">
       <div>
         <label className="block text-sm font-medium mb-2">Email</label>
-        <Input
-          type="email"
-          placeholder="Enter your email"
-          className="w-full"
-        />
+        <Input type="email" placeholder="Enter your email" className="w-full" />
       </div>
-      
+
       <div>
         <label className="block text-sm font-medium mb-2">Password</label>
         <div className="relative">
@@ -34,37 +30,39 @@ const LoginForm = () => {
           </button>
         </div>
       </div>
-      
+
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Checkbox id="remember" />
-          <label htmlFor="remember" className="text-sm">Remember me</label>
+          <label htmlFor="remember" className="text-sm">
+            Remember me
+          </label>
         </div>
         <a href="#" className="text-sm text-primary hover:underline">
           Forgot password?
         </a>
       </div>
-      
-      <Button className="w-full">
-        Sign In
-      </Button>
-      
+
+      <Button className="w-full">Sign In</Button>
+
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-muted"></div>
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-2 gap-3">
         <Button variant="outline" className="w-full">
           <Github className="mr-2 h-4 w-4" />
           GitHub
         </Button>
         <Button variant="outline" className="w-full">
-          <Google className="mr-2 h-4 w-4" />
+          <Mail className="mr-2 h-4 w-4" />
           Google
         </Button>
       </div>
@@ -85,33 +83,39 @@ const SignUpForm = () => {
           <Input placeholder="Doe" />
         </div>
       </div>
-      
+
       <div>
         <label className="block text-sm font-medium mb-2">Email</label>
         <Input type="email" placeholder="john@example.com" />
       </div>
-      
+
       <div>
         <label className="block text-sm font-medium mb-2">Password</label>
         <Input type="password" placeholder="Create a password" />
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium mb-2">Confirm Password</label>
+        <label className="block text-sm font-medium mb-2">
+          Confirm Password
+        </label>
         <Input type="password" placeholder="Confirm your password" />
       </div>
-      
+
       <div className="flex items-center space-x-2">
         <Checkbox id="terms" />
         <label htmlFor="terms" className="text-sm">
-          I agree to the <a href="#" className="text-primary hover:underline">Terms of Service</a> and{' '}
-          <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+          I agree to the{' '}
+          <a href="#" className="text-primary hover:underline">
+            Terms of Service
+          </a>{' '}
+          and{' '}
+          <a href="#" className="text-primary hover:underline">
+            Privacy Policy
+          </a>
         </label>
       </div>
-      
-      <Button className="w-full">
-        Create Account
-      </Button>
+
+      <Button className="w-full">Create Account</Button>
     </div>
   )
 }
@@ -121,19 +125,18 @@ const ForgotPasswordForm = () => {
     <div className="space-y-4">
       <div className="text-center mb-6">
         <p className="text-muted-foreground">
-          Enter your email address and we'll send you a link to reset your password.
+          Enter your email address and we'll send you a link to reset your
+          password.
         </p>
       </div>
-      
+
       <div>
         <label className="block text-sm font-medium mb-2">Email</label>
         <Input type="email" placeholder="Enter your email" />
       </div>
-      
-      <Button className="w-full">
-        Send Reset Link
-      </Button>
-      
+
+      <Button className="w-full">Send Reset Link</Button>
+
       <div className="text-center">
         <a href="#" className="text-sm text-primary hover:underline">
           Back to sign in
@@ -149,9 +152,7 @@ const BasicExample = () => {
       <AuthLayout
         title="Welcome back"
         subtitle="Sign in to your account to continue"
-        footerText="Don't have an account?"
-        footerLinkText="Sign up"
-        footerLinkHref="/signup"
+        brand={{ name: 'NextSaaS' }}
       >
         <LoginForm />
       </AuthLayout>
@@ -165,10 +166,7 @@ const SignUpExample = () => {
       <AuthLayout
         title="Create your account"
         subtitle="Get started with your free account today"
-        footerText="Already have an account?"
-        footerLinkText="Sign in"
-        footerLinkHref="/login"
-        variant="signup"
+        brand={{ name: 'NextSaaS' }}
       >
         <SignUpForm />
       </AuthLayout>
@@ -182,10 +180,7 @@ const ForgotPasswordExample = () => {
       <AuthLayout
         title="Reset your password"
         subtitle="We'll send you a link to reset your password"
-        footerText="Remember your password?"
-        footerLinkText="Sign in"
-        footerLinkHref="/login"
-        variant="forgot-password"
+        brand={{ name: 'NextSaaS' }}
       >
         <ForgotPasswordForm />
       </AuthLayout>
@@ -199,13 +194,15 @@ const WithBackgroundExample = () => {
       <AuthLayout
         title="Welcome to NextSaaS"
         subtitle="Sign in to access your dashboard"
-        footerText="New to our platform?"
-        footerLinkText="Create account"
-        footerLinkHref="/signup"
-        backgroundImage="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80"
-        logo={{
-          src: '/api/placeholder/120/40',
-          alt: 'NextSaaS',
+        brand={{
+          name: 'NextSaaS',
+          logo: '/api/placeholder/120/40',
+        }}
+        heroContent={{
+          title: 'Build better products',
+          subtitle: 'Join thousands of developers',
+          backgroundImage:
+            'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80',
         }}
       >
         <LoginForm />
@@ -218,27 +215,28 @@ const SplitLayoutExample = () => {
   return (
     <div className="h-[600px] border rounded-lg overflow-hidden">
       <AuthLayout
+        variant="split"
         title="Join thousands of users"
         subtitle="Start your journey with us today"
-        footerText="Already have an account?"
-        footerLinkText="Sign in"
-        footerLinkHref="/login"
-        layout="split"
-        sideContent={{
-          title: "Build better products faster",
-          description: "Our platform helps teams create amazing user experiences with powerful tools and integrations.",
+        brand={{ name: 'NextSaaS' }}
+        heroContent={{
+          title: 'Build better products faster',
+          subtitle:
+            'Our platform helps teams create amazing user experiences with powerful tools and integrations.',
           features: [
-            "Advanced analytics and reporting",
-            "Real-time collaboration tools", 
-            "Enterprise-grade security",
-            "24/7 customer support"
+            'Advanced analytics and reporting',
+            'Real-time collaboration tools',
+            'Enterprise-grade security',
+            '24/7 customer support',
           ],
           testimonial: {
-            quote: "This platform has transformed how we work. The features are incredible and the support is outstanding.",
-            author: "Sarah Johnson",
-            role: "Product Manager, TechCorp",
-            avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face"
-          }
+            quote:
+              'This platform has transformed how we work. The features are incredible and the support is outstanding.',
+            author: 'Sarah Johnson',
+            role: 'Product Manager, TechCorp',
+            avatar:
+              'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face',
+          },
         }}
       >
         <SignUpForm />
@@ -253,9 +251,7 @@ const examples = [
     code: `<AuthLayout
   title="Welcome back"
   subtitle="Sign in to your account to continue"
-  footerText="Don't have an account?"
-  footerLinkText="Sign up"
-  footerLinkHref="/signup"
+  brand={{ name: "NextSaaS" }}
 >
   <form className="space-y-4">
     <div>
@@ -278,10 +274,7 @@ const examples = [
     code: `<AuthLayout
   title="Create your account"
   subtitle="Get started with your free account today"
-  footerText="Already have an account?"
-  footerLinkText="Sign in"
-  footerLinkHref="/login"
-  variant="signup"
+  brand={{ name: "NextSaaS" }}
 >
   <form className="space-y-4">
     <div className="grid grid-cols-2 gap-3">
@@ -302,10 +295,7 @@ const examples = [
     code: `<AuthLayout
   title="Reset your password"
   subtitle="We'll send you a link to reset your password"
-  footerText="Remember your password?"
-  footerLinkText="Sign in"
-  footerLinkHref="/login"
-  variant="forgot-password"
+  brand={{ name: "NextSaaS" }}
 >
   <form className="space-y-4">
     <Input type="email" placeholder="Enter your email" />
@@ -319,13 +309,14 @@ const examples = [
     code: `<AuthLayout
   title="Welcome to NextSaaS"
   subtitle="Sign in to access your dashboard"
-  footerText="New to our platform?"
-  footerLinkText="Create account"
-  footerLinkHref="/signup"
-  backgroundImage="/hero-bg.jpg"
-  logo={{
-    src: '/logo.png',
-    alt: 'NextSaaS',
+  brand={{
+    name: "NextSaaS",
+    logo: '/logo.png'
+  }}
+  heroContent={{
+    title: "Build better products",
+    subtitle: "Join thousands of developers",
+    backgroundImage: "/hero-bg.jpg"
   }}
 >
   {/* Login form */}
@@ -335,12 +326,13 @@ const examples = [
   {
     title: 'Split Layout with Features',
     code: `<AuthLayout
+  variant="split"
   title="Join thousands of users"
   subtitle="Start your journey with us today"
-  layout="split"
-  sideContent={{
+  brand={{ name: "NextSaaS" }}
+  heroContent={{
     title: "Build better products faster",
-    description: "Our platform helps teams create amazing experiences.",
+    subtitle: "Our platform helps teams create amazing experiences.",
     features: [
       "Advanced analytics and reporting",
       "Real-time collaboration tools", 
