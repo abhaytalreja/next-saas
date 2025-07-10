@@ -43,6 +43,9 @@ NextSaaS is a comprehensive starter kit designed to accelerate SaaS development.
 - 🗄️ **Database Ready** - Multi-tenant architecture with Supabase integration
 - 🔒 **Row Level Security** - Built-in data isolation and security policies
 - 📊 **Migration System** - Version-controlled database schema evolution
+- 🧪 **Comprehensive Testing** - Unit, integration, e2e, visual, and accessibility testing built-in
+- 🎯 **Quality Gates** - Mandatory testing requirements for all new features
+- 🤖 **Test Automation** - CI/CD pipeline with automated test execution and reporting
 
 ## 📁 Project Structure
 
@@ -71,12 +74,13 @@ next-saas/
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm 10.9.2+
 - Git
 - Supabase account (free tier works great)
 
 ### Quick Links
+
 - 📖 **[Full Documentation](http://localhost:3001)** - Comprehensive guides and tutorials
 - ⚡ **[5-Minute Quick Start](http://localhost:3001/quickstart)** - Get up and running fast
 - 🔄 **[Setup Methods](http://localhost:3001/setup-methods)** - Choose how to use this template
@@ -84,38 +88,44 @@ next-saas/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/abhaytalreja/next-saas.git
    cd next-saas
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env.local
    # Edit .env.local with your Supabase credentials
    ```
 
 4. **Set up the database**
-   
+
    First, choose your organization mode:
+
    ```bash
    # Generate database schema (choose one mode)
    npm run db:generate-sql -- --mode single  # Recommended default
    # OR: npm run db:generate-sql -- --mode none   # For personal tools
    # OR: npm run db:generate-sql -- --mode multi  # For enterprise B2B
    ```
-   
+
    Then apply the generated SQL to your Supabase project and set:
+
    ```bash
    NEXT_PUBLIC_ORGANIZATION_MODE=single  # Match your chosen mode
    ```
 
 5. **Start development servers**
+
    ```bash
    npm run dev
    ```
@@ -145,9 +155,15 @@ npm run format           # Format code with Prettier
 npm run format:check     # Check code formatting
 npm run type-check       # Run TypeScript type checking
 
-# Testing
+# Testing (All features MUST meet testing requirements)
 npm run test            # Run all tests
 npm run test:watch      # Run tests in watch mode
+npm run test:unit       # Run unit tests only
+npm run test:integration # Run integration tests only
+npm run test:e2e        # Run end-to-end tests
+npm run test:coverage   # Generate coverage report
+npm run test:a11y       # Run accessibility tests
+npm run test:visual     # Run visual regression tests
 
 # Database
 npm run db:setup        # Complete database setup (migrations + seeds)
@@ -177,6 +193,7 @@ npm install -D <package> --workspace=@nextsaas/web
 ### Creating New Components
 
 1. **Create component in UI package**
+
    ```bash
    # Create new component
    mkdir packages/ui/src/components/MyComponent
@@ -185,14 +202,15 @@ npm install -D <package> --workspace=@nextsaas/web
    ```
 
 2. **Export from UI package**
+
    ```typescript
    // packages/ui/src/index.ts
-   export * from './components/MyComponent';
+   export * from './components/MyComponent'
    ```
 
 3. **Use in any app**
    ```typescript
-   import { MyComponent } from '@nextsaas/ui';
+   import { MyComponent } from '@nextsaas/ui'
    ```
 
 ### Working with Shared Packages
@@ -211,6 +229,7 @@ Each package in the `packages/` directory is available to all apps:
 ### Monorepo with Turborepo
 
 We use Turborepo for:
+
 - **Incremental builds** - Only rebuild what changed
 - **Parallel execution** - Run tasks concurrently
 - **Remote caching** - Share build cache across team
@@ -219,6 +238,7 @@ We use Turborepo for:
 ### Next.js 15 App Router
 
 All applications use the latest Next.js features:
+
 - Server Components by default
 - Streaming and Suspense
 - Server Actions
@@ -228,6 +248,7 @@ All applications use the latest Next.js features:
 ### TypeScript Strict Mode
 
 All packages use strict TypeScript configuration:
+
 - No implicit any
 - Strict null checks
 - Exact optional property types
@@ -236,6 +257,7 @@ All packages use strict TypeScript configuration:
 ### Tailwind CSS Design System
 
 Centralized design tokens in `packages/config/tailwind`:
+
 - Custom color palette
 - Typography scale
 - Spacing system
@@ -262,17 +284,18 @@ See [Port Management Documentation](./docs/PORT_MANAGEMENT.md) for more details.
 NextSaaS includes a comprehensive configuration management system:
 
 ```typescript
-import { initializeGlobalConfig, config } from '@nextsaas/config';
+import { initializeGlobalConfig, config } from '@nextsaas/config'
 
 // Initialize configuration
-await initializeGlobalConfig();
+await initializeGlobalConfig()
 
 // Access configuration
-const dbConfig = config.database();
-const isFeatureEnabled = config.feature('aiIntegration');
+const dbConfig = config.database()
+const isFeatureEnabled = config.feature('aiIntegration')
 ```
 
 Features:
+
 - **Type-safe** - Full TypeScript support with auto-generated types
 - **Environment-aware** - Separate configs for dev/staging/prod/test
 - **Validated** - Runtime validation using Zod schemas
@@ -315,6 +338,7 @@ Recommended extensions are listed in `.vscode/extensions.json`. VS Code will pro
 ### Git Hooks
 
 Pre-commit hooks are set up with Husky and lint-staged to:
+
 - Run ESLint on staged files
 - Format code with Prettier
 - Run type checking
@@ -345,11 +369,11 @@ NextSaaS supports three organization modes to fit different use cases:
 
 ### Organization Modes
 
-| Mode | Use Case | Example Apps |
-|------|----------|--------------|
-| **`none`** | Personal tools, individual apps | Todo list, journal, personal finance |
-| **`single`** | Small teams, freelancers (default) | Project management, invoicing | 
-| **`multi`** | Enterprise B2B SaaS | Slack, Notion, GitHub |
+| Mode         | Use Case                           | Example Apps                         |
+| ------------ | ---------------------------------- | ------------------------------------ |
+| **`none`**   | Personal tools, individual apps    | Todo list, journal, personal finance |
+| **`single`** | Small teams, freelancers (default) | Project management, invoicing        |
+| **`multi`**  | Enterprise B2B SaaS                | Slack, Notion, GitHub                |
 
 ### Key Features
 
@@ -371,16 +395,24 @@ NextSaaS supports three organization modes to fit different use cases:
 Comprehensive documentation is available at http://localhost:3001 when running the development server:
 
 - **Getting Started** - Set up your development environment
-- **Development Guide** - Best practices and workflows  
+- **Development Guide** - Best practices and workflows
 - **Architecture Overview** - Understand the project structure
 - **Deployment Guide** - Deploy to production
 
 Additional documentation files:
+
 - [Troubleshooting Guide](./docs/TROUBLESHOOTING.md) - Common issues and solutions
 - [Port Management](./docs/PORT_MANAGEMENT.md) - Automatic port configuration
 - [Configuration System](./packages/config/README.md) - Type-safe configuration
 - [UI Components](./packages/ui/README.md) - Shared component library
 - [Contributing Guide](./CONTRIBUTING.md) - How to contribute
+
+### 🧪 Testing & Quality Standards
+
+- **[Feature Testing Requirements](./FEATURE_TESTING_REQUIREMENTS.md)** - Mandatory testing standards for all new features
+- **[Feature Testing Checklist](./FEATURE_TESTING_CHECKLIST.md)** - Quick reference checklist for developers
+- [Authentication Testing Guide](./AUTH_TESTING_GUIDE.md) - Complete auth testing workflows
+- [Multi-Tenant Testing Guide](./MULTI_TENANT_TESTING_GUIDE.md) - Multi-tenancy testing patterns
 
 ## 🤝 Contributing
 
@@ -393,11 +425,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🌐 Live Demo
 
 **Production Deployments** (deployed to Vercel):
+
 - 🚀 **Web App**: [next-saas-web.vercel.app](https://next-saas-web.vercel.app)
 - 📚 **Documentation**: [next-saas-docs.vercel.app](https://next-saas-docs.vercel.app)
 - 🌟 **Landing Page**: [next-saas-landing.vercel.app](https://next-saas-landing.vercel.app)
 
 **Local Development**:
+
 - Web App: http://localhost:3000
 - Documentation: http://localhost:3001
 - Landing Page: http://localhost:3002
@@ -430,12 +464,15 @@ Built with these amazing open source projects:
 ## 📊 Project Status
 
 ### 🧪 UI Component Library
+
 ![Test Coverage](https://img.shields.io/badge/coverage-92.5%25-4c1) ![Tests](https://img.shields.io/badge/tests-74%20passing-4c1) ![Accessibility](https://img.shields.io/badge/accessibility-WCAG%202.1%20AA-4c1) ![Components](https://img.shields.io/badge/components-43+-blue) ![Build](https://img.shields.io/badge/build-passing-4c1)
 
-### 🔐 Authentication System  
+### 🔐 Authentication System
+
 ![Auth Status](https://img.shields.io/badge/auth-complete-4c1) ![Multi%20Tenant](https://img.shields.io/badge/multi--tenant-enabled-4c1) ![OAuth](https://img.shields.io/badge/OAuth-4%20providers-4c1) ![Security](https://img.shields.io/badge/security-enterprise--grade-4c1)
 
 ### 📈 Progress Summary
+
 - ✅ **Foundation Complete**: Core architecture, auth, and UI systems
 - ✅ **Production Ready**: Comprehensive testing and monitoring
 - 🔄 **Next Phase**: Payment integration and advanced features
