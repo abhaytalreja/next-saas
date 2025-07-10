@@ -14,11 +14,13 @@ import type { UpdatePasswordCredentials } from '../../types'
 interface ResetPasswordFormProps {
   onSuccess?: () => void
   onError?: (error: string) => void
+  'data-testid'?: string
 }
 
 export function ResetPasswordForm({
   onSuccess,
   onError,
+  'data-testid': dataTestId,
 }: ResetPasswordFormProps) {
   const { updatePassword, loading } = useAuth()
   const router = useRouter()
@@ -112,9 +114,9 @@ export function ResetPasswordForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" data-testid={dataTestId || 'reset-password-form'}>
       {errors.general && (
-        <div className="rounded-md bg-red-50 p-4">
+        <div className="rounded-md bg-red-50 p-4" data-testid="reset-password-error-alert">
           <div className="flex">
             <div className="ml-3">
               <h3 className="text-sm font-medium text-red-800">
@@ -128,7 +130,7 @@ export function ResetPasswordForm({
         </div>
       )}
 
-      <div className="space-y-1">
+      <div className="space-y-1" data-testid="reset-password-header">
         <h2 className="text-2xl font-bold text-gray-900">
           Reset your password
         </h2>
@@ -156,10 +158,11 @@ export function ResetPasswordForm({
             error={!!errors.password}
             placeholder="••••••••"
             disabled={isSubmitting}
+            data-testid="reset-password-new-password-input"
           />
         </div>
         {formData.password && (
-          <div className="mt-2">
+          <div className="mt-2" data-testid="reset-password-strength-indicator">
             <div className="flex items-center space-x-2">
               <div className="flex-1 bg-gray-200 rounded-full h-2">
                 <div
@@ -207,6 +210,7 @@ export function ResetPasswordForm({
             error={!!errors.confirmPassword}
             placeholder="••••••••"
             disabled={isSubmitting}
+            data-testid="reset-password-confirm-password-input"
           />
         </div>
       </div>
@@ -219,6 +223,7 @@ export function ResetPasswordForm({
           fullWidth
           loading={isSubmitting || loading}
           disabled={isSubmitting || loading}
+          data-testid="reset-password-submit-button"
         >
           Reset password
         </Button>
@@ -228,6 +233,7 @@ export function ResetPasswordForm({
         <a
           href="/auth/login"
           className="text-sm font-medium text-primary-600 hover:text-primary-500"
+          data-testid="back-to-login-link"
         >
           Back to login
         </a>

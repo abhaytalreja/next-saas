@@ -14,6 +14,7 @@ interface UserAvatarProps {
   showStatus?: boolean
   status?: 'online' | 'offline' | 'away' | 'busy'
   onClick?: () => void
+  'data-testid'?: string
 }
 
 const sizeClasses = {
@@ -42,6 +43,7 @@ export function UserAvatar({
   showStatus = false,
   status = 'online',
   onClick,
+  'data-testid': dataTestId,
 }: UserAvatarProps) {
   const [imageError, setImageError] = useState(false)
 
@@ -80,12 +82,14 @@ export function UserAvatar({
       alt={alt || `${firstName} ${lastName}` || 'User avatar'}
       className={`${sizeClasses[size]} rounded-full object-cover`}
       onError={handleImageError}
+      data-testid={dataTestId ? `${dataTestId}-image` : undefined}
     />
   ) : (
     <div
       className={`${sizeClasses[size]} rounded-full flex items-center justify-center font-semibold text-white`}
       style={{ backgroundColor: getBackgroundColor() }}
       aria-label={alt || `${firstName} ${lastName}` || 'User avatar'}
+      data-testid={dataTestId ? `${dataTestId}-initials` : undefined}
     >
       {getInitials()}
     </div>
@@ -105,6 +109,7 @@ export function UserAvatar({
           onClick()
         }
       } : undefined}
+      data-testid={dataTestId}
     >
       {avatarContent}
       

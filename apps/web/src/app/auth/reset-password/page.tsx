@@ -10,7 +10,7 @@ export default function ResetPasswordPage() {
       subtitle="Enter your email and we'll send you a secure reset link"
       type="reset"
     >
-      <ForgotPasswordForm />
+      <ForgotPasswordForm data-testid="reset-password-form-component" />
     </MarketingAuthLayout>
   )
 }

@@ -131,6 +131,34 @@ export const rateLimiters = {
     maxRequests: 3, // 3 requests per 5 minutes
     message: 'Too many verification requests, please try again later.',
   }),
+
+  // Profile update rate limit
+  profileUpdate: createRateLimiter({
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    maxRequests: 10, // 10 requests per 5 minutes
+    message: 'Too many profile updates, please try again later.',
+  }),
+
+  // Avatar upload rate limit
+  avatarUpload: createRateLimiter({
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    maxRequests: 5, // 5 requests per 10 minutes
+    message: 'Too many avatar uploads, please try again later.',
+  }),
+
+  // Data export rate limit
+  dataExport: createRateLimiter({
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours
+    maxRequests: 2, // 2 requests per day
+    message: 'Data export limit reached, please try again tomorrow.',
+  }),
+
+  // Session management rate limit
+  sessionManagement: createRateLimiter({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    maxRequests: 20, // 20 requests per 15 minutes
+    message: 'Too many session operations, please try again later.',
+  }),
 }
 
 /**

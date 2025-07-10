@@ -4,258 +4,257 @@ import React, { useState } from 'react'
 import { UpdatePasswordForm } from '@nextsaas/auth'
 import { useAuth } from '@nextsaas/auth'
 import { Button, Alert } from '@nextsaas/ui'
+import { SecurityDashboard } from '@/packages/auth/src/components/security/SecurityDashboard'
+import { UserSessionManager } from '@/packages/auth/src/components/security/UserSessionManager'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nextsaas/ui'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@nextsaas/ui'
 import {
-  ShieldCheckIcon,
-  KeyIcon,
-  DevicePhoneMobileIcon,
-  ComputerDesktopIcon,
-  GlobeAltIcon,
-  ClockIcon,
-  ExclamationTriangleIcon,
-} from '@heroicons/react/24/outline'
+  Shield,
+  Key,
+  Smartphone,
+  Monitor,
+  Globe,
+  Clock,
+  AlertTriangle,
+  Activity,
+  Lock
+} from 'lucide-react'
 
 export default function SecuritySettingsPage() {
-  const { user, signOut } = useAuth()
-  const [showSessions, setShowSessions] = useState(false)
-
-  // Mock session data - in production, this would come from an API
-  const sessions = [
-    {
-      id: '1',
-      device: 'Chrome on MacOS',
-      location: 'San Francisco, CA',
-      ipAddress: '192.168.1.1',
-      lastActive: 'Active now',
-      current: true,
-      icon: ComputerDesktopIcon,
-    },
-    {
-      id: '2',
-      device: 'Safari on iPhone',
-      location: 'San Francisco, CA',
-      ipAddress: '192.168.1.2',
-      lastActive: '2 hours ago',
-      current: false,
-      icon: DevicePhoneMobileIcon,
-    },
-  ]
-
-  const handleSignOutAllDevices = async () => {
-    if (
-      confirm(
-        'Are you sure you want to sign out from all devices? You will need to sign in again.'
-      )
-    ) {
-      await signOut()
-    }
-  }
+  const { user } = useAuth()
 
   return (
-    <div className="px-6 py-6 sm:px-8 sm:py-8 space-y-8">
+    <div className="px-6 py-6 sm:px-8 sm:py-8">
       {/* Page Header */}
       <div className="border-b border-gray-200 pb-6">
         <h2 className="text-2xl font-semibold text-gray-900">
-          Security Settings
+          Security & Privacy
         </h2>
         <p className="mt-2 text-sm text-gray-600">
-          Manage your password and security preferences to keep your account
-          safe.
+          Manage your account security, sessions, and privacy settings to keep your data safe.
         </p>
       </div>
 
-      {/* Password Section */}
-      <div>
-        <div className="flex items-center mb-4">
-          <KeyIcon className="h-5 w-5 text-gray-400 mr-2" />
-          <h3 className="text-lg font-medium text-gray-900">Password</h3>
-        </div>
-        <div className="bg-gray-50 rounded-lg p-6">
-          <UpdatePasswordForm className="max-w-xl" />
-        </div>
-      </div>
+      {/* Security Tabs */}
+      <div className="mt-6">
+        <Tabs defaultValue="password" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="password" className="flex items-center space-x-2">
+              <Key className="h-4 w-4" />
+              <span>Password</span>
+            </TabsTrigger>
+            <TabsTrigger value="sessions" className="flex items-center space-x-2">
+              <Monitor className="h-4 w-4" />
+              <span>Sessions</span>
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="flex items-center space-x-2">
+              <Activity className="h-4 w-4" />
+              <span>Activity</span>
+            </TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center space-x-2">
+              <Shield className="h-4 w-4" />
+              <span>Security</span>
+            </TabsTrigger>
+          </TabsList>
 
-      {/* Two-Factor Authentication */}
-      <div>
-        <div className="flex items-center mb-4">
-          <ShieldCheckIcon className="h-5 w-5 text-gray-400 mr-2" />
-          <h3 className="text-lg font-medium text-gray-900">
-            Two-Factor Authentication
-          </h3>
-        </div>
-        <div className="bg-white border border-gray-200 rounded-lg p-6">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <ShieldCheckIcon className="h-12 w-12 text-gray-300" />
-            </div>
-            <div className="ml-4 flex-1">
-              <h4 className="text-sm font-medium text-gray-900">
-                Two-factor authentication is not enabled
-              </h4>
-              <p className="mt-1 text-sm text-gray-600">
-                Add an extra layer of security to your account by enabling
-                two-factor authentication. You'll need to enter a code from your
-                authenticator app when you sign in.
-              </p>
-              <div className="mt-4">
-                <Button variant="outline" size="sm">
-                  Enable Two-Factor Authentication
-                </Button>
-              </div>
-            </div>
-          </div>
+          {/* Password Tab */}
+          <TabsContent value="password" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Key className="h-5 w-5" />
+                  <span>Password Management</span>
+                </CardTitle>
+                <CardDescription>
+                  Update your password to keep your account secure
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <UpdatePasswordForm className="max-w-xl" />
+              </CardContent>
+            </Card>
 
-          <Alert type="info" className="mt-4">
-            <p className="text-sm">
-              <strong>Coming Soon:</strong> Two-factor authentication will be
-              available in the next update.
-            </p>
-          </Alert>
-        </div>
-      </div>
-
-      {/* Active Sessions */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center">
-            <ComputerDesktopIcon className="h-5 w-5 text-gray-400 mr-2" />
-            <h3 className="text-lg font-medium text-gray-900">
-              Active Sessions
-            </h3>
-          </div>
-          <button
-            onClick={() => setShowSessions(!showSessions)}
-            className="text-sm text-primary-600 hover:text-primary-500"
-          >
-            {showSessions ? 'Hide' : 'Show'} sessions
-          </button>
-        </div>
-
-        {showSessions && (
-          <div className="bg-white border border-gray-200 rounded-lg divide-y divide-gray-200">
-            {sessions.map(session => (
-              <div key={session.id} className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start">
-                    <session.icon className="h-5 w-5 text-gray-400 mt-0.5" />
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-900">
-                        {session.device}
-                        {session.current && (
-                          <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                            Current session
-                          </span>
-                        )}
-                      </p>
-                      <div className="mt-1 text-sm text-gray-500 space-y-1">
-                        <div className="flex items-center">
-                          <GlobeAltIcon className="h-4 w-4 mr-1" />
-                          {session.location} • {session.ipAddress}
-                        </div>
-                        <div className="flex items-center">
-                          <ClockIcon className="h-4 w-4 mr-1" />
-                          {session.lastActive}
-                        </div>
-                      </div>
-                    </div>
+            {/* Password Strength Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Password Security</CardTitle>
+                <CardDescription>
+                  Guidelines for creating a strong password
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm">At least 8 characters long</span>
                   </div>
-                  {!session.current && (
-                    <Button variant="ghost" size="sm">
-                      Revoke
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm">Contains uppercase and lowercase letters</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm">Includes numbers and special characters</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm">Unique to this account</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Sessions Tab */}
+          <TabsContent value="sessions">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Monitor className="h-5 w-5" />
+                  <span>Active Sessions</span>
+                </CardTitle>
+                <CardDescription>
+                  Manage devices and sessions that have access to your account
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <UserSessionManager />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Activity Tab */}
+          <TabsContent value="activity">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Activity className="h-5 w-5" />
+                  <span>Security Activity</span>
+                </CardTitle>
+                <CardDescription>
+                  Monitor login attempts, security events, and account changes
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <SecurityDashboard />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Security Tab */}
+          <TabsContent value="security" className="space-y-6">
+            {/* Two-Factor Authentication */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Shield className="h-5 w-5" />
+                  <span>Two-Factor Authentication</span>
+                </CardTitle>
+                <CardDescription>
+                  Add an extra layer of security to your account
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <Shield className="h-12 w-12 text-gray-300" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">
+                      Two-factor authentication is not enabled
+                    </h4>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Protect your account with an additional verification step when signing in.
+                    </p>
+                    <Button variant="outline" size="sm">
+                      <Lock className="h-4 w-4 mr-2" />
+                      Enable Two-Factor Authentication
                     </Button>
-                  )}
-                </div>
-              </div>
-            ))}
-
-            <div className="p-4 bg-gray-50">
-              <button
-                onClick={handleSignOutAllDevices}
-                className="text-sm text-red-600 hover:text-red-500 font-medium"
-              >
-                Sign out all other sessions
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Security Activity */}
-      <div>
-        <div className="flex items-center mb-4">
-          <ClockIcon className="h-5 w-5 text-gray-400 mr-2" />
-          <h3 className="text-lg font-medium text-gray-900">
-            Recent Security Activity
-          </h3>
-        </div>
-        <div className="bg-white border border-gray-200 rounded-lg">
-          <ul className="divide-y divide-gray-200">
-            <li className="p-4">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <ShieldCheckIcon className="h-5 w-5 text-green-600" />
+                    
+                    <Alert className="mt-4">
+                      <AlertTriangle className="h-4 w-4" />
+                      <p className="text-sm">
+                        <strong>Coming Soon:</strong> Two-factor authentication will be available in the next update.
+                      </p>
+                    </Alert>
                   </div>
                 </div>
-                <div className="ml-3 flex-1">
-                  <p className="text-sm text-gray-900">
-                    Successful login from Chrome on MacOS
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    San Francisco, CA • 2 hours ago
-                  </p>
-                </div>
-              </div>
-            </li>
-            <li className="p-4">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="h-8 w-8 rounded-full bg-yellow-100 flex items-center justify-center">
-                    <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600" />
+              </CardContent>
+            </Card>
+
+            {/* Security Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Security Preferences</CardTitle>
+                <CardDescription>
+                  Configure additional security settings for your account
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Login notifications</p>
+                    <p className="text-sm text-gray-500">Get notified of new sign-ins to your account</p>
                   </div>
+                  <div className="text-sm text-green-600 font-medium">Enabled</div>
                 </div>
-                <div className="ml-3 flex-1">
-                  <p className="text-sm text-gray-900">Password changed</p>
-                  <p className="text-xs text-gray-500">3 days ago</p>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Session timeout</p>
+                    <p className="text-sm text-gray-500">Automatically sign out after inactivity</p>
+                  </div>
+                  <div className="text-sm text-gray-600">30 minutes</div>
                 </div>
-              </div>
-            </li>
-          </ul>
-        </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Security alerts</p>
+                    <p className="text-sm text-gray-500">Get alerts about suspicious account activity</p>
+                  </div>
+                  <div className="text-sm text-green-600 font-medium">Enabled</div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
 
-      {/* Account Security Tips */}
+      {/* Security Tips */}
       <div className="mt-8 bg-blue-50 rounded-lg p-6">
         <h3 className="text-sm font-medium text-blue-900 mb-3">
-          Keep your account secure
+          Security Best Practices
         </h3>
-        <ul className="space-y-2 text-sm text-blue-700">
-          <li className="flex items-start">
-            <span className="block mt-0.5 mr-2">•</span>
-            <span>
-              Use a strong, unique password that you don't use on other websites
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="block mt-0.5 mr-2">•</span>
-            <span>
-              Enable two-factor authentication for an extra layer of security
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="block mt-0.5 mr-2">•</span>
-            <span>
-              Review your active sessions regularly and revoke access for
-              unrecognized devices
-            </span>
-          </li>
-          <li className="flex items-start">
-            <span className="block mt-0.5 mr-2">•</span>
-            <span>
-              Be cautious of phishing emails asking for your password or
-              personal information
-            </span>
-          </li>
-        </ul>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2 text-sm text-blue-700">
+            <div className="flex items-start">
+              <span className="block mt-0.5 mr-2">•</span>
+              <span>Use a strong, unique password for your account</span>
+            </div>
+            <div className="flex items-start">
+              <span className="block mt-0.5 mr-2">•</span>
+              <span>Enable two-factor authentication when available</span>
+            </div>
+            <div className="flex items-start">
+              <span className="block mt-0.5 mr-2">•</span>
+              <span>Regularly review active sessions and devices</span>
+            </div>
+          </div>
+          <div className="space-y-2 text-sm text-blue-700">
+            <div className="flex items-start">
+              <span className="block mt-0.5 mr-2">•</span>
+              <span>Monitor your account activity for suspicious behavior</span>
+            </div>
+            <div className="flex items-start">
+              <span className="block mt-0.5 mr-2">•</span>
+              <span>Keep your contact information up to date</span>
+            </div>
+            <div className="flex items-start">
+              <span className="block mt-0.5 mr-2">•</span>
+              <span>Be cautious of phishing attempts</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

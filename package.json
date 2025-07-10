@@ -15,7 +15,9 @@
     "test": "turbo test",
     "test:watch": "turbo test:watch",
     "test:coverage": "turbo test:coverage",
-    "test:e2e": "turbo test:e2e",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:integration:watch": "jest --config jest.integration.config.js --watch",
+    "test:e2e": "node scripts/run-e2e-tests.js",
     "test:a11y": "turbo test:a11y",
     "validate": "run-s validate:*",
     "validate:types": "npm run type-check",
@@ -37,14 +39,31 @@
     "db:setup": "node scripts/setup-database.js",
     "db:migrate": "cd packages/database && npm run db:migrate",
     "db:seed": "cd packages/database && npm run db:seed",
-    "db:generate": "cd packages/database && npm run db:generate"
+    "db:generate": "cd packages/database && npm run db:generate",
+    "test:e2e:user": "node scripts/run-e2e-tests.js --type user",
+    "test:e2e:mobile": "node scripts/run-e2e-tests.js --type mobile",
+    "test:e2e:org": "node scripts/run-e2e-tests.js --type org",
+    "test:e2e:smoke": "node scripts/run-e2e-tests.js --type smoke",
+    "test:e2e:headed": "node scripts/run-e2e-tests.js --headed",
+    "test:e2e:debug": "node scripts/run-e2e-tests.js --debug --headed --workers 1",
+    "test:e2e:staging": "node scripts/run-e2e-tests.js --env staging",
+    "test:e2e:report": "npx playwright show-report e2e-report",
+    "test:e2e:setup": "node scripts/setup-e2e-database.js",
+    "test:e2e:cleanup": "node scripts/cleanup-e2e-data.js",
+    "test:e2e:reset": "node scripts/cleanup-e2e-data.js --full-reset",
+    "test:e2e:auth": "playwright test e2e/auth/ --config=e2e/playwright.config.ts",
+    "test:e2e:auth:headed": "playwright test e2e/auth/ --config=e2e/playwright.config.ts --headed"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "@playwright/test": "^1.54.0",
     "@secretlint/secretlint-rule-preset-recommend": "^8.0.0",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
+    "axe-playwright": "^2.1.0",
+    "axios": "^1.10.0",
     "bundlesize": "^0.18.1",
     "eslint": "^8.57.0",
     "eslint-config-next": "^15.0.0",
@@ -80,6 +99,7 @@
     "i18next": "^25.3.1",
     "next-i18next": "^15.4.2",
     "react-i18next": "^15.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "ua-parser-js": "^1.0.38"
   }
 }

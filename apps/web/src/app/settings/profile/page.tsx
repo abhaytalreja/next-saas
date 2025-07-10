@@ -3,125 +3,245 @@
 import React from 'react'
 import { ProfileForm } from '@nextsaas/auth'
 import { useAuth } from '@nextsaas/auth'
+import { AvatarUpload } from '@/packages/auth/src/components/profile/AvatarUpload'
+import { ActivityDashboard } from '@/packages/auth/src/components/activity/ActivityDashboard'
+import { DataExportManager } from '@/packages/auth/src/components/data-export/DataExportManager'
+import { AccountDeletionManager } from '@/packages/auth/src/components/account-deletion/AccountDeletionManager'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nextsaas/ui'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@nextsaas/ui'
+import { User, Shield, Activity, Download, Trash2 } from 'lucide-react'
 
 export default function ProfileSettingsPage() {
   const { user } = useAuth()
 
   return (
-    <div className="px-6 py-6 sm:px-8 sm:py-8">
+    <div className="px-6 py-6 sm:px-8 sm:py-8" data-testid="profile-settings-page">
       {/* Page Header */}
-      <div className="border-b border-gray-200 pb-6">
-        <h2 className="text-2xl font-semibold text-gray-900">
-          Profile Information
-        </h2>
+      <header className="border-b border-gray-200 pb-6" data-testid="page-header">
+        <h1 className="text-2xl font-semibold text-gray-900">
+          Profile Management
+        </h1>
         <p className="mt-2 text-sm text-gray-600">
-          Update your personal information and manage how others see you.
+          Manage your personal information, avatar, activity, and account settings.
         </p>
-      </div>
+      </header>
 
-      {/* Profile Form */}
-      <div className="mt-6">
-        <ProfileForm className="max-w-2xl" />
-      </div>
+      {/* Profile Tabs */}
+      <main className="mt-6" id="main-content">
+        <Tabs defaultValue="profile" className="space-y-6" data-testid="profile-tabs">
+          <TabsList 
+            className="grid w-full grid-cols-5" 
+            role="tablist"
+            aria-label="Profile settings sections"
+          >
+            <TabsTrigger 
+              value="profile" 
+              className="flex items-center space-x-2"
+              role="tab"
+              aria-controls="profile-panel"
+              data-testid="profile-tab-trigger"
+            >
+              <User className="h-4 w-4" aria-hidden="true" />
+              <span>Profile</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="activity" 
+              className="flex items-center space-x-2"
+              role="tab"
+              aria-controls="activity-panel"
+              data-testid="activity-tab-trigger"
+            >
+              <Activity className="h-4 w-4" aria-hidden="true" />
+              <span>Activity</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="privacy" 
+              className="flex items-center space-x-2"
+              role="tab"
+              aria-controls="privacy-panel"
+              data-testid="privacy-tab-trigger"
+            >
+              <Shield className="h-4 w-4" aria-hidden="true" />
+              <span>Privacy</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="export" 
+              className="flex items-center space-x-2"
+              role="tab"
+              aria-controls="export-panel"
+              data-testid="export-tab-trigger"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" />
+              <span>Export</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="delete" 
+              className="flex items-center space-x-2"
+              role="tab"
+              aria-controls="delete-panel"
+              data-testid="delete-tab-trigger"
+            >
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
+              <span>Delete</span>
+            </TabsTrigger>
+          </TabsList>
 
-      {/* Additional Information */}
-      <div className="mt-12 border-t border-gray-200 pt-8">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">
-          Account Information
-        </h3>
-        <dl className="divide-y divide-gray-200">
-          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-            <dt className="text-sm font-medium text-gray-500">User ID</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 font-mono">
-              {user?.id}
-            </dd>
-          </div>
-          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-            <dt className="text-sm font-medium text-gray-500">
-              Account Created
-            </dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              {user?.created_at
-                ? new Date(user.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })
-                : 'N/A'}
-            </dd>
-          </div>
-          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-            <dt className="text-sm font-medium text-gray-500">
-              Email Verified
-            </dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              {user?.email_confirmed_at ? (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  Verified
-                </span>
-              ) : (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                  Unverified
-                </span>
-              )}
-            </dd>
-          </div>
-          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
-            <dt className="text-sm font-medium text-gray-500">
-              Authentication Method
-            </dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              {user?.app_metadata?.provider === 'email'
-                ? 'Email/Password'
-                : user?.app_metadata?.provider
-                  ? `OAuth (${user.app_metadata.provider})`
-                  : 'N/A'}
-            </dd>
-          </div>
-        </dl>
-      </div>
+          {/* Profile Tab */}
+          <TabsContent 
+            value="profile" 
+            className="space-y-6"
+            role="tabpanel"
+            id="profile-panel"
+            aria-labelledby="profile-tab"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Avatar Section */}
+              <Card data-testid="avatar-card">
+                <CardHeader>
+                  <CardTitle>Profile Picture</CardTitle>
+                  <CardDescription>
+                    Upload and manage your profile picture
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <AvatarUpload />
+                </CardContent>
+              </Card>
 
-      {/* Danger Zone */}
-      <div className="mt-12 border-t border-gray-200 pt-8">
-        <h3 className="text-lg font-medium text-red-600 mb-4">Danger Zone</h3>
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg
-                className="h-5 w-5 text-red-400"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">
-                Delete Account
-              </h3>
-              <div className="mt-2 text-sm text-red-700">
-                <p>
-                  Once you delete your account, there is no going back. Please
-                  be certain.
-                </p>
-              </div>
-              <div className="mt-4">
-                <button
-                  type="button"
-                  className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                >
-                  Delete Account
-                </button>
+              {/* Profile Form */}
+              <div className="lg:col-span-2">
+                <Card data-testid="profile-form-card">
+                  <CardHeader>
+                    <CardTitle>Personal Information</CardTitle>
+                    <CardDescription>
+                      Update your personal details and contact information
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ProfileForm />
+                  </CardContent>
+                </Card>
               </div>
             </div>
-          </div>
-        </div>
+          </TabsContent>
+
+          {/* Activity Tab */}
+          <TabsContent 
+            value="activity"
+            role="tabpanel"
+            id="activity-panel"
+            aria-labelledby="activity-tab"
+          >
+            <Card data-testid="activity-card">
+              <CardHeader>
+                <CardTitle>Account Activity</CardTitle>
+                <CardDescription>
+                  View your recent account activity and security events
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ActivityDashboard />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Privacy Tab */}
+          <TabsContent value="privacy">
+
+            <Card data-testid="privacy-card">
+              <CardHeader>
+                <CardTitle>Account Information</CardTitle>
+                <CardDescription>
+                  View your account details and verification status
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <dl className="divide-y divide-gray-200">
+                  <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt className="text-sm font-medium text-gray-500">User ID</dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 font-mono">
+                      {user?.id}
+                    </dd>
+                  </div>
+                  <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt className="text-sm font-medium text-gray-500">
+                      Account Created
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                      {user?.created_at
+                        ? new Date(user.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })
+                        : 'N/A'}
+                    </dd>
+                  </div>
+                  <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt className="text-sm font-medium text-gray-500">
+                      Email Verified
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                      {user?.email_confirmed_at ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Verified
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          Unverified
+                        </span>
+                      )}
+                    </dd>
+                  </div>
+                  <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt className="text-sm font-medium text-gray-500">
+                      Authentication Method
+                    </dt>
+                    <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                      {user?.app_metadata?.provider === 'email'
+                        ? 'Email/Password'
+                        : user?.app_metadata?.provider
+                          ? `OAuth (${user.app_metadata.provider})`
+                          : 'N/A'}
+                    </dd>
+                  </div>
+                </dl>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Data Export Tab */}
+          <TabsContent value="export">
+
+            <Card data-testid="export-card">
+              <CardHeader>
+                <CardTitle>Data Export & Privacy</CardTitle>
+                <CardDescription>
+                  Export your personal data in compliance with GDPR Article 20 (Right to Data Portability)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DataExportManager />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Account Deletion Tab */}
+          <TabsContent value="delete">
+
+            <Card className="border-red-200" data-testid="delete-card">
+              <CardHeader>
+                <CardTitle className="text-red-600">Account Deletion</CardTitle>
+                <CardDescription>
+                  Permanently delete your account and all associated data with GDPR-compliant 30-day grace period
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AccountDeletionManager />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   )

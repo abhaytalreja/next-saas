@@ -44,16 +44,16 @@ const testimonials = [
 
 export function MarketingAuthLayout({ children, title, subtitle, type }: MarketingAuthLayoutProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900" data-testid="auth-layout">
       {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-10">
+      <header className="absolute top-0 left-0 right-0 z-10" data-testid="auth-header">
         <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
-          <Link href="http://localhost:3002" className="text-2xl font-bold text-gray-900 dark:text-white">
+          <Link href="http://localhost:3002" className="text-2xl font-bold text-gray-900 dark:text-white" data-testid="logo-link">
             NextSaaS
           </Link>
           <div className="flex items-center gap-4">
             <ThemeSwitcher />
-            <Link href="http://localhost:3002">
+            <Link href="http://localhost:3002" data-testid="back-home-link">
               <Button variant="ghost" size="sm">
                 ← Back to Home
               </Button>
@@ -64,7 +64,7 @@ export function MarketingAuthLayout({ children, title, subtitle, type }: Marketi
 
       <div className="flex min-h-screen pt-20">
         {/* Left Side - Minimalist Marketing Content */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gray-50 dark:bg-gray-900">
+        <div className="hidden lg:flex lg:w-1/2 bg-gray-50 dark:bg-gray-900" data-testid="auth-sidebar">
           <div className="flex flex-col justify-center items-center text-center p-12 w-full max-w-md mx-auto">
             <div className="mb-8">
               <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
@@ -115,7 +115,7 @@ export function MarketingAuthLayout({ children, title, subtitle, type }: Marketi
         </div>
 
         {/* Right Side - Auth Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6" data-testid="auth-form-container">
           <div className="w-full max-w-md">
             {/* Mobile Header for smaller screens */}
             <div className="lg:hidden text-center mb-8">
@@ -126,7 +126,7 @@ export function MarketingAuthLayout({ children, title, subtitle, type }: Marketi
             </div>
 
             {/* Auth Form Card */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8" data-testid="auth-form-card">
               <div className="hidden lg:block text-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                   {title}
@@ -156,7 +156,7 @@ export function MarketingAuthLayout({ children, title, subtitle, type }: Marketi
               {type === 'signup' && (
                 <>
                   Already have an account?{' '}
-                  <Link href="/auth/sign-in" className="text-orange-600 hover:text-orange-700 dark:text-orange-400 font-medium">
+                  <Link href="/auth/sign-in" className="text-orange-600 hover:text-orange-700 dark:text-orange-400 font-medium" data-testid="signin-link">
                     Sign in
                   </Link>
                 </>
@@ -164,7 +164,7 @@ export function MarketingAuthLayout({ children, title, subtitle, type }: Marketi
               {type === 'signin' && (
                 <>
                   Don't have an account?{' '}
-                  <Link href="/auth/sign-up" className="text-orange-600 hover:text-orange-700 dark:text-orange-400 font-medium">
+                  <Link href="/auth/sign-up" className="text-orange-600 hover:text-orange-700 dark:text-orange-400 font-medium" data-testid="signup-link">
                     Sign up for free
                   </Link>
                 </>
@@ -172,7 +172,7 @@ export function MarketingAuthLayout({ children, title, subtitle, type }: Marketi
               {type === 'reset' && (
                 <>
                   Remember your password?{' '}
-                  <Link href="/auth/sign-in" className="text-orange-600 hover:text-orange-700 dark:text-orange-400 font-medium">
+                  <Link href="/auth/sign-in" className="text-orange-600 hover:text-orange-700 dark:text-orange-400 font-medium" data-testid="signin-from-reset-link">
                     Sign in
                   </Link>
                 </>

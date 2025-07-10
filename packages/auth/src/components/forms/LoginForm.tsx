@@ -76,9 +76,9 @@ export function LoginForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" data-testid="login-form">
       {errors.general && (
-        <div className="rounded-md bg-red-50 p-4">
+        <div className="rounded-md bg-red-50 p-4" data-testid="login-error-alert">
           <div className="flex">
             <div className="ml-3">
               <h3 className="text-sm font-medium text-red-800">
@@ -111,6 +111,7 @@ export function LoginForm({
             error={!!errors.email}
             placeholder="you@example.com"
             disabled={isSubmitting}
+            data-testid="login-email-input"
           />
         </div>
       </div>
@@ -134,6 +135,7 @@ export function LoginForm({
             error={!!errors.password}
             placeholder="••••••••"
             disabled={isSubmitting}
+            data-testid="login-password-input"
           />
         </div>
       </div>
@@ -146,6 +148,7 @@ export function LoginForm({
             checked={formData.remember}
             onChange={handleChange}
             disabled={isSubmitting}
+            data-testid="login-remember-checkbox"
           />
           <label
             htmlFor="remember"
@@ -159,6 +162,7 @@ export function LoginForm({
           <a
             href="/auth/forgot-password"
             className="font-medium text-primary-600 hover:text-primary-500"
+            data-testid="forgot-password-link"
           >
             Forgot your password?
           </a>
@@ -173,6 +177,7 @@ export function LoginForm({
           fullWidth
           loading={isSubmitting || loading}
           disabled={isSubmitting || loading}
+          data-testid="login-submit-button"
         >
           Sign in
         </Button>

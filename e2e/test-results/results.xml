@@ -1,0 +1,22 @@
+<testsuites id="" name="" tests="3" failures="0" skipped="0" errors="0" time="1.406121">
+<testsuite name="smoke.spec.ts" timestamp="2025-07-10T17:41:54.470Z" hostname="chromium" tests="3" failures="0" skipped="0" time="0.617" errors="0">
+<testcase name="E2E Infrastructure Tests › playwright framework is working" classname="smoke.spec.ts" time="0.261">
+</testcase>
+<testcase name="E2E Infrastructure Tests › can connect to localhost:3010" classname="smoke.spec.ts" time="0.217">
+<system-out>
+<![CDATA[Response: 200 http://localhost:3010/
+Response: 200 http://localhost:3010/_next/static/css/app/layout.css?v=1752169315504
+Response: 200 http://localhost:3010/_next/static/media/e4af272ccee01ff0-s.p.woff2
+Response: 200 http://localhost:3010/_next/static/chunks/webpack.js?v=1752169315504
+Server responded with status: 200
+Response: 200 http://localhost:3010/_next/static/chunks/app-pages-internals.js
+Response: 200 http://localhost:3010/_next/static/chunks/app/layout.js
+Response: 200 http://localhost:3010/_next/static/chunks/app/page.js
+Response: 200 http://localhost:3010/_next/static/chunks/main-app.js?v=1752169315504
+]]>
+</system-out>
+</testcase>
+<testcase name="E2E Infrastructure Tests › test utilities are functional" classname="smoke.spec.ts" time="0.139">
+</testcase>
+</testsuite>
+</testsuites>

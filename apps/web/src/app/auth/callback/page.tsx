@@ -115,7 +115,7 @@ export default function AuthCallbackPage() {
     switch (status) {
       case 'processing':
         return (
-          <div className="text-center">
+          <div className="text-center" data-testid="auth-callback-processing">
             <Spinner size="lg" className="mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Completing sign in...
@@ -128,7 +128,7 @@ export default function AuthCallbackPage() {
 
       case 'success':
         return (
-          <div className="text-center">
+          <div className="text-center" data-testid="auth-callback-success">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
               <svg
                 className="h-10 w-10 text-green-600"
@@ -156,8 +156,8 @@ export default function AuthCallbackPage() {
 
       case 'error':
         return (
-          <div className="text-center">
-            <Alert type="error" className="mb-6 text-left">
+          <div className="text-center" data-testid="auth-callback-error">
+            <Alert type="error" className="mb-6 text-left" data-testid="auth-callback-error-alert">
               {error || 'Authentication failed. Please try again.'}
             </Alert>
             <div className="space-y-3">
@@ -165,6 +165,7 @@ export default function AuthCallbackPage() {
                 onClick={() => router.push('/auth/sign-in')}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 aria-label="Return to sign in page"
+                data-testid="back-to-signin-button"
               >
                 Back to Sign In
               </button>
@@ -172,6 +173,7 @@ export default function AuthCallbackPage() {
                 onClick={() => router.push('/')}
                 className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 aria-label="Return to home page"
+                data-testid="go-to-home-button"
               >
                 Go to Home
               </button>
@@ -193,6 +195,7 @@ export default function AuthCallbackPage() {
         className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10"
         role="main"
         aria-live="polite"
+        data-testid="auth-callback-container"
       >
         {renderContent()}
       </div>
@@ -205,6 +208,7 @@ export default function AuthCallbackPage() {
             <a
               href="/support"
               className="font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:underline"
+              data-testid="contact-support-link"
             >
               Contact support
             </a>

@@ -9,11 +9,15 @@ import type { ResetPasswordCredentials } from '../../types'
 interface ForgotPasswordFormProps {
   onSuccess?: () => void
   onError?: (error: string) => void
+  className?: string
+  'data-testid'?: string
 }
 
 export function ForgotPasswordForm({
   onSuccess,
   onError,
+  className,
+  'data-testid': dataTestId,
 }: ForgotPasswordFormProps) {
   const { resetPassword, loading } = useAuth()
   const [formData, setFormData] = useState<ResetPasswordCredentials>({
@@ -71,8 +75,8 @@ export function ForgotPasswordForm({
 
   if (isSuccess) {
     return (
-      <div className="text-center">
-        <div className="rounded-md bg-green-50 p-4">
+      <div className="text-center" data-testid="forgot-password-success">
+        <div className="rounded-md bg-green-50 p-4" data-testid="success-alert">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg
@@ -107,6 +111,7 @@ export function ForgotPasswordForm({
           <a
             href="/auth/login"
             className="text-sm font-medium text-primary-600 hover:text-primary-500"
+            data-testid="back-to-login-link"
           >
             Back to login
           </a>
@@ -116,9 +121,9 @@ export function ForgotPasswordForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className={`space-y-6 ${className || ''}`} data-testid={dataTestId || "forgot-password-form"}>
       {errors.general && (
-        <div className="rounded-md bg-red-50 p-4">
+        <div className="rounded-md bg-red-50 p-4" data-testid="forgot-password-error-alert">
           <div className="flex">
             <div className="ml-3">
               <h3 className="text-sm font-medium text-red-800">
@@ -151,6 +156,7 @@ export function ForgotPasswordForm({
             error={!!errors.email}
             placeholder="you@example.com"
             disabled={isSubmitting}
+            data-testid="forgot-password-email-input"
           />
         </div>
         <p className="mt-2 text-sm text-gray-500">
@@ -167,6 +173,7 @@ export function ForgotPasswordForm({
           fullWidth
           loading={isSubmitting || loading}
           disabled={isSubmitting || loading}
+          data-testid="send-reset-link-button"
         >
           Send reset link
         </Button>
@@ -176,6 +183,7 @@ export function ForgotPasswordForm({
         <a
           href="/auth/login"
           className="text-sm font-medium text-primary-600 hover:text-primary-500"
+          data-testid="back-to-login-from-form-link"
         >
           Back to login
         </a>

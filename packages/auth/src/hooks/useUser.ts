@@ -89,22 +89,29 @@ export function useUser() {
         // Create the updated profile object
         const updatedProfile: UserProfile = {
           id: user.id,
+          user_id: user.id,
           email: user.email!,
-          firstName: data.firstName || user.user_metadata.first_name || '',
-          lastName: data.lastName || user.user_metadata.last_name || '',
-          fullName:
+          first_name: data.firstName || user.user_metadata.first_name || '',
+          last_name: data.lastName || user.user_metadata.last_name || '',
+          display_name:
             data.firstName && data.lastName
               ? `${data.firstName} ${data.lastName}`
               : user.user_metadata.full_name || '',
-          avatarUrl: data.avatarUrl || user.user_metadata.avatar_url,
+          avatar_url: data.avatarUrl || user.user_metadata.avatar_url,
           timezone:
             data.timezone || (user.user_metadata as any).timezone || 'UTC',
           locale: data.locale || (user.user_metadata as any).locale || 'en',
-          emailVerified: !!user.email_confirmed_at,
-          phoneVerified: !!user.phone_confirmed_at,
-          twoFactorEnabled: false, // Would need to check this from user settings
-          createdAt: new Date(user.created_at),
-          updatedAt: new Date(),
+          email_verified_at: user.email_confirmed_at,
+          phone: data.phone || (user.user_metadata as any).phone,
+          website: data.website || (user.user_metadata as any).website,
+          bio: data.bio || (user.user_metadata as any).bio,
+          location: (user.user_metadata as any).location,
+          job_title: (user.user_metadata as any).job_title,
+          company: (user.user_metadata as any).company,
+          department: (user.user_metadata as any).department,
+          last_seen_at: new Date().toISOString(),
+          created_at: user.created_at,
+          updated_at: new Date().toISOString(),
         }
 
         // Update the auth context
@@ -275,28 +282,52 @@ export function useUser() {
 /**
  * Default user preferences
  */
-function getDefaultPreferences(): UserPreferences {
+function getDefaultPreferences(): Partial<UserPreferences> {
   return {
     theme: 'system',
     language: 'en',
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    dateFormat: 'MM/DD/YYYY',
-    timeFormat: '12h',
-    emailNotifications: {
-      marketing: true,
-      productUpdates: true,
-      securityAlerts: true,
-      organizationInvites: true,
-      projectUpdates: true,
-      weeklyDigest: true,
-    },
-    pushNotifications: {
-      enabled: false,
-      mentions: true,
-      messages: true,
-      reminders: true,
-      securityAlerts: true,
-    },
+    date_format: 'MM/DD/YYYY',
+    time_format: '12h',
+    
+    // Email Notifications
+    email_notifications_enabled: true,
+    email_frequency: 'daily',
+    email_digest: true,
+    
+    // Notification Types
+    notify_security_alerts: true,
+    notify_account_updates: true,
+    notify_organization_updates: true,
+    notify_project_updates: true,
+    notify_mentions: true,
+    notify_comments: true,
+    notify_invitations: true,
+    notify_billing_alerts: true,
+    notify_feature_announcements: true,
+    
+    // Push Notifications
+    browser_notifications_enabled: false,
+    desktop_notifications_enabled: false,
+    mobile_notifications_enabled: false,
+    
+    // Marketing & Communication
+    marketing_emails: false,
+    product_updates: true,
+    newsletters: false,
+    surveys: false,
+    
+    // Privacy Settings
+    profile_visibility: 'organization',
+    email_visibility: 'organization',
+    activity_visibility: 'organization',
+    hide_last_seen: false,
+    hide_activity_status: false,
+    
+    // Advanced Settings
+    quiet_hours_enabled: false,
+    quiet_hours_start: '22:00',
+    quiet_hours_end: '08:00',
   }
 }
 

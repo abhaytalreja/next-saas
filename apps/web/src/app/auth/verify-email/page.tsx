@@ -110,7 +110,7 @@ export default function VerifyEmailPage() {
     switch (verificationState) {
       case 'loading':
         return (
-          <div className="text-center">
+          <div className="text-center" data-testid="verify-email-loading">
             <Spinner size="lg" className="mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Verifying your email...
@@ -123,7 +123,7 @@ export default function VerifyEmailPage() {
 
       case 'success':
         return (
-          <div className="text-center">
+          <div className="text-center" data-testid="verify-email-success">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
               <CheckCircleIcon
                 className="h-10 w-10 text-green-600"
@@ -140,6 +140,7 @@ export default function VerifyEmailPage() {
               onClick={() => router.push('/dashboard')}
               className="w-full"
               aria-label="Go to dashboard"
+              data-testid="go-to-dashboard-button"
             >
               Go to Dashboard
             </Button>
@@ -148,7 +149,7 @@ export default function VerifyEmailPage() {
 
       case 'expired':
         return (
-          <div className="text-center">
+          <div className="text-center" data-testid="verify-email-expired">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-4">
               <XCircleIcon
                 className="h-10 w-10 text-yellow-600"
@@ -173,6 +174,7 @@ export default function VerifyEmailPage() {
                       ? `Resend available in ${resendCooldown} seconds`
                       : 'Resend verification email'
                   }
+                  data-testid="resend-verification-button"
                 >
                   {resendState === 'sending' ? (
                     <>
@@ -194,7 +196,7 @@ export default function VerifyEmailPage() {
                   )}
                 </Button>
                 {resendState === 'error' && (
-                  <Alert type="error" className="mb-4">
+                  <Alert type="error" className="mb-4" data-testid="resend-error-alert">
                     Failed to resend email. Please try again.
                   </Alert>
                 )}
@@ -205,7 +207,7 @@ export default function VerifyEmailPage() {
 
       case 'error':
         return (
-          <div className="text-center">
+          <div className="text-center" data-testid="verify-email-error">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <XCircleIcon
                 className="h-10 w-10 text-red-600"
@@ -219,12 +221,12 @@ export default function VerifyEmailPage() {
               {errorMessage || "We couldn't verify your email address."}
             </p>
             <div className="space-y-3">
-              <Link href="/auth/sign-in" className="block">
+              <Link href="/auth/sign-in" className="block" data-testid="back-to-signin-link">
                 <Button variant="outline" className="w-full">
                   Back to Sign In
                 </Button>
               </Link>
-              <Link href="/auth/sign-up" className="block">
+              <Link href="/auth/sign-up" className="block" data-testid="create-new-account-link">
                 <Button variant="ghost" className="w-full">
                   Create New Account
                 </Button>
@@ -251,6 +253,7 @@ export default function VerifyEmailPage() {
         className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10"
         role="main"
         aria-live="polite"
+        data-testid="verify-email-container"
       >
         {renderContent()}
       </div>
@@ -262,6 +265,7 @@ export default function VerifyEmailPage() {
           <Link
             href="/support"
             className="font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:underline"
+            data-testid="contact-support-link"
           >
             Contact support
           </Link>

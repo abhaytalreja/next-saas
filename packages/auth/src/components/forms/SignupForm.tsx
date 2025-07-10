@@ -105,9 +105,9 @@ export function SignupForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" data-testid="signup-form">
       {errors.general && (
-        <div className="rounded-md bg-red-50 p-4">
+        <div className="rounded-md bg-red-50 p-4" data-testid="signup-error-alert">
           <div className="flex">
             <div className="ml-3">
               <h3 className="text-sm font-medium text-red-800">
@@ -140,6 +140,7 @@ export function SignupForm({
               onChange={handleChange}
               error={!!errors.firstName}
               disabled={isSubmitting}
+              data-testid="signup-firstname-input"
             />
           </div>
         </div>
@@ -162,6 +163,7 @@ export function SignupForm({
               onChange={handleChange}
               error={!!errors.lastName}
               disabled={isSubmitting}
+              data-testid="signup-lastname-input"
             />
           </div>
         </div>
@@ -186,6 +188,7 @@ export function SignupForm({
             error={!!errors.email}
             placeholder="you@example.com"
             disabled={isSubmitting}
+            data-testid="signup-email-input"
           />
         </div>
       </div>
@@ -209,10 +212,11 @@ export function SignupForm({
             error={!!errors.password}
             placeholder="••••••••"
             disabled={isSubmitting}
+            data-testid="signup-password-input"
           />
         </div>
         {formData.password && (
-          <div className="mt-2">
+          <div className="mt-2" data-testid="password-strength-indicator">
             <div className="flex items-center space-x-2">
               <div className="flex-1 bg-gray-200 rounded-full h-2">
                 <div
@@ -259,6 +263,7 @@ export function SignupForm({
               error={!!errors.organizationName}
               placeholder="Acme Inc."
               disabled={isSubmitting}
+              data-testid="signup-organization-input"
             />
           </div>
           <p className="mt-1 text-xs text-gray-500">
@@ -276,6 +281,7 @@ export function SignupForm({
               checked={formData.agreeToTerms}
               onChange={handleChange}
               disabled={isSubmitting}
+              data-testid="signup-terms-checkbox"
             />
           </div>
           <div className="ml-3 text-sm">
@@ -302,6 +308,7 @@ export function SignupForm({
               checked={formData.agreeToPrivacy}
               onChange={handleChange}
               disabled={isSubmitting}
+              data-testid="signup-privacy-checkbox"
             />
           </div>
           <div className="ml-3 text-sm">
@@ -334,6 +341,7 @@ export function SignupForm({
           fullWidth
           loading={isSubmitting || loading}
           disabled={isSubmitting || loading}
+          data-testid="signup-submit-button"
         >
           Create account
         </Button>

@@ -24,8 +24,8 @@ export default function ForgotPasswordPage() {
         title="Check your email"
         subtitle="We've sent you a password reset link"
       >
-        <div className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10">
-          <div className="text-center">
+        <div className="bg-white py-8 px-4 shadow-sm rounded-lg sm:px-10" data-testid="forgot-password-success-container">
+          <div className="text-center" data-testid="forgot-password-success-content">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
               <svg
                 className="h-10 w-10 text-green-600"
@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
               </svg>
             </div>
 
-            <Alert type="success" className="mb-6 text-left">
+            <Alert type="success" className="mb-6 text-left" data-testid="forgot-password-success-alert">
               <p className="text-sm">
                 We've sent a password reset link to <strong>{email}</strong>.
                 Please check your email and follow the instructions to reset
@@ -61,6 +61,7 @@ export default function ForgotPasswordPage() {
                 onClick={() => setSuccess(false)}
                 className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                 aria-label="Try with different email"
+                data-testid="try-another-email-button"
               >
                 Try Another Email
               </button>
@@ -68,6 +69,7 @@ export default function ForgotPasswordPage() {
               <Link
                 href="/auth/sign-in"
                 className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                data-testid="back-to-signin-button"
               >
                 <ArrowLeftIcon className="h-4 w-4 mr-2" />
                 Back to Sign In
@@ -82,6 +84,7 @@ export default function ForgotPasswordPage() {
             <Link
               href="/auth/sign-in"
               className="font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:underline"
+              data-testid="signin-instead-link"
             >
               Sign in instead
             </Link>
@@ -100,6 +103,7 @@ export default function ForgotPasswordPage() {
           <Link
             href="/auth/sign-in"
             className="inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:underline transition-colors"
+            data-testid="back-to-signin-footer-link"
           >
             <ArrowLeftIcon className="h-4 w-4 mr-1" />
             Back to sign in
@@ -107,7 +111,7 @@ export default function ForgotPasswordPage() {
         </div>
       }
     >
-      <ForgotPasswordForm onSuccess={handleSuccess} className="space-y-6" />
+      <ForgotPasswordForm onSuccess={handleSuccess} className="space-y-6" data-testid="forgot-password-form-component" />
 
       {/* Additional help section */}
       <div className="mt-8 border-t border-gray-200 pt-6">
@@ -126,6 +130,7 @@ export default function ForgotPasswordPage() {
               <Link
                 href="/support"
                 className="text-primary-600 hover:text-primary-500 focus:outline-none focus:underline"
+                data-testid="contact-support-link"
               >
                 Contact our support team
               </Link>

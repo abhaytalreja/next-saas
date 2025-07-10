@@ -86,7 +86,7 @@ export interface OAuthCredentials {
 }
 
 // Profile Types
-export interface UserProfile {
+export interface AuthUserProfile {
   id: string;
   email: string;
   firstName: string;
@@ -208,7 +208,7 @@ export interface AuthContextValue {
   signOut: () => Promise<AuthResponse<void>>;
   resetPassword: (credentials: ResetPasswordCredentials) => Promise<AuthResponse<void>>;
   updatePassword: (credentials: UpdatePasswordCredentials) => Promise<AuthResponse<void>>;
-  updateProfile: (data: UpdateProfileData) => Promise<AuthResponse<UserProfile>>;
+  updateProfile: (data: UpdateProfileData) => Promise<AuthResponse<AuthUserProfile>>;
   refreshSession: () => Promise<AuthResponse<AuthSession>>;
   resendVerification: () => Promise<AuthResponse<void>>;
   verifyEmail: (token: string) => Promise<AuthResponse<void>>;

@@ -1,0 +1,333 @@
+{
+  "config": {
+    "configFile": "/Users/abhay/Documents/workspace/next-js/next-saas/playwright.config.ts",
+    "rootDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "e2e-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "e2e-results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "e2e-results.xml"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/abhay/Documents/workspace/next-js/next-saas/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "setup",
+        "name": "setup",
+        "testDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/.*\\.setup\\.ts/"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/abhay/Documents/workspace/next-js/next-saas/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts",
+          "**/*.e2e.{ts,js}"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/abhay/Documents/workspace/next-js/next-saas/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts",
+          "**/*.e2e.{ts,js}"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/abhay/Documents/workspace/next-js/next-saas/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts",
+          "**/*.e2e.{ts,js}"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/abhay/Documents/workspace/next-js/next-saas/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/mobile-*.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/abhay/Documents/workspace/next-js/next-saas/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/mobile-*.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/abhay/Documents/workspace/next-js/next-saas/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "iPad",
+        "name": "iPad",
+        "testDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/mobile-*.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "/Users/abhay/Documents/workspace/next-js/next-saas/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "User Journey Tests",
+        "name": "User Journey Tests",
+        "testDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/user-journey.spec.ts"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "/Users/abhay/Documents/workspace/next-js/next-saas/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "Organization Workflow Tests",
+        "name": "Organization Workflow Tests",
+        "testDir": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/organization-workflow.spec.ts"
+        ],
+        "timeout": 180000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.0",
+    "workers": 6,
+    "webServer": {
+      "command": "npm run dev",
+      "port": 3000,
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 31,
+        "column": 12
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:31\n\n  29 |   mobileDevices.forEach(device => {\n  30 |     test.describe(`${device.name} Experience`, () => {\n> 31 |       test.use({ ...device })\n     |            ^\n  32 |\n  33 |       test(`Complete mobile registration and profile setup on ${device.name}`, async ({ page }) => {\n  34 |         const mobileEmail = generateMobileTestEmail()"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 377,
+        "column": 8
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:377\n\n  375 |\n  376 | test.describe('Mobile-Specific Feature Tests', () => {\n> 377 |   test.use({ ...devices['iPhone 12'] })\n      |        ^\n  378 |\n  379 |   test('Mobile camera integration for avatar upload', async ({ page }) => {\n  380 |     // Login"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 377,
+        "column": 8
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:377\n\n  375 |\n  376 | test.describe('Mobile-Specific Feature Tests', () => {\n> 377 |   test.use({ ...devices['iPhone 12'] })\n      |        ^\n  378 |\n  379 |   test('Mobile camera integration for avatar upload', async ({ page }) => {\n  380 |     // Login"
+    },
+    {
+      "message": "Cannot use({ defaultBrowserType }) in a describe group, because it forces a new worker.\nMake it top-level in the test file or put in the configuration file.",
+      "location": {
+        "file": "/Users/abhay/Documents/workspace/next-js/next-saas/e2e/mobile-user-journey.spec.ts",
+        "line": 377,
+        "column": 8
+      },
+      "snippet": "\u001b[90m   at \u001b[39mmobile-user-journey.spec.ts:377\n\n  375 |\n  376 | test.describe('Mobile-Specific Feature Tests', () => {\n> 377 |   test.use({ ...devices['iPhone 12'] })\n      |        ^\n  378 |\n  379 |   test('Mobile camera integration for avatar upload', async ({ page }) => {\n  380 |     // Login"
+    }
+  ],
+  "stats": {
+    "startTime": "2025-07-10T18:30:14.872Z",
+    "duration": 308.31600000000003,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
