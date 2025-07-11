@@ -20,11 +20,12 @@ setup('authenticate user', async ({ page }) => {
   )
 
   try {
-    // Create test user using admin API
+    // Create test user using admin API (respecting DISABLE_EMAIL_CONFIRMATION flag)
+    const disableEmailConfirmation = process.env.DISABLE_EMAIL_CONFIRMATION === 'true'
     const { data: userData, error: createError } = await supabase.auth.admin.createUser({
       email: TEST_USER_EMAIL,
       password: TEST_USER_PASSWORD,
-      email_confirm: true,
+      email_confirm: disableEmailConfirmation,
     })
 
     if (createError && !createError.message.includes('already exists')) {

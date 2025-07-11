@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { UserPreferencesManager } from '@/packages/auth/src/components/preferences/UserPreferencesManager'
+// import { UserPreferencesManager } from '@/packages/auth/src/components/preferences/UserPreferencesManager'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nextsaas/ui'
 import { Settings, Palette, Bell, Globe, Shield, Monitor } from 'lucide-react'
 
@@ -72,7 +72,7 @@ export default function PreferencesPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <UserPreferencesManager />
+          <div>User Preferences Manager - Coming Soon</div>
         </CardContent>
       </Card>
 

@@ -12,6 +12,10 @@ export * from './components/providers/SocialLoginButton'
 export * from './components/providers/SocialAuthButtons'
 export * from './components/layouts/AuthLayout'
 export * from './components/layouts/ProtectedLayout'
+export * from './components/ui/AccountDropdown'
+export * from './components/ui/OrganizationSwitcher'
+export * from './components/ui/MembersList'
+export * from './components/ui/InvitationForm'
 
 // Hooks
 export * from './hooks'
@@ -21,6 +25,9 @@ export * from './providers'
 
 // Types
 export * from './types'
+
+// Components (re-export from components/index to avoid conflicts)
+export { UserAvatar } from './components/ui/UserAvatar'
 
 // Utils
 export * from './utils'

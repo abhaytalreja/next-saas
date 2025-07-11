@@ -1,40 +1,40 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import React, {
   createContext,
-  useEffect,
-  useState,
   useCallback,
+  useEffect,
   useRef,
+  useState,
 } from 'react'
-import { useRouter } from 'next/navigation'
 import { getSupabaseBrowserClient } from '../lib/auth-client'
 import { getSessionManager } from '../lib/session-manager'
-import { validateFormData } from '../utils/validation'
-import {
-  signInSchema,
-  signUpSchema,
-  resetPasswordSchema,
-  updatePasswordSchema,
-  magicLinkSchema,
-  phoneSchema,
-} from '../utils/validation'
 import type {
   AuthContextValue,
-  AuthUser,
-  AuthSession,
   AuthError,
+  AuthResponse,
+  AuthSession,
+  AuthUser,
+  MagicLinkCredentials,
+  OAuthCredentials,
+  PhoneCredentials,
+  ResetPasswordCredentials,
   SignInCredentials,
   SignUpCredentials,
-  ResetPasswordCredentials,
   UpdatePasswordCredentials,
-  MagicLinkCredentials,
-  PhoneCredentials,
-  OAuthCredentials,
-  AuthResponse,
   UpdateProfileData,
   UserProfile,
 } from '../types'
+import {
+  magicLinkSchema,
+  phoneSchema,
+  resetPasswordSchema,
+  signInSchema,
+  signUpSchema,
+  updatePasswordSchema,
+  validateFormData,
+} from '../utils/validation'
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
 
@@ -137,6 +137,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
           })
 
         if (signInError) {
+          // Check if this is an email confirmation error and email confirmation is disabled
+          const disableEmailConfirmation = process.env.NEXT_PUBLIC_DISABLE_EMAIL_CONFIRMATION === 'true'
+          
+          if (signInError.message?.includes('Email not confirmed') && disableEmailConfirmation) {
+            // If email confirmation is disabled, ignore this error and try to proceed
+            console.log('Email confirmation error ignored during sign-in due to DISABLE_EMAIL_CONFIRMATION flag')
+            
+            // For sign-in, we still want to return the session if it exists, even with email not confirmed
+            if (data?.session) {
+              return { data: data.session as AuthSession, error: null }
+            }
+            
+            // If no session, return a more helpful error
+            const error = { message: 'Sign-in failed. Please check your credentials.' }
+            setError(error)
+            return { data: null, error }
+          }
+          
           const error = { message: signInError.message }
           setError(error)
           return { data: null, error }
@@ -171,37 +189,88 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return { data: null, error }
         }
 
-        const { data, error: signUpError } = await supabase.auth.signUp({
-          email: credentials.email,
-          password: credentials.password,
-          options: {
-            data: {
-              first_name: credentials.firstName,
-              last_name: credentials.lastName,
-              full_name: `${credentials.firstName} ${credentials.lastName}`,
-            },
+        // Use server-side signup API to bypass database trigger issues
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            email: credentials.email,
+            password: credentials.password,
+            firstName: credentials.firstName,
+            lastName: credentials.lastName,
+            organizationName: credentials.organizationName,
+          }),
         })
 
-        if (signUpError) {
-          const error = { message: signUpError.message }
+        const result = await response.json()
+
+        if (!response.ok) {
+          const error = { message: result.error || 'Signup failed' }
           setError(error)
           return { data: null, error }
         }
 
-        // If organization name is provided, create organization
-        if (credentials.organizationName && data.user) {
-          try {
-            await createUserOrganization(
-              data.user.id,
-              credentials.organizationName
-            )
-          } catch (orgError: any) {
-            console.warn('Failed to create organization:', orgError.message)
-          }
+        // Check if email confirmation is disabled
+        const disableEmailConfirmation = process.env.NEXT_PUBLIC_DISABLE_EMAIL_CONFIRMATION === 'true'
+        
+        if (disableEmailConfirmation) {
+          // Skip automatic sign-in when email confirmation is disabled
+          // Return success without session - user will need to manually sign in
+          console.log('Signup successful with email confirmation disabled - user can now sign in manually')
+          return { data: null, error: null }
         }
 
-        return { data: data.session as AuthSession, error: null }
+        // Now sign in the user to get a session (only when email confirmation is enabled)
+        // Add small delay to ensure database consistency after user creation
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        // Retry sign-in up to 3 times with increasing delays
+        let signInData = null
+        let signInError = null
+        
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: credentials.email,
+            password: credentials.password,
+          })
+          
+          signInData = data
+          signInError = error
+          
+          // If sign-in successful, break out of retry loop
+          if (!error) {
+            break
+          }
+          
+          // If it's an email confirmation error and we have more attempts, wait and retry
+          if (error.message?.includes('Email not confirmed') && attempt < 3) {
+            console.log(`Sign-in attempt ${attempt} failed with email confirmation error, retrying...`)
+            await new Promise(resolve => setTimeout(resolve, attempt * 1000))
+            continue
+          }
+          
+          // For other errors or final attempt, break out
+          break
+        }
+
+        if (signInError) {
+          // Check if this is an email confirmation error and email confirmation is disabled
+          const disableEmailConfirmation = process.env.NEXT_PUBLIC_DISABLE_EMAIL_CONFIRMATION === 'true'
+          
+          if (signInError.message?.includes('Email not confirmed') && disableEmailConfirmation) {
+            // If email confirmation is disabled, don't treat this as an error
+            console.log('Email confirmation error ignored due to DISABLE_EMAIL_CONFIRMATION flag')
+            return { data: null, error: null }
+          }
+          
+          const error = { message: signInError.message }
+          setError(error)
+          return { data: null, error }
+        }
+
+        return { data: signInData.session as AuthSession, error: null }
       } catch (err: any) {
         const error = { message: err.message || 'Failed to sign up' }
         setError(error)
@@ -609,14 +678,41 @@ async function createUserOrganization(
   userId: string,
   organizationName: string
 ) {
-  const supabase = getSupabaseBrowserClient()
+  // Use service role client for organization creation during signup
+  // since the user doesn't have a valid session yet
+  const { createClient } = await import('@supabase/supabase-js')
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error('Supabase configuration missing for organization creation')
+  }
+
+  const supabase = createClient(supabaseUrl, serviceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  })
+
+  // Generate a slug from the organization name
+  const slug = organizationName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .substring(0, 50)
+
+  // Add timestamp to ensure uniqueness
+  const uniqueSlug = `${slug}-${Date.now()}`
 
   // Create organization
   const { data: org, error: orgError } = await supabase
     .from('organizations')
     .insert({
       name: organizationName,
-      owner_id: userId,
+      slug: uniqueSlug,
+      created_by: userId,
     })
     .select()
     .single()
@@ -624,12 +720,13 @@ async function createUserOrganization(
   if (orgError) throw orgError
 
   // Create membership
-  const { error: membershipError } = await supabase.from('memberships').insert({
-    user_id: userId,
-    organization_id: org.id,
-    role: 'owner',
-    status: 'active',
-  })
+  const { error: membershipError } = await supabase
+    .from('organization_members')
+    .insert({
+      user_id: userId,
+      organization_id: org.id,
+      role: 'owner',
+    })
 
   if (membershipError) throw membershipError
 

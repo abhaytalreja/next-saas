@@ -85,8 +85,16 @@ export function handleAuthError(error: any): SupabaseError {
   if (error.message?.includes('Invalid login credentials')) {
     message = 'Invalid email or password';
   } else if (error.message?.includes('Email not confirmed')) {
-    message = 'Please verify your email before signing in';
-    statusCode = 403;
+    // Check if email confirmation is disabled
+    const disableEmailConfirmation = process.env.NEXT_PUBLIC_DISABLE_EMAIL_CONFIRMATION === 'true';
+    if (disableEmailConfirmation) {
+      // If email confirmation is disabled, treat this as a different error
+      message = 'Sign up successful. Please sign in to continue.';
+      statusCode = 200; // Change to success status
+    } else {
+      message = 'Please verify your email before signing in';
+      statusCode = 403;
+    }
   } else if (error.message?.includes('User already registered')) {
     message = 'An account with this email already exists';
     statusCode = 409;

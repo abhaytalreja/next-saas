@@ -12,12 +12,12 @@ const buttonVariants = cva(
         destructive:
           'bg-error-600 text-white hover:bg-error-700 active:bg-error-800 shadow-sm',
         outline:
-          'border-2 border-primary-600 bg-transparent text-primary-600 hover:bg-primary-50 active:bg-primary-100',
+          'border-2 border-primary-600 dark:border-primary-400 bg-transparent text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 active:bg-primary-100 dark:active:bg-primary-900/30',
         secondary:
           'bg-secondary-600 text-secondary-foreground hover:bg-secondary-700 active:bg-secondary-800 shadow-sm',
         ghost:
-          'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 active:bg-neutral-200',
-        link: 'text-primary-600 underline-offset-4 hover:underline hover:text-primary-700',
+          'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100 active:bg-neutral-200 dark:active:bg-neutral-700',
+        link: 'text-primary-600 dark:text-primary-400 underline-offset-4 hover:underline hover:text-primary-700 dark:hover:text-primary-300',
         success:
           'bg-success-600 text-white hover:bg-success-700 active:bg-success-800 shadow-sm',
       },

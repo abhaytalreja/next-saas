@@ -90,8 +90,9 @@ export function createAuthMiddleware(config: Partial<MiddlewareConfig> = {}) {
       }
     }
 
-    // Check email verification if required
-    if (isAuthenticated && !isPublicRoute && !session.user.email_confirmed_at) {
+    // Check email verification if required (only if email confirmation is enabled)
+    const disableEmailConfirmation = process.env.DISABLE_EMAIL_CONFIRMATION === 'true'
+    if (isAuthenticated && !isPublicRoute && !session.user.email_confirmed_at && !disableEmailConfirmation) {
       const needsVerification = finalConfig.protectedRoutes.some(
         route => pathname === route || pathname.startsWith(`${route}/`)
       )

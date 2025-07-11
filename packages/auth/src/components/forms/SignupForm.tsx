@@ -20,7 +20,7 @@ interface SignupFormProps {
 
 export function SignupForm({
   includeOrganization = true,
-  redirectTo = '/auth/verify-email',
+  redirectTo = '/dashboard',
   onSuccess,
   onError,
 }: SignupFormProps) {
@@ -32,8 +32,6 @@ export function SignupForm({
     firstName: '',
     lastName: '',
     organizationName: '',
-    agreeToTerms: false,
-    agreeToPrivacy: false,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -85,9 +83,22 @@ export function SignupForm({
         return
       }
 
-      if (data) {
-        onSuccess?.()
-        router.push(redirectTo)
+      // Signup was successful
+      onSuccess?.()
+      
+      // Check if email confirmation is disabled
+      const disableEmailConfirmation = process.env.NEXT_PUBLIC_DISABLE_EMAIL_CONFIRMATION === 'true'
+      
+      if (disableEmailConfirmation) {
+        // When email confirmation is disabled, redirect to sign-in page
+        // User needs to manually sign in after registration
+        router.push('/auth/sign-in?message=registration-complete')
+      } else if (data) {
+        // If user is automatically signed in (email confirmation enabled), go to dashboard
+        router.push(redirectTo === '/auth/verify-email' ? '/dashboard' : redirectTo)
+      } else {
+        // Go to email verification page
+        router.push('/auth/verify-email')
       }
     } catch (err: any) {
       setErrors({ general: err.message || 'An unexpected error occurred' })
@@ -125,7 +136,7 @@ export function SignupForm({
         <div>
           <label
             htmlFor="firstName"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-900 dark:text-gray-100"
           >
             First name
           </label>
@@ -148,7 +159,7 @@ export function SignupForm({
         <div>
           <label
             htmlFor="lastName"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-900 dark:text-gray-100"
           >
             Last name
           </label>
@@ -172,7 +183,7 @@ export function SignupForm({
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-900 dark:text-gray-100"
         >
           Email address
         </label>
@@ -196,7 +207,7 @@ export function SignupForm({
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-900 dark:text-gray-100"
         >
           Password
         </label>
@@ -224,7 +235,7 @@ export function SignupForm({
                   style={{ width: `${(passwordStrength.score / 7) * 100}%` }}
                 />
               </div>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-700 dark:text-gray-300">
                 {passwordStrength.score <= 2
                   ? 'Weak'
                   : passwordStrength.score <= 4
@@ -235,7 +246,7 @@ export function SignupForm({
               </span>
             </div>
             {passwordStrength.feedback.length > 0 && (
-              <ul className="mt-1 text-xs text-gray-500">
+              <ul className="mt-1 text-xs text-gray-700 dark:text-gray-300">
                 {passwordStrength.feedback.map((tip, index) => (
                   <li key={index}>• {tip}</li>
                 ))}
@@ -249,7 +260,7 @@ export function SignupForm({
         <div>
           <label
             htmlFor="organizationName"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-900 dark:text-gray-100"
           >
             Organization name (optional)
           </label>
@@ -266,71 +277,33 @@ export function SignupForm({
               data-testid="signup-organization-input"
             />
           </div>
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-gray-700 dark:text-gray-300">
             Leave blank to join an existing organization later
           </p>
         </div>
       )}
 
-      <div className="space-y-3">
-        <div className="flex items-start">
-          <div className="flex items-center h-5">
-            <Checkbox
-              id="agreeToTerms"
-              name="agreeToTerms"
-              checked={formData.agreeToTerms}
-              onChange={handleChange}
-              disabled={isSubmitting}
-              data-testid="signup-terms-checkbox"
-            />
-          </div>
-          <div className="ml-3 text-sm">
-            <label htmlFor="agreeToTerms" className="font-medium text-gray-700">
-              I agree to the{' '}
-              <a
-                href="/terms"
-                className="text-primary-600 hover:text-primary-500"
-              >
-                Terms of Service
-              </a>
-            </label>
-            {errors.agreeToTerms && (
-              <p className="mt-1 text-xs text-red-600">{errors.agreeToTerms}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="flex items-start">
-          <div className="flex items-center h-5">
-            <Checkbox
-              id="agreeToPrivacy"
-              name="agreeToPrivacy"
-              checked={formData.agreeToPrivacy}
-              onChange={handleChange}
-              disabled={isSubmitting}
-              data-testid="signup-privacy-checkbox"
-            />
-          </div>
-          <div className="ml-3 text-sm">
-            <label
-              htmlFor="agreeToPrivacy"
-              className="font-medium text-gray-700"
-            >
-              I agree to the{' '}
-              <a
-                href="/privacy"
-                className="text-primary-600 hover:text-primary-500"
-              >
-                Privacy Policy
-              </a>
-            </label>
-            {errors.agreeToPrivacy && (
-              <p className="mt-1 text-xs text-red-600">
-                {errors.agreeToPrivacy}
-              </p>
-            )}
-          </div>
-        </div>
+      <div className="text-center text-sm text-gray-600 dark:text-gray-400">
+        <p>
+          By continuing, you agree to our{' '}
+          <a
+            href="/terms"
+            className="text-orange-600 hover:text-orange-700 dark:text-orange-400 font-medium underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Terms of Service
+          </a>
+          {' '}and{' '}
+          <a
+            href="/privacy"
+            className="text-orange-600 hover:text-orange-700 dark:text-orange-400 font-medium underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Privacy Policy
+          </a>
+        </p>
       </div>
 
       <div>

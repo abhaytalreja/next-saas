@@ -3,11 +3,18 @@
 import React from 'react'
 import { ProfileForm } from '@nextsaas/auth'
 import { useAuth } from '@nextsaas/auth'
-import { AvatarUpload } from '@/packages/auth/src/components/profile/AvatarUpload'
-import { ActivityDashboard } from '@/packages/auth/src/components/activity/ActivityDashboard'
-import { DataExportManager } from '@/packages/auth/src/components/data-export/DataExportManager'
-import { AccountDeletionManager } from '@/packages/auth/src/components/account-deletion/AccountDeletionManager'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nextsaas/ui'
+// TODO: These components need to be implemented
+// import { AvatarUpload } from '@/packages/auth/src/components/profile/AvatarUpload'
+// import { ActivityDashboard } from '@/packages/auth/src/components/activity/ActivityDashboard'
+// import { DataExportManager } from '@/packages/auth/src/components/data-export/DataExportManager'
+// import { AccountDeletionManager } from '@/packages/auth/src/components/account-deletion/AccountDeletionManager'
+import { 
+  LegacyCard as Card, 
+  LegacyCardContent as CardContent, 
+  LegacyCardDescription as CardDescription, 
+  LegacyCardHeader as CardHeader, 
+  LegacyCardTitle as CardTitle 
+} from '@nextsaas/ui'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@nextsaas/ui'
 import { User, Shield, Activity, Download, Trash2 } from 'lucide-react'
 
@@ -104,7 +111,12 @@ export default function ProfileSettingsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <AvatarUpload />
+                  <div className="text-center">
+                    <div className="w-20 h-20 mx-auto bg-gray-200 rounded-full flex items-center justify-center">
+                      <User className="w-8 h-8 text-gray-500" />
+                    </div>
+                    <p className="mt-2 text-sm text-gray-500">Avatar upload coming soon</p>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -140,13 +152,21 @@ export default function ProfileSettingsPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ActivityDashboard />
+                <div className="text-center py-8">
+                  <Activity className="w-12 h-12 mx-auto text-gray-400" />
+                  <p className="mt-4 text-gray-500">Activity dashboard coming soon</p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           {/* Privacy Tab */}
-          <TabsContent value="privacy">
+          <TabsContent 
+            value="privacy"
+            role="tabpanel"
+            id="privacy-panel"
+            aria-labelledby="privacy-tab"
+          >
 
             <Card data-testid="privacy-card">
               <CardHeader>
@@ -211,7 +231,12 @@ export default function ProfileSettingsPage() {
           </TabsContent>
 
           {/* Data Export Tab */}
-          <TabsContent value="export">
+          <TabsContent 
+            value="export"
+            role="tabpanel"
+            id="export-panel"
+            aria-labelledby="export-tab"
+          >
 
             <Card data-testid="export-card">
               <CardHeader>
@@ -221,13 +246,21 @@ export default function ProfileSettingsPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <DataExportManager />
+                <div className="text-center py-8">
+                  <Download className="w-12 h-12 mx-auto text-gray-400" />
+                  <p className="mt-4 text-gray-500">Data export coming soon</p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           {/* Account Deletion Tab */}
-          <TabsContent value="delete">
+          <TabsContent 
+            value="delete"
+            role="tabpanel"
+            id="delete-panel"
+            aria-labelledby="delete-tab"
+          >
 
             <Card className="border-red-200" data-testid="delete-card">
               <CardHeader>
@@ -237,12 +270,15 @@ export default function ProfileSettingsPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <AccountDeletionManager />
+                <div className="text-center py-8">
+                  <Trash2 className="w-12 h-12 mx-auto text-red-400" />
+                  <p className="mt-4 text-gray-500">Account deletion coming soon</p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
+      </main>
     </div>
   )
 }

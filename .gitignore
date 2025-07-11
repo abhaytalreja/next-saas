@@ -17,6 +17,9 @@ build/
 .env.test.local
 .env.production.local
 
+# MCP Configuration (contains sensitive tokens)
+.mcp.json
+
 # Vercel
 .vercel
 

@@ -4,7 +4,7 @@ import { TestUser, TestOrganization } from './test-data'
 export class TestSetup {
   constructor(
     private browser: Browser,
-    private baseURL: string = 'http://localhost:3000'
+    private baseURL: string = 'http://localhost:3010'
   ) {}
 
   /**

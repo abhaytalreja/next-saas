@@ -8,6 +8,7 @@ import {
   AccountDropdown,
   OrganizationSwitcher,
 } from '@nextsaas/auth'
+import { ThemeSwitcher } from '@nextsaas/ui/client'
 import {
   HomeIcon,
   ChartBarIcon,
@@ -198,7 +199,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                  {/* Add notification bell, search, etc. here */}
+                  <ThemeSwitcher />
                   <AccountDropdown />
                 </div>
               </div>

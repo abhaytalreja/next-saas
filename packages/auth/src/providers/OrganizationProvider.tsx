@@ -71,13 +71,40 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
           `
           )
           .eq('user_id', user.id)
-          .eq('status', 'active')
-          .is('deleted_at', null)
 
-        if (membershipError) throw membershipError
+        if (membershipError) {
+          console.warn('Membership fetch error:', membershipError)
+          // Continue to check for owned organizations
+        }
 
-        const membershipsWithOrg =
-          membershipData as unknown as MembershipWithOrganization[]
+        let membershipsWithOrg = (membershipData as unknown as MembershipWithOrganization[]) || []
+
+        // If no memberships found, check for organizations owned by this user
+        if (membershipsWithOrg.length === 0) {
+          console.log('No memberships found, checking for owned organizations...')
+          
+          const { data: ownedOrgs, error: ownedOrgError } = await supabase
+            .from('organizations')
+            .select('*')
+            .eq('created_by', user.id)
+
+          if (ownedOrgError) {
+            console.warn('Owned organizations fetch error:', ownedOrgError)
+          } else if (ownedOrgs && ownedOrgs.length > 0) {
+            console.log('Found owned organizations without memberships, will need to create memberships')
+            // Set organizations even without memberships for now
+            setOrganizations(ownedOrgs as Organization[])
+            
+            // Set the first organization as current
+            const currentOrg = ownedOrgs[0] as Organization
+            setCurrentOrganization(currentOrg)
+            localStorage.setItem('last_organization_id', currentOrg.id)
+            
+            // Note: In a real app, you'd want to create the missing membership here
+            return
+          }
+        }
+
         setMemberships(membershipsWithOrg)
 
         // Extract organizations
@@ -95,7 +122,7 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
         }
       } catch (err: any) {
         console.error('Error fetching organizations:', err)
-        setError(err.message)
+        setError(err.message || 'Failed to fetch organizations')
       } finally {
         setLoading(false)
       }
@@ -148,7 +175,6 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
             user_id: user.id,
             organization_id: org.id,
             role: 'owner',
-            status: 'active',
             permissions: ['*'], // All permissions for owner
           })
 
@@ -345,10 +371,7 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
       try {
         const { error } = await supabase
           .from('memberships')
-          .update({
-            status: 'removed',
-            updated_at: new Date().toISOString(),
-          })
+          .delete()
           .eq('organization_id', currentOrganization.id)
           .eq('user_id', userId)
 
@@ -440,6 +463,9 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
       // Owner has all permissions
       if (currentMembership.role === 'owner') return true
 
+      // Check for wildcard permission
+      if (currentMembership.permissions?.includes('*')) return true
+
       // Check specific permissions
       return currentMembership.permissions?.includes(permission) || false
     },
@@ -457,13 +483,16 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
   const canInviteMembers = useCallback((): boolean => {
     if (!currentOrganization || !currentMembership) return false
 
-    // Check organization settings
-    if (!currentOrganization.settings.allowMemberInvites && !isAdmin()) {
+    // Owners and admins can always invite members
+    if (isOwner() || isAdmin()) return true
+
+    // Check organization settings for regular members
+    if (!currentOrganization.settings?.allowMemberInvites) {
       return false
     }
 
     return hasPermission('organization:manage_members')
-  }, [currentOrganization, currentMembership, isAdmin, hasPermission])
+  }, [currentOrganization, currentMembership, isOwner, isAdmin, hasPermission])
 
   const contextValue: OrganizationContextValue = {
     currentOrganization,

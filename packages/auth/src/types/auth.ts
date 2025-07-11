@@ -50,8 +50,6 @@ export interface SignUpCredentials {
   firstName: string;
   lastName: string;
   organizationName?: string;
-  agreeToTerms: boolean;
-  agreeToPrivacy: boolean;
 }
 
 export interface ResetPasswordCredentials {

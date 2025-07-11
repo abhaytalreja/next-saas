@@ -8,6 +8,12 @@
       "import": "./dist/index.mjs",
       "module": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./middleware": {
+      "types": "./dist/middleware/index.d.ts",
+      "import": "./dist/middleware/index.mjs",
+      "module": "./dist/middleware/index.mjs",
+      "require": "./dist/middleware/index.js"
     }
   },
   "main": "./dist/index.js",

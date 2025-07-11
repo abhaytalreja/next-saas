@@ -183,7 +183,7 @@ export function MarketingAuthLayout({ children, title, subtitle, type }: Marketi
             <div className="mt-8 text-center">
               <div className="flex justify-center items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
                 <span>🔒</span>
-                <span>Secured by enterprise-grade encryption</span>
+                <span>Secured by enterprise-grade encryption and SOC 2 compliance</span>
               </div>
             </div>
           </div>

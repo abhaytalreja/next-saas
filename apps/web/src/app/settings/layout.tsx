@@ -24,13 +24,8 @@ const navigation = [
     icon: BuildingOfficeIcon,
   },
   {
-    name: 'Team Members',
-    href: '/settings/organization/members',
-    icon: UserGroupIcon,
-  },
-  {
     name: 'Billing',
-    href: '/settings/organization/billing',
+    href: '/settings/billing',
     icon: CreditCardIcon,
   },
   { name: 'Preferences', href: '/settings/preferences', icon: Cog6ToothIcon },
@@ -45,11 +40,22 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
 
   return (
     <ProtectedLayout>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-            <p className="mt-2 text-sm text-gray-600">
+            <div className="flex items-center space-x-4 mb-4">
+              <Link 
+                href="/dashboard"
+                className="flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Dashboard
+              </Link>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Manage your account settings and preferences
             </p>
           </div>

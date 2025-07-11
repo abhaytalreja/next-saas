@@ -95,7 +95,7 @@ export function LoginForm({
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-900 dark:text-gray-100"
         >
           Email address
         </label>
@@ -119,7 +119,7 @@ export function LoginForm({
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-900 dark:text-gray-100"
         >
           Password
         </label>
@@ -152,7 +152,7 @@ export function LoginForm({
           />
           <label
             htmlFor="remember"
-            className="ml-2 block text-sm text-gray-900"
+            className="ml-2 block text-sm text-gray-900 dark:text-gray-100"
           >
             Remember me
           </label>
@@ -161,7 +161,7 @@ export function LoginForm({
         <div className="text-sm">
           <a
             href="/auth/forgot-password"
-            className="font-medium text-primary-600 hover:text-primary-500"
+            className="font-medium text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
             data-testid="forgot-password-link"
           >
             Forgot your password?
@@ -185,10 +185,10 @@ export function LoginForm({
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300" />
+          <div className="w-full border-t border-gray-300 dark:border-gray-600" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-2 text-gray-500">Or continue with</span>
+          <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">Or continue with</span>
         </div>
       </div>
     </form>

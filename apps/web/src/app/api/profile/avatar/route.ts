@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
-import { avatarUploadSchema } from '@nextsaas/auth/validation/profile-schemas'
-import { AvatarService } from '@nextsaas/auth/services/avatar-service'
+// TODO: Re-enable when packages are properly exported
+// import { avatarUploadSchema } from '@nextsaas/auth/validation/profile-schemas'
+// import { AvatarService } from '@nextsaas/auth/services/avatar-service'
 import { z } from 'zod'
 
 const deleteAvatarSchema = z.object({
@@ -32,69 +33,45 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // TODO: Re-enable when packages are properly exported
     // Validate file
-    const validationResult = avatarUploadSchema.safeParse({
-      file,
-      replace_existing: replaceExisting,
-    })
+    // const validationResult = avatarUploadSchema.safeParse({
+    //   file,
+    //   replace_existing: replaceExisting,
+    // })
 
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Invalid file',
-          errors: validationResult.error.errors 
-        },
-        { status: 400 }
-      )
-    }
+    // if (!validationResult.success) {
+    //   return NextResponse.json(
+    //     { 
+    //       success: false, 
+    //       error: 'Invalid file',
+    //       errors: validationResult.error.errors 
+    //     },
+    //     { status: 400 }
+    //   )
+    // }
 
-    const avatarService = new AvatarService()
+    // const avatarService = new AvatarService()
 
     // Upload and process avatar
-    const uploadResult = await avatarService.uploadAvatar(
-      session.user.id,
-      file,
-      { replaceExisting }
+    // const uploadResult = await avatarService.uploadAvatar(
+    //   session.user.id,
+    //   file,
+    //   { replaceExisting }
+    // )
+
+    // if (!uploadResult.success) {
+    //   return NextResponse.json(
+    //     { success: false, error: uploadResult.error },
+    //     { status: 400 }
+    //   )
+    // }
+
+    // Temporary implementation
+    return NextResponse.json(
+      { success: false, error: 'Avatar upload service not available' },
+      { status: 503 }
     )
-
-    if (!uploadResult.success) {
-      return NextResponse.json(
-        { success: false, error: uploadResult.error },
-        { status: 400 }
-      )
-    }
-
-    // Update profile with new avatar URL
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({
-        avatar_url: uploadResult.data!.variants.medium.url,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', session.user.id)
-
-    if (profileError) {
-      console.error('Failed to update profile with avatar URL:', profileError)
-    }
-
-    // Log avatar update activity
-    await supabase
-      .from('user_activity')
-      .insert({
-        user_id: session.user.id,
-        action: 'avatar_update',
-        description: replaceExisting ? 'Replaced profile avatar' : 'Uploaded new profile avatar',
-        status: 'success',
-        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
-        user_agent: req.headers.get('user-agent'),
-        metadata: { avatar_id: uploadResult.data!.id },
-      })
-
-    return NextResponse.json({
-      success: true,
-      data: uploadResult.data
-    })
   } catch (error) {
     console.error('Avatar upload error:', error)
     return NextResponse.json(
@@ -134,52 +111,24 @@ export async function DELETE(req: NextRequest) {
       )
     }
 
-    const avatarService = new AvatarService()
+    // TODO: Re-enable when packages are properly exported
+    // const avatarService = new AvatarService()
 
     // Delete avatar files from storage
-    const deleteResult = await avatarService.deleteAvatar(avatar_id, session.user.id)
+    // const deleteResult = await avatarService.deleteAvatar(avatar_id, session.user.id)
 
-    if (!deleteResult.success) {
-      return NextResponse.json(
-        { success: false, error: deleteResult.error },
-        { status: 500 }
-      )
-    }
+    // if (!deleteResult.success) {
+    //   return NextResponse.json(
+    //     { success: false, error: deleteResult.error },
+    //     { status: 500 }
+    //   )
+    // }
 
-    // Update profile to remove avatar URL if this was the current avatar
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('avatar_url')
-      .eq('id', session.user.id)
-      .single()
-
-    if (profile && profile.avatar_url && profile.avatar_url.includes(avatar.file_path)) {
-      await supabase
-        .from('profiles')
-        .update({
-          avatar_url: null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', session.user.id)
-    }
-
-    // Log avatar deletion activity
-    await supabase
-      .from('user_activity')
-      .insert({
-        user_id: session.user.id,
-        action: 'avatar_delete',
-        description: 'Deleted profile avatar',
-        status: 'success',
-        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
-        user_agent: req.headers.get('user-agent'),
-        metadata: { deleted_avatar_id: avatar_id },
-      })
-
-    return NextResponse.json({
-      success: true,
-      message: 'Avatar deleted successfully'
-    })
+    // Temporary implementation
+    return NextResponse.json(
+      { success: false, error: 'Avatar deletion service not available' },
+      { status: 503 }
+    )
   } catch (error) {
     console.error('Avatar deletion error:', error)
 

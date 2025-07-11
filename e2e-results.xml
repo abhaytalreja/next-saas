@@ -1,2 +1,45 @@
-<testsuites id="" name="" tests="0" failures="0" skipped="0" errors="0" time="0.30831600000000003">
+<testsuites id="" name="" tests="2" failures="1" skipped="0" errors="0" time="45.14126">
+<testsuite name="auth.setup.ts" timestamp="2025-07-11T10:25:02.650Z" hostname="setup" tests="1" failures="0" skipped="0" time="0.75" errors="0">
+<testcase name="authenticate user" classname="auth.setup.ts" time="0.75">
+<system-out>
+<![CDATA[Skipping E2E auth setup - Supabase credentials not provided
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="auth/user-registration-no-email.spec.ts" timestamp="2025-07-11T10:25:02.650Z" hostname="chromium" tests="1" failures="1" skipped="0" time="41.561" errors="0">
+<testcase name="User Registration Flow (No Email Verification) › should complete registration and immediately access dashboard" classname="auth/user-registration-no-email.spec.ts" time="41.561">
+<failure message="user-registration-no-email.spec.ts:11:7 should complete registration and immediately access dashboard" type="FAILURE">
+<![CDATA[  [chromium] › auth/user-registration-no-email.spec.ts:11:7 › User Registration Flow (No Email Verification) › should complete registration and immediately access dashboard 
+
+    TimeoutError: page.goto: Timeout 30000ms exceeded.
+    Call log:
+      - navigating to "http://localhost:3010/auth/sign-up", waiting until "load"
+
+
+      11 |   test('should complete registration and immediately access dashboard', async ({ page }) => {
+      12 |     // Navigate to registration page
+    > 13 |     await page.goto('/auth/sign-up')
+         |                ^
+      14 |     
+      15 |     // Verify page loads correctly - check for signup form instead of title
+      16 |     await expect(page.getByTestId('signup-form')).toBeVisible()
+        at /Users/abhay/Documents/workspace/next-js/next-saas/e2e/auth/user-registration-no-email.spec.ts:13:16
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../test-results/auth-user-registration-no--c781d-mmediately-access-dashboard-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results/auth-user-registration-no--c781d-mmediately-access-dashboard-chromium/video.webm]]
+]]>
+</system-out>
+<system-err>
+<![CDATA[[@faker-js/faker]: faker.internet.userName() is deprecated since v9.1.0 and will be removed in v10.0.0. Please use faker.internet.username() instead.
+]]>
+</system-err>
+</testcase>
+</testsuite>
 </testsuites>

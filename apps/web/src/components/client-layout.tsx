@@ -1,6 +1,6 @@
 'use client'
 
-import { AuthProvider } from '@nextsaas/auth'
+import { AuthProvider, OrganizationProvider } from '@nextsaas/auth'
 import { ThemeProvider } from '@nextsaas/ui/client'
 
 interface ClientLayoutProps {
@@ -9,9 +9,11 @@ interface ClientLayoutProps {
 
 export function ClientLayout({ children }: ClientLayoutProps) {
   return (
-    <ThemeProvider defaultTheme="system">
+    <ThemeProvider defaultTheme="light">
       <AuthProvider>
-        {children}
+        <OrganizationProvider>
+          {children}
+        </OrganizationProvider>
       </AuthProvider>
     </ThemeProvider>
   )

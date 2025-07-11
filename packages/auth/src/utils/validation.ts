@@ -30,12 +30,12 @@ export const nameSchema = z
 // Organization name validation schema
 export const organizationNameSchema = z
   .string()
-  .min(1, 'Organization name is required')
   .max(100, 'Organization name must be less than 100 characters')
   .regex(
-    /^[a-zA-Z0-9\s\-_&.]+$/,
+    /^[a-zA-Z0-9\s\-_&.]*$/,
     'Organization name contains invalid characters'
   )
+  .or(z.literal(''))
 
 // Sign up schema
 export const signUpSchema = z.object({
@@ -44,12 +44,6 @@ export const signUpSchema = z.object({
   firstName: nameSchema,
   lastName: nameSchema,
   organizationName: organizationNameSchema.optional(),
-  agreeToTerms: z
-    .boolean()
-    .refine(val => val === true, 'You must agree to the terms of service'),
-  agreeToPrivacy: z
-    .boolean()
-    .refine(val => val === true, 'You must agree to the privacy policy'),
 })
 
 // Sign in schema

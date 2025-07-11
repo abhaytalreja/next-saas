@@ -33,7 +33,9 @@ export function ProtectedLayout({
       return
     }
 
-    if (requireEmailVerification && user && !user.email_confirmed_at) {
+    // Only require email verification if it's enabled globally
+    const disableEmailConfirmation = process.env.NEXT_PUBLIC_DISABLE_EMAIL_CONFIRMATION === 'true'
+    if (requireEmailVerification && user && !user.email_confirmed_at && !disableEmailConfirmation) {
       router.push('/auth/verify-email')
       return
     }
@@ -67,7 +69,9 @@ export function ProtectedLayout({
     return null
   }
 
-  if (requireEmailVerification && user && !user.email_confirmed_at) {
+  // Only require email verification if it's enabled globally
+  const disableEmailConfirmation = process.env.NEXT_PUBLIC_DISABLE_EMAIL_CONFIRMATION === 'true'
+  if (requireEmailVerification && user && !user.email_confirmed_at && !disableEmailConfirmation) {
     return null
   }
 
