@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { UserAvatar } from './UserAvatar'
 import { Button } from '@nextsaas/ui'
-import { 
+import {
   EllipsisVerticalIcon,
   UserPlusIcon,
   TrashIcon,
@@ -65,22 +65,24 @@ export function MembersList({
 
   const handleRemoveMember = async (memberId: string) => {
     if (!onRemoveMember) return
-    
-    if (confirm('Are you sure you want to remove this member? This action cannot be undone.')) {
-      setRemovingMemberId(memberId)
-      try {
-        await onRemoveMember(memberId)
-      } finally {
-        setRemovingMemberId(null)
-      }
+
+    // Let the parent component handle confirmation (e.g., through a modal)
+    setRemovingMemberId(memberId)
+    try {
+      await onRemoveMember(memberId)
+    } finally {
+      setRemovingMemberId(null)
     }
   }
 
   if (loading) {
     return (
       <div className={`animate-pulse ${className}`}>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="flex items-center py-4 border-b border-gray-200 last:border-0">
+        {[1, 2, 3].map(i => (
+          <div
+            key={i}
+            className="flex items-center py-4 border-b border-gray-200 last:border-0"
+          >
             <div className="h-10 w-10 bg-gray-300 rounded-full" />
             <div className="ml-3 flex-1">
               <div className="h-4 bg-gray-300 rounded w-1/4 mb-2" />
@@ -97,7 +99,9 @@ export function MembersList({
       <div className={`text-center py-12 ${className}`}>
         <UserIcon className="mx-auto h-12 w-12 text-gray-300" />
         <h3 className="mt-2 text-sm font-medium text-gray-900">No members</h3>
-        <p className="mt-1 text-sm text-gray-500">Get started by inviting team members.</p>
+        <p className="mt-1 text-sm text-gray-500">
+          Get started by inviting team members.
+        </p>
         {onInviteClick && (
           <div className="mt-6">
             <Button onClick={onInviteClick} size="sm">
@@ -113,10 +117,11 @@ export function MembersList({
   return (
     <div className={className}>
       <ul className="divide-y divide-gray-200">
-        {members.map((member) => {
+        {members.map(member => {
           const isCurrentUser = member.id === currentUserId
-          const canModify = canManageMembers && !isCurrentUser && member.role !== 'owner'
-          
+          const canModify =
+            canManageMembers && !isCurrentUser && member.role !== 'owner'
+
           return (
             <li key={member.id} className="py-4">
               <div className="flex items-center justify-between">
@@ -139,7 +144,9 @@ export function MembersList({
                         <span className="text-xs text-gray-500">(You)</span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-500 truncate">{member.email}</p>
+                    <p className="text-sm text-gray-500 truncate">
+                      {member.email}
+                    </p>
                     {member.joinedAt && (
                       <p className="text-xs text-gray-400">
                         Joined {new Date(member.joinedAt).toLocaleDateString()}
@@ -155,7 +162,9 @@ export function MembersList({
                       roleColors[member.role]
                     }`}
                   >
-                    {member.role === 'owner' && <ShieldCheckIcon className="h-3 w-3 mr-1" />}
+                    {member.role === 'owner' && (
+                      <ShieldCheckIcon className="h-3 w-3 mr-1" />
+                    )}
                     {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
                   </span>
 
@@ -166,7 +175,8 @@ export function MembersList({
                         statusColors[member.status]
                       }`}
                     >
-                      {member.status.charAt(0).toUpperCase() + member.status.slice(1)}
+                      {member.status.charAt(0).toUpperCase() +
+                        member.status.slice(1)}
                     </span>
                   )}
 
@@ -176,7 +186,7 @@ export function MembersList({
                       <Menu.Button className="p-1 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500">
                         <EllipsisVerticalIcon className="h-5 w-5 text-gray-400" />
                       </Menu.Button>
-                      
+
                       <Transition
                         as={Fragment}
                         enter="transition ease-out duration-100"
@@ -203,12 +213,14 @@ export function MembersList({
                                 )}
                               </Menu.Item>
                             )}
-                            
+
                             {member.role === 'member' && onChangeRole && (
                               <Menu.Item>
                                 {({ active }) => (
                                   <button
-                                    onClick={() => onChangeRole(member.id, 'admin')}
+                                    onClick={() =>
+                                      onChangeRole(member.id, 'admin')
+                                    }
                                     className={`${
                                       active ? 'bg-gray-100' : ''
                                     } flex w-full items-center px-4 py-2 text-sm text-gray-700`}
@@ -219,12 +231,14 @@ export function MembersList({
                                 )}
                               </Menu.Item>
                             )}
-                            
+
                             {member.role === 'admin' && onChangeRole && (
                               <Menu.Item>
                                 {({ active }) => (
                                   <button
-                                    onClick={() => onChangeRole(member.id, 'member')}
+                                    onClick={() =>
+                                      onChangeRole(member.id, 'member')
+                                    }
                                     className={`${
                                       active ? 'bg-gray-100' : ''
                                     } flex w-full items-center px-4 py-2 text-sm text-gray-700`}
@@ -235,7 +249,7 @@ export function MembersList({
                                 )}
                               </Menu.Item>
                             )}
-                            
+
                             <Menu.Item>
                               {({ active }) => (
                                 <button
@@ -246,7 +260,9 @@ export function MembersList({
                                   } flex w-full items-center px-4 py-2 text-sm text-red-700 disabled:opacity-50`}
                                 >
                                   <TrashIcon className="h-4 w-4 mr-2" />
-                                  {removingMemberId === member.id ? 'Removing...' : 'Remove Member'}
+                                  {removingMemberId === member.id
+                                    ? 'Removing...'
+                                    : 'Remove Member'}
                                 </button>
                               )}
                             </Menu.Item>

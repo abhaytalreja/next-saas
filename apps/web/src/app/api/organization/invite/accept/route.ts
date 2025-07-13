@@ -15,14 +15,17 @@ export async function POST(req: NextRequest) {
     const supabase = createRouteHandlerClient({ cookies })
 
     // Get the current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser()
+
     if (userError || !user) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'You must be logged in to accept an invitation',
-          code: 'UNAUTHORIZED'
+          code: 'UNAUTHORIZED',
         },
         { status: 401 }
       )
@@ -38,10 +41,32 @@ export async function POST(req: NextRequest) {
 
     if (inviteError || !invitation) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Invalid or expired invitation',
-          code: 'INVALID_INVITATION'
+          code: 'INVALID_INVITATION',
+        },
+        { status: 400 }
+      )
+    }
+
+    // Get user's email from profile to validate invitation
+    const { data: userProfile, error: profileError } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('id', user.id)
+      .single()
+
+    if (
+      profileError ||
+      !userProfile ||
+      userProfile.email !== invitation.email
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'This invitation is not for your email address',
+          code: 'EMAIL_MISMATCH',
         },
         { status: 400 }
       )
@@ -56,10 +81,10 @@ export async function POST(req: NextRequest) {
         .eq('id', invitation.id)
 
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'This invitation has expired',
-          code: 'INVITATION_EXPIRED'
+          code: 'INVITATION_EXPIRED',
         },
         { status: 400 }
       )
@@ -75,10 +100,10 @@ export async function POST(req: NextRequest) {
 
     if (existingMembership) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'You are already a member of this organization',
-          code: 'ALREADY_MEMBER'
+          code: 'ALREADY_MEMBER',
         },
         { status: 400 }
       )
@@ -99,10 +124,10 @@ export async function POST(req: NextRequest) {
     if (membershipError) {
       console.error('Failed to create membership:', membershipError)
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Failed to join organization',
-          code: 'MEMBERSHIP_CREATION_FAILED'
+          code: 'MEMBERSHIP_CREATION_FAILED',
         },
         { status: 500 }
       )
@@ -111,7 +136,7 @@ export async function POST(req: NextRequest) {
     // Update invitation status
     const { error: updateError } = await supabase
       .from('organization_invitations')
-      .update({ 
+      .update({
         status: 'accepted',
         accepted_at: new Date().toISOString(),
         accepted_by: user.id,
@@ -123,19 +148,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Log the event
-    await supabase
-      .from('organization_events')
-      .insert({
-        organization_id: invitation.organization_id,
-        user_id: user.id,
-        event_type: 'member_joined',
-        metadata: {
-          invitation_id: invitation.id,
-          role: invitation.role,
-          invited_by: invitation.invited_by,
-        },
-        created_at: new Date().toISOString(),
-      })
+    await supabase.from('organization_events').insert({
+      organization_id: invitation.organization_id,
+      user_id: user.id,
+      event_type: 'member_joined',
+      metadata: {
+        invitation_id: invitation.id,
+        role: invitation.role,
+        invited_by: invitation.invited_by,
+      },
+      created_at: new Date().toISOString(),
+    })
 
     // Update user's current organization if they don't have one
     const { data: profile } = await supabase
@@ -161,26 +184,26 @@ export async function POST(req: NextRequest) {
       membership: {
         role: invitation.role,
         joined_at: new Date().toISOString(),
-      }
+      },
     })
   } catch (error) {
     console.error('Accept invitation error:', error)
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Invalid request data',
-          errors: error.errors 
+          errors: error.errors,
         },
         { status: 400 }
       )
     }
 
     return NextResponse.json(
-      { 
-        success: false, 
-        error: 'An error occurred while accepting the invitation' 
+      {
+        success: false,
+        error: 'An error occurred while accepting the invitation',
       },
       { status: 500 }
     )

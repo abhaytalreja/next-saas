@@ -77,12 +77,15 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
           // Continue to check for owned organizations
         }
 
-        let membershipsWithOrg = (membershipData as unknown as MembershipWithOrganization[]) || []
+        let membershipsWithOrg =
+          (membershipData as unknown as MembershipWithOrganization[]) || []
 
         // If no memberships found, check for organizations owned by this user
         if (membershipsWithOrg.length === 0) {
-          console.log('No memberships found, checking for owned organizations...')
-          
+          console.log(
+            'No memberships found, checking for owned organizations...'
+          )
+
           const { data: ownedOrgs, error: ownedOrgError } = await supabase
             .from('organizations')
             .select('*')
@@ -91,15 +94,17 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
           if (ownedOrgError) {
             console.warn('Owned organizations fetch error:', ownedOrgError)
           } else if (ownedOrgs && ownedOrgs.length > 0) {
-            console.log('Found owned organizations without memberships, will need to create memberships')
+            console.log(
+              'Found owned organizations without memberships, will need to create memberships'
+            )
             // Set organizations even without memberships for now
             setOrganizations(ownedOrgs as Organization[])
-            
+
             // Set the first organization as current
             const currentOrg = ownedOrgs[0] as Organization
             setCurrentOrganization(currentOrg)
             localStorage.setItem('last_organization_id', currentOrg.id)
-            
+
             // Note: In a real app, you'd want to create the missing membership here
             return
           }
@@ -118,7 +123,14 @@ export function OrganizationProvider({ children }: OrganizationProviderProps) {
         const currentOrg = orgs.find(o => o.id === lastOrgId) || orgs[0]
 
         if (currentOrg) {
-          await switchOrganization(currentOrg.id)
+          const membership = membershipsWithOrg.find(
+            m => m.organization.id === currentOrg.id
+          )
+          if (membership) {
+            setCurrentOrganization(currentOrg)
+            setCurrentMembership(membership)
+            localStorage.setItem('last_organization_id', currentOrg.id)
+          }
         }
       } catch (err: any) {
         console.error('Error fetching organizations:', err)

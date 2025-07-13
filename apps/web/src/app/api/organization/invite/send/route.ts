@@ -6,29 +6,37 @@ import crypto from 'crypto'
 
 const sendInviteSchema = z.object({
   organizationId: z.string().uuid('Invalid organization ID'),
-  invitations: z.array(z.object({
-    email: z.string().email('Invalid email address'),
-    role: z.enum(['admin', 'member']),
-  })).min(1, 'At least one invitation is required'),
+  invitations: z
+    .array(
+      z.object({
+        email: z.string().email('Invalid email address'),
+        role: z.enum(['admin', 'member']),
+      })
+    )
+    .min(1, 'At least one invitation is required'),
   message: z.string().optional(),
 })
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { organizationId, invitations, message } = sendInviteSchema.parse(body)
+    const { organizationId, invitations, message } =
+      sendInviteSchema.parse(body)
 
     const supabase = createRouteHandlerClient({ cookies })
 
     // Get the current user
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
-    
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser()
+
     if (userError || !user) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'You must be logged in to send invitations',
-          code: 'UNAUTHORIZED'
+          code: 'UNAUTHORIZED',
         },
         { status: 401 }
       )
@@ -43,12 +51,17 @@ export async function POST(req: NextRequest) {
       .eq('status', 'active')
       .single()
 
-    if (membershipError || !membership || (membership.role !== 'owner' && membership.role !== 'admin')) {
+    if (
+      membershipError ||
+      !membership ||
+      (membership.role !== 'owner' && membership.role !== 'admin')
+    ) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'You do not have permission to invite members to this organization',
-          code: 'FORBIDDEN'
+        {
+          success: false,
+          error:
+            'You do not have permission to invite members to this organization',
+          code: 'FORBIDDEN',
         },
         { status: 403 }
       )
@@ -63,10 +76,10 @@ export async function POST(req: NextRequest) {
 
     if (orgError || !organization) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Organization not found',
-          code: 'ORGANIZATION_NOT_FOUND'
+          code: 'ORGANIZATION_NOT_FOUND',
         },
         { status: 404 }
       )
@@ -78,18 +91,29 @@ export async function POST(req: NextRequest) {
 
     for (const invite of invitations) {
       try {
-        // Check if user is already a member
-        const { data: existingMember } = await supabase
-          .from('memberships')
+        // First check if user exists by email
+        const { data: userProfile } = await supabase
+          .from('profiles')
           .select('id')
-          .eq('organization_id', organizationId)
-          .eq('user_email', invite.email)
+          .eq('email', invite.email)
           .single()
+
+        // Check if user is already a member
+        let existingMember = null
+        if (userProfile) {
+          const { data } = await supabase
+            .from('memberships')
+            .select('id')
+            .eq('organization_id', organizationId)
+            .eq('user_id', userProfile.id)
+            .single()
+          existingMember = data
+        }
 
         if (existingMember) {
           errors.push({
             email: invite.email,
-            error: 'Already a member of this organization'
+            error: 'Already a member of this organization',
           })
           continue
         }
@@ -106,7 +130,7 @@ export async function POST(req: NextRequest) {
         if (existingInvite) {
           errors.push({
             email: invite.email,
-            error: 'An invitation has already been sent to this email'
+            error: 'An invitation has already been sent to this email',
           })
           continue
         }
@@ -136,16 +160,21 @@ export async function POST(req: NextRequest) {
           console.error('Failed to create invitation:', inviteError)
           errors.push({
             email: invite.email,
-            error: 'Failed to create invitation'
+            error: 'Failed to create invitation',
           })
           continue
         }
 
         // Send invitation email (in production, use email service)
         const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/invitation/${token}`
-        
+
         // TODO: Integrate with email service
-        console.log('Sending invitation email to:', invite.email, 'with URL:', inviteUrl)
+        console.log(
+          'Sending invitation email to:',
+          invite.email,
+          'with URL:',
+          inviteUrl
+        )
 
         results.push({
           email: invite.email,
@@ -154,24 +183,22 @@ export async function POST(req: NextRequest) {
         })
 
         // Log the event
-        await supabase
-          .from('organization_events')
-          .insert({
-            organization_id: organizationId,
-            user_id: user.id,
-            event_type: 'invitation_sent',
-            metadata: {
-              invitation_id: invitation.id,
-              email: invite.email,
-              role: invite.role,
-            },
-            created_at: new Date().toISOString(),
-          })
+        await supabase.from('organization_events').insert({
+          organization_id: organizationId,
+          user_id: user.id,
+          event_type: 'invitation_sent',
+          metadata: {
+            invitation_id: invitation.id,
+            email: invite.email,
+            role: invite.role,
+          },
+          created_at: new Date().toISOString(),
+        })
       } catch (err) {
         console.error('Error processing invitation for', invite.email, err)
         errors.push({
           email: invite.email,
-          error: 'An unexpected error occurred'
+          error: 'An unexpected error occurred',
         })
       }
     }
@@ -184,26 +211,26 @@ export async function POST(req: NextRequest) {
         sent: results.length,
         failed: errors.length,
         total: invitations.length,
-      }
+      },
     })
   } catch (error) {
     console.error('Send invitations error:', error)
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           error: 'Invalid request data',
-          errors: error.errors 
+          errors: error.errors,
         },
         { status: 400 }
       )
     }
 
     return NextResponse.json(
-      { 
-        success: false, 
-        error: 'An error occurred while sending invitations' 
+      {
+        success: false,
+        error: 'An error occurred while sending invitations',
       },
       { status: 500 }
     )
