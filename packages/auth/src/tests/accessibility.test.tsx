@@ -208,10 +208,10 @@ describe('Accessibility Tests', () => {
     it('should skip to main content with skip link', () => {
       render(
         <div>
-          <a href=\"#main-content\" className=\"sr-only focus:not-sr-only\">
+          <a href="#main-content" className="sr-only focus:not-sr-only">
             Skip to main content
           </a>
-          <main id=\"main-content\" tabIndex={-1}>
+          <main id="main-content" tabIndex={-1}>
             <ProfileForm />
           </main>
         </div>

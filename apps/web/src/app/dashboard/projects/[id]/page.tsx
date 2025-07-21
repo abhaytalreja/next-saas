@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { useSupabase } from '@/lib/supabase/client'
-import { useOrganization } from '@/hooks/useOrganization'
+import { getSupabaseBrowserClient } from '@nextsaas/supabase'
+import { useOrganization, useAuth } from '@nextsaas/auth'
 import {
   ArrowLeftIcon,
   PencilIcon,
@@ -12,13 +12,11 @@ import {
   Cog6ToothIcon,
   EllipsisVerticalIcon,
 } from '@heroicons/react/24/outline'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button, Badge, LegacyCard as Card, LegacyCardContent as CardContent, LegacyCardHeader as CardHeader, LegacyCardTitle as CardTitle, Tabs, TabsContent, TabsList, TabsTrigger } from '@nextsaas/ui'
 import { ProjectMembers } from '@/components/projects/ProjectMembers'
 import { ProjectSettings } from '@/components/projects/ProjectSettings'
 import { ProjectActivity } from '@/components/projects/ProjectActivity'
+import { ProjectItems } from '@/components/projects/ProjectItems'
 import { EditProjectModal } from '@/components/projects/EditProjectModal'
 import { DeleteProjectModal } from '@/components/projects/DeleteProjectModal'
 import { InviteProjectMemberModal } from '@/components/projects/InviteProjectMemberModal'
@@ -38,7 +36,9 @@ interface Project {
   organization_id: string
   creator?: {
     id: string
-    full_name?: string
+    name?: string
+    first_name?: string
+    last_name?: string
     email: string
     avatar_url?: string
   }
@@ -51,8 +51,9 @@ interface Project {
 export default function ProjectDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { supabase } = useSupabase()
+  const supabase = getSupabaseBrowserClient()
   const { currentOrganization, hasPermission } = useOrganization()
+  const { user } = useAuth()
 
   const [project, setProject] = useState<Project | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -67,42 +68,88 @@ export default function ProjectDetailPage() {
   const projectId = params.id as string
 
   useEffect(() => {
-    if (!projectId || !currentOrganization) return
-    fetchProject()
-  }, [projectId, currentOrganization])
+    if (!projectId || !currentOrganization || !user) return
+    // Add a small delay to ensure authentication is fully established
+    const timer = setTimeout(() => {
+      fetchProject()
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [projectId, currentOrganization, user])
 
   const fetchProject = async () => {
+    console.log('fetchProject called, user:', user?.id)
+    console.log('Current organization:', currentOrganization?.id)
+    
+    if (!user?.id) {
+      setError('Not authenticated')
+      return
+    }
+
     try {
       setIsLoading(true)
       setError(null)
 
-      const { data, error } = await supabase
-        .from('projects')
-        .select(
-          `
-          *,
-          creator:users!created_by(id, full_name, email, avatar_url),
-          _count:project_members(count)
-        `
-        )
-        .eq('id', projectId)
-        .eq('organization_id', currentOrganization!.id)
-        .is('deleted_at', null)
-        .single()
+      // Instead of getting session from page client, get it from the auth provider client
+      // This ensures we're using the same client instance that has the working auth state
+      const globalSupabase = getSupabaseBrowserClient()
+      const { data: sessionData } = await globalSupabase.auth.getSession()
+      const accessToken = sessionData.session?.access_token
+      
+      console.log('Session data from auth provider client:', { 
+        hasSession: !!sessionData.session,
+        hasToken: !!accessToken,
+        userId: sessionData.session?.user?.id,
+        tokenPreview: accessToken ? `${accessToken.substring(0, 20)}...` : 'None'
+      })
+      
+      const headers: HeadersInit = { 
+        'Content-Type': 'application/json'
+      }
+      
+      // Send token in Authorization header as backup
+      if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`
+        console.log('Added Authorization header with token')
+      } else {
+        console.log('No access token to send - trying cookies only')
+      }
+      
+      const response = await fetch(`/api/projects/${projectId}`, {
+        method: 'GET',
+        headers,
+        credentials: 'include', // Also send cookies
+      })
 
-      if (error) {
-        if (error.code === 'PGRST116') {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('API Error:', { 
+          status: response.status, 
+          errorData
+        })
+        
+        if (response.status === 401) {
+          setError('Unauthorized')
+        } else if (response.status === 403) {
+          setError('Access denied')  
+        } else if (response.status === 404) {
           setError('Project not found')
         } else {
-          throw error
+          setError('Failed to load project')
         }
         return
       }
 
-      setProject(data)
+      const result = await response.json()
+      console.log('Project API result:', result)
+      
+      if (result.success && result.data) {
+        setProject(result.data)
+      } else {
+        setError(result.error || 'Failed to load project')
+      }
     } catch (err: any) {
       console.error('Error fetching project:', err)
-      setError(err.message || 'Failed to load project')
+      setError('Failed to load project')
     } finally {
       setIsLoading(false)
     }
@@ -207,7 +254,7 @@ export default function ProjectDetailPage() {
   const canManageMembers = hasPermission('project:manage_members')
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -305,7 +352,10 @@ export default function ProjectDetailPage() {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-orange-600">
-              {project.creator?.full_name ||
+              {project.creator?.name ||
+                (project.creator?.first_name && project.creator?.last_name
+                  ? `${project.creator.first_name} ${project.creator.last_name}`
+                  : project.creator?.first_name) ||
                 project.creator?.email ||
                 'Unknown'}
             </div>
@@ -322,6 +372,7 @@ export default function ProjectDetailPage() {
       >
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="items">Items</TabsTrigger>
           <TabsTrigger value="members">Members</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
           {canEdit && <TabsTrigger value="settings">Settings</TabsTrigger>}
@@ -386,8 +437,15 @@ export default function ProjectDetailPage() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="items">
+          <ProjectItems projectId={project.id} />
+        </TabsContent>
+
         <TabsContent value="members">
-          <ProjectMembers projectId={project.id} />
+          <ProjectMembers 
+            projectId={project.id} 
+            onInviteClick={() => setShowInviteModal(true)}
+          />
         </TabsContent>
 
         <TabsContent value="activity">

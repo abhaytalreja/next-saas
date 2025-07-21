@@ -1,0 +1,145 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { SAMLHandler } from '@nextsaas/enterprise-auth'
+
+// POST /api/organization/[organizationId]/sso/[configId]/test - Test SSO configuration
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { organizationId: string; configId: string } }
+) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Verify organization access
+    const { data: membership } = await supabase
+      .from('memberships')
+      .select('role')
+      .eq('organization_id', params.organizationId)
+      .eq('user_id', session.user.id)
+      .single()
+
+    if (!membership || !['owner', 'admin'].includes(membership.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // Fetch SSO configuration
+    const { data: configuration, error: fetchError } = await supabase
+      .from('sso_configurations')
+      .select('*')
+      .eq('id', params.configId)
+      .eq('organization_id', params.organizationId)
+      .single()
+
+    if (fetchError || !configuration) {
+      return NextResponse.json(
+        { error: 'SSO configuration not found' },
+        { status: 404 }
+      )
+    }
+
+    if (configuration.provider_type !== 'saml') {
+      return NextResponse.json(
+        { error: 'Only SAML configurations can be tested' },
+        { status: 400 }
+      )
+    }
+
+    // Test the configuration
+    const samlHandler = new SAMLHandler()
+    const testResult = await samlHandler.testConfiguration(configuration)
+
+    // Enhanced test details
+    const testDetails: Record<string, boolean> = {
+      metadata_valid: testResult.success,
+      certificate_valid: !testResult.errors.some(e => e.includes('certificate')),
+      sso_url_accessible: !testResult.errors.some(e => e.includes('URL')),
+      attribute_mapping_complete: !!configuration.metadata.attribute_mapping?.email,
+    }
+
+    // Perform additional connectivity test
+    if (configuration.metadata.sso_url) {
+      try {
+        const response = await fetch(configuration.metadata.sso_url, {
+          method: 'HEAD',
+          signal: AbortSignal.timeout(5000)
+        })
+        testDetails.sso_url_accessible = response.ok
+      } catch {
+        testDetails.sso_url_accessible = false
+        if (!testResult.errors.includes('SSO URL not reachable')) {
+          testResult.errors.push('SSO URL not reachable')
+        }
+      }
+    }
+
+    const result = {
+      success: testResult.success && Object.values(testDetails).every(Boolean),
+      message: testResult.success && Object.values(testDetails).every(Boolean)
+        ? 'Configuration test passed successfully'
+        : 'Configuration test failed - see details',
+      details: testDetails,
+      errors: testResult.errors,
+      metadata: {
+        entity_id: configuration.metadata.entity_id,
+        sso_url: configuration.metadata.sso_url,
+        certificate_fingerprint: configuration.metadata.certificate ? 
+          configuration.metadata.certificate.substring(0, 50) + '...' : null,
+      }
+    }
+
+    // Log security event
+    await supabase.rpc('log_security_event', {
+      p_organization_id: params.organizationId,
+      p_user_id: session.user.id,
+      p_event_type: 'sso_configuration_tested',
+      p_severity: 'low',
+      p_description: `SSO configuration test: ${result.success ? 'passed' : 'failed'}`,
+      p_metadata: { 
+        configuration_id: params.configId,
+        test_result: result.success,
+        errors: result.errors,
+      },
+    })
+
+    return NextResponse.json(result)
+  } catch (error) {
+    console.error('POST /api/organization/[organizationId]/sso/[configId]/test error:', error)
+    
+    // Log test failure
+    try {
+      const supabase = createRouteHandlerClient({ cookies })
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (session) {
+        await supabase.rpc('log_security_event', {
+          p_organization_id: params.organizationId,
+          p_user_id: session.user.id,
+          p_event_type: 'sso_configuration_test_error',
+          p_severity: 'medium',
+          p_description: 'SSO configuration test encountered an error',
+          p_metadata: { 
+            configuration_id: params.configId,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
+        })
+      }
+    } catch {
+      // Ignore logging errors
+    }
+
+    return NextResponse.json(
+      { 
+        success: false,
+        message: 'Configuration test failed due to an error',
+        errors: [error instanceof Error ? error.message : 'Unknown error'],
+      },
+      { status: 500 }
+    )
+  }
+}

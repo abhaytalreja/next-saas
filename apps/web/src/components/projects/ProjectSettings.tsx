@@ -2,12 +2,7 @@
 
 import { useState } from 'react'
 import { TrashIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
+import { Button, Input, Textarea, Switch, Label, LegacyCard as Card, LegacyCardContent as CardContent, LegacyCardHeader as CardHeader, LegacyCardTitle as CardTitle } from '@nextsaas/ui'
 
 interface Project {
   id: string

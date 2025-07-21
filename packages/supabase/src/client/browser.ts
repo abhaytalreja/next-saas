@@ -20,11 +20,7 @@ export function createSupabaseBrowserClient(): SupabaseClient<Database> {
     config.url,
     config.anonKey,
     {
-      auth: {
-        ...config.options?.auth,
-        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-        storageKey: 'nextsaas-auth-token',
-      },
+      auth: config.options?.auth,
       db: config.options?.db,
       global: config.options?.global,
     }

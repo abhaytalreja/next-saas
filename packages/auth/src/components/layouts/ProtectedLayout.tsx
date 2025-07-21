@@ -18,7 +18,7 @@ export function ProtectedLayout({
   requireEmailVerification = false,
   requireOrganization = false,
   fallback: Fallback,
-  redirectTo = '/auth/login',
+  redirectTo = '/auth/sign-in',
 }: ProtectedLayoutProps) {
   const { user, loading } = useAuth()
   const isAuthenticated = useIsAuthenticated()

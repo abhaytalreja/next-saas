@@ -5,18 +5,18 @@ import type { MiddlewareConfig } from '../types'
 const defaultConfig: MiddlewareConfig = {
   publicRoutes: [
     '/',
-    '/auth/login',
-    '/auth/signup',
+    '/auth/sign-in',
+    '/auth/sign-up',
     '/auth/forgot-password',
     '/auth/reset-password',
     '/auth/callback',
     '/auth/error',
   ],
   protectedRoutes: ['/dashboard', '/profile', '/organization', '/settings'],
-  authRoutes: ['/auth/login', '/auth/signup'],
+  authRoutes: ['/auth/sign-in', '/auth/sign-up'],
   adminRoutes: ['/admin'],
   callbackUrl: '/auth/callback',
-  loginUrl: '/auth/login',
+  loginUrl: '/auth/sign-in',
   unauthorizedUrl: '/unauthorized',
 }
 

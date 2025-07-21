@@ -48,8 +48,8 @@ export const OAUTH_PROVIDERS = {
  * Authentication routes
  */
 export const AUTH_ROUTES = {
-  LOGIN: '/auth/login',
-  SIGNUP: '/auth/signup',
+  LOGIN: '/auth/sign-in',
+  SIGNUP: '/auth/sign-up',
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
   VERIFY_EMAIL: '/auth/verify-email',

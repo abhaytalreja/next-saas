@@ -9,12 +9,7 @@ export default defineConfig({
     'middleware/index': 'src/middleware/index.ts',
   },
   format: ['cjs', 'esm'],
-  dts: {
-    resolve: true,
-    compilerOptions: {
-      incremental: false,
-    },
-  },
+  dts: false,
   splitting: false,
   sourcemap: true,
   clean: true,
@@ -26,5 +21,6 @@ export default defineConfig({
     '@nextsaas/ui',
     '@nextsaas/config',
     '@nextsaas/utils',
+    '@nextsaas/supabase',
   ],
 })

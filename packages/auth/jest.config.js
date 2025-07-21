@@ -9,6 +9,8 @@ const config = createJestConfig({
     '^@nextsaas/auth/(.*)$': '<rootDir>/src/$1',
     '^@nextsaas/ui$': '<rootDir>/../ui/src',
     '^@nextsaas/ui/(.*)$': '<rootDir>/../ui/src/$1',
+    '^@nextsaas/supabase$': '<rootDir>/../supabase/src',
+    '^@nextsaas/supabase/(.*)$': '<rootDir>/../supabase/src/$1',
   },
   testMatch: [
     '<rootDir>/src/**/__tests__/**/*.(ts|tsx|js|jsx)',

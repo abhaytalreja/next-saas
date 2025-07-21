@@ -1,0 +1,176 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { z } from 'zod'
+import { SAMLHandler } from '@nextsaas/enterprise-auth'
+
+const ssoConfigSchema = z.object({
+  provider_name: z.string().min(1, 'Provider name is required'),
+  provider_type: z.literal('saml'),
+  metadata_xml: z.string().min(1, 'SAML metadata is required'),
+  is_active: z.boolean().default(false),
+  attribute_mapping: z.object({
+    email: z.string().min(1, 'Email attribute mapping is required'),
+    first_name: z.string().optional(),
+    last_name: z.string().optional(),
+    display_name: z.string().optional(),
+    groups: z.string().optional(),
+  }),
+})
+
+// GET /api/organization/[organizationId]/sso - List SSO configurations
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { organizationId: string } }
+) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Verify organization access
+    const { data: membership } = await supabase
+      .from('memberships')
+      .select('role')
+      .eq('organization_id', params.organizationId)
+      .eq('user_id', session.user.id)
+      .single()
+
+    if (!membership || !['owner', 'admin'].includes(membership.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // Fetch SSO configurations
+    const { data: configurations, error } = await supabase
+      .from('sso_configurations')
+      .select('*')
+      .eq('organization_id', params.organizationId)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching SSO configurations:', error)
+      return NextResponse.json(
+        { error: 'Failed to fetch SSO configurations' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ configurations: configurations || [] })
+  } catch (error) {
+    console.error('GET /api/organization/[organizationId]/sso error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+// POST /api/organization/[organizationId]/sso - Create SSO configuration
+export async function POST(
+  request: NextRequest,
+  { params }: { params: { organizationId: string } }
+) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Verify organization access
+    const { data: membership } = await supabase
+      .from('memberships')
+      .select('role')
+      .eq('organization_id', params.organizationId)
+      .eq('user_id', session.user.id)
+      .single()
+
+    if (!membership || !['owner', 'admin'].includes(membership.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // Parse and validate request body
+    const body = await request.json()
+    const validatedData = ssoConfigSchema.parse(body)
+
+    // Parse SAML metadata
+    const samlHandler = new SAMLHandler()
+    let parsedMetadata
+    
+    try {
+      parsedMetadata = await samlHandler.parseMetadata(validatedData.metadata_xml)
+    } catch (error) {
+      return NextResponse.json(
+        { 
+          error: 'Invalid SAML metadata',
+          details: error instanceof Error ? error.message : 'Unknown error'
+        },
+        { status: 400 }
+      )
+    }
+
+    // Merge parsed metadata with attribute mapping
+    const metadata = {
+      ...parsedMetadata,
+      attribute_mapping: validatedData.attribute_mapping,
+    }
+
+    // If setting as active, deactivate other configurations
+    if (validatedData.is_active) {
+      await supabase
+        .from('sso_configurations')
+        .update({ is_active: false })
+        .eq('organization_id', params.organizationId)
+    }
+
+    // Create SSO configuration
+    const { data: configuration, error } = await supabase
+      .from('sso_configurations')
+      .insert({
+        organization_id: params.organizationId,
+        provider_name: validatedData.provider_name,
+        provider_type: validatedData.provider_type,
+        metadata,
+        is_active: validatedData.is_active,
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error creating SSO configuration:', error)
+      return NextResponse.json(
+        { error: 'Failed to create SSO configuration' },
+        { status: 500 }
+      )
+    }
+
+    // Log security event
+    await supabase.rpc('log_security_event', {
+      p_organization_id: params.organizationId,
+      p_user_id: session.user.id,
+      p_event_type: 'sso_configuration_created',
+      p_severity: 'medium',
+      p_description: `SSO configuration created: ${validatedData.provider_name}`,
+      p_metadata: { configuration_id: configuration.id },
+    })
+
+    return NextResponse.json({ configuration }, { status: 201 })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Validation error', details: error.errors },
+        { status: 400 }
+      )
+    }
+
+    console.error('POST /api/organization/[organizationId]/sso error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}

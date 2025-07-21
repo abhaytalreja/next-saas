@@ -27,6 +27,10 @@
     "./client": {
       "import": "./dist/client.mjs",
       "require": "./dist/client.js"
+    },
+    "./hooks": {
+      "import": "./dist/hooks.mjs",
+      "require": "./dist/hooks.js"
     }
   },
   "files": [

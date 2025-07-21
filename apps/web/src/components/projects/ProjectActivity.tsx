@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSupabase } from '@/lib/supabase/client'
+import { getSupabaseBrowserClient } from '@nextsaas/supabase'
 import {
   ClockIcon,
   UserCircleIcon,
@@ -10,9 +10,7 @@ import {
   PencilIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { LegacyCard as Card, LegacyCardContent as CardContent, LegacyCardHeader as CardHeader, LegacyCardTitle as CardTitle, Badge, Avatar, AvatarFallback, AvatarImage } from '@nextsaas/ui'
 
 interface Activity {
   id: string
@@ -26,7 +24,8 @@ interface Activity {
   user_id: string
   user?: {
     id: string
-    full_name?: string
+    first_name?: string
+    last_name?: string
     email: string
     avatar_url?: string
   }
@@ -37,7 +36,7 @@ interface ProjectActivityProps {
 }
 
 export function ProjectActivity({ projectId }: ProjectActivityProps) {
-  const { supabase } = useSupabase()
+  const supabase = getSupabaseBrowserClient()
 
   const [activities, setActivities] = useState<Activity[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -57,7 +56,7 @@ export function ProjectActivity({ projectId }: ProjectActivityProps) {
         .select(
           `
           *,
-          user:users!user_id(id, full_name, email, avatar_url)
+          user:users!user_id(id, first_name, last_name, email, avatar_url)
         `
         )
         .eq('project_id', projectId)
@@ -151,16 +150,16 @@ export function ProjectActivity({ projectId }: ProjectActivityProps) {
         ) : (
           <div className="space-y-4">
             {activities.map(activity => (
-              <div key={activity.id} className="flex items-start space-x-3">
+              <div key={activity.id} className="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                 <div className="flex-shrink-0 mt-1">
                   {activity.user?.avatar_url ? (
                     <Avatar className="h-8 w-8">
                       <AvatarImage
                         src={activity.user.avatar_url}
-                        alt={activity.user.full_name || activity.user.email}
+                        alt={`${activity.user.first_name || ''} ${activity.user.last_name || ''}`.trim() || activity.user.email}
                       />
                       <AvatarFallback>
-                        {(activity.user.full_name || activity.user.email)
+                        {(`${activity.user.first_name || ''} ${activity.user.last_name || ''}`.trim() || activity.user.email)
                           .charAt(0)
                           .toUpperCase()}
                       </AvatarFallback>
@@ -184,15 +183,21 @@ export function ProjectActivity({ projectId }: ProjectActivityProps) {
                   </div>
 
                   <div className="mt-1">
-                    <span className="font-medium text-gray-900">
-                      {activity.user?.full_name ||
-                        activity.user?.email ||
-                        'Unknown user'}
-                    </span>
-                    <span className="text-gray-700 ml-1">
-                      {activity.description ||
-                        `${formatAction(activity.action)} ${activity.entity_title || activity.entity_type}`}
-                    </span>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                      <span className="font-medium text-gray-900">
+                        {(() => {
+                          const fullName = `${activity.user?.first_name || ''} ${activity.user?.last_name || ''}`.trim()
+                          return fullName || activity.user?.email || 'Unknown user'
+                        })()}
+                      </span>
+                      <span className="text-gray-700">
+                        {activity.description || `${formatAction(activity.action).toLowerCase()} ${
+                          activity.entity_type === 'projects' ? 'project' :
+                          activity.entity_type === 'project_items' ? 'project item' :
+                          activity.entity_title || activity.entity_type || 'item'
+                        }`}
+                      </span>
+                    </div>
                   </div>
 
                   {activity.entity_title && (

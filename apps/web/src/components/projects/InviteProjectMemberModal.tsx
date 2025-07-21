@@ -2,11 +2,9 @@
 
 import { useState } from 'react'
 import { X, PlusIcon, TrashIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useSupabase } from '@/lib/supabase/client'
-import { useOrganization } from '@/hooks/useOrganization'
+import { Button, Input, Label } from '@nextsaas/ui'
+import { getSupabaseBrowserClient } from '@nextsaas/supabase'
+import { useOrganization, useAuth } from '@nextsaas/auth'
 
 interface InviteData {
   email: string
@@ -24,8 +22,9 @@ export function InviteProjectMemberModal({
   isOpen,
   onClose,
 }: InviteProjectMemberModalProps) {
-  const { supabase } = useSupabase()
+  const supabase = getSupabaseBrowserClient()
   const { currentOrganization } = useOrganization()
+  const { user } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
   const [invites, setInvites] = useState<InviteData[]>([
@@ -66,10 +65,10 @@ export function InviteProjectMemberModal({
 
       // First, get organization members to invite from
       const { data: orgMembers, error: orgError } = await supabase
-        .from('organization_members')
+        .from('memberships')
         .select('user_id, user:users!user_id(email)')
         .eq('organization_id', currentOrganization!.id)
-        .eq('status', 'active')
+        .not('accepted_at', 'is', null)
 
       if (orgError) throw orgError
 
@@ -92,7 +91,7 @@ export function InviteProjectMemberModal({
           project_id: projectId,
           user_id: orgMember!.user_id,
           role: invite.role,
-          added_by: currentOrganization!.id, // This should be current user ID
+          added_by: user!.id,
         }
       })
 

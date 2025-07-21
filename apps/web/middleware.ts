@@ -1,20 +1,26 @@
-import { updateSession } from '@nextsaas/supabase';
-import type { NextRequest } from 'next/server';
+import { authMiddleware } from '@nextsaas/auth/middleware'
 
-export async function middleware(request: NextRequest) {
-  return await updateSession(request);
-}
+export const middleware = authMiddleware({
+  publicRoutes: [
+    '/',
+    '/auth/sign-in',
+    '/auth/sign-up',
+    '/auth/forgot-password',
+    '/auth/reset-password',
+    '/privacy',
+    '/terms'
+  ],
+  authRoutes: ['/auth/sign-in', '/auth/sign-up'],
+  loginUrl: '/auth/sign-in',
+  defaultRedirectUrl: '/dashboard'
+})
 
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     * - api routes that should bypass auth
+     * Match all request paths except for static files
+     * INCLUDE api routes for session refresh
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|public|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

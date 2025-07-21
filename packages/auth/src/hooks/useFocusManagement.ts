@@ -4,34 +4,32 @@ import { useRef, useCallback, useEffect } from 'react'
 
 interface FocusableElement extends HTMLElement {
   focus(): void
-  blur(): void
 }
 
 export function useFocusManagement() {
-  const previousFocusRef = useRef<FocusableElement | null>(null)
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null)
   const trapRef = useRef<HTMLElement | null>(null)
 
-  // Store current focus before opening modal/dialog
+  // Store current focus to restore later
   const storeFocus = useCallback(() => {
-    previousFocusRef.current = document.activeElement as FocusableElement
+    previouslyFocusedRef.current = document.activeElement as HTMLElement
   }, [])
 
-  // Restore focus when closing modal/dialog
+  // Restore previously stored focus
   const restoreFocus = useCallback(() => {
-    if (previousFocusRef.current) {
-      previousFocusRef.current.focus()
-      previousFocusRef.current = null
+    if (previouslyFocusedRef.current && document.contains(previouslyFocusedRef.current)) {
+      previouslyFocusedRef.current.focus()
+      previouslyFocusedRef.current = null
     }
   }, [])
 
-  // Set focus to specific element
-  const setFocus = useCallback((element: HTMLElement | null, delay = 0) => {
-    if (!element) return
-
-    if (delay > 0) {
-      setTimeout(() => {
-        element.focus()
-      }, delay)
+  // Set focus on specific element
+  const setFocus = useCallback((element: HTMLElement | string) => {
+    if (typeof element === 'string') {
+      const target = document.getElementById(element) || document.querySelector(element)
+      if (target) {
+        ;(target as HTMLElement).focus()
+      }
     } else {
       element.focus()
     }
@@ -40,4 +38,86 @@ export function useFocusManagement() {
   // Focus first focusable element in container
   const focusFirst = useCallback((container?: HTMLElement) => {
     const target = container || document.body
-    const focusable = target.querySelector<FocusableElement>(\n      'button, [href], input, select, textarea, [tabindex]:not([tabindex=\"-1\"])'\n    )\n    if (focusable) {\n      focusable.focus()\n    }\n  }, [])\n\n  // Get all focusable elements within a container\n  const getFocusableElements = useCallback((container: HTMLElement): HTMLElement[] => {\n    return Array.from(\n      container.querySelectorAll<HTMLElement>(\n        'button, [href], input, select, textarea, [tabindex]:not([tabindex=\"-1\"])'\n      )\n    ).filter(element => {\n      return (\n        !element.disabled &&\n        !element.hasAttribute('aria-hidden') &&\n        element.offsetHeight > 0\n      )\n    })\n  }, [])\n\n  // Focus trap for modals and dialogs\n  const trapFocus = useCallback((event: KeyboardEvent) => {\n    if (!trapRef.current || event.key !== 'Tab') return\n\n    const focusableElements = getFocusableElements(trapRef.current)\n    if (focusableElements.length === 0) return\n\n    const firstElement = focusableElements[0]\n    const lastElement = focusableElements[focusableElements.length - 1]\n\n    if (event.shiftKey) {\n      // Shift + Tab\n      if (document.activeElement === firstElement) {\n        event.preventDefault()\n        lastElement.focus()\n      }\n    } else {\n      // Tab\n      if (document.activeElement === lastElement) {\n        event.preventDefault()\n        firstElement.focus()\n      }\n    }\n  }, [getFocusableElements])\n\n  // Set up focus trap\n  const enableFocusTrap = useCallback((container: HTMLElement) => {\n    trapRef.current = container\n    document.addEventListener('keydown', trapFocus)\n    \n    // Focus first element\n    focusFirst(container)\n  }, [trapFocus, focusFirst])\n\n  // Remove focus trap\n  const disableFocusTrap = useCallback(() => {\n    document.removeEventListener('keydown', trapFocus)\n    trapRef.current = null\n  }, [trapFocus])\n\n  // Skip to content link handler\n  const skipToContent = useCallback((contentId: string) => {\n    const content = document.getElementById(contentId)\n    if (content) {\n      content.focus()\n      content.scrollIntoView({ behavior: 'smooth' })\n    }\n  }, [])\n\n  return {\n    storeFocus,\n    restoreFocus,\n    setFocus,\n    focusFirst,\n    getFocusableElements,\n    enableFocusTrap,\n    disableFocusTrap,\n    skipToContent\n  }\n}
+    const focusable = target.querySelector<FocusableElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+    if (focusable) {
+      focusable.focus()
+    }
+  }, [])
+
+  // Get all focusable elements within a container
+  const getFocusableElements = useCallback((container: HTMLElement): HTMLElement[] => {
+    return Array.from(
+      container.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter(element => {
+      return (
+        !element.disabled &&
+        !element.hasAttribute('aria-hidden') &&
+        element.offsetHeight > 0
+      )
+    })
+  }, [])
+
+  // Focus trap for modals and dialogs
+  const trapFocus = useCallback((event: KeyboardEvent) => {
+    if (!trapRef.current || event.key !== 'Tab') return
+
+    const focusableElements = getFocusableElements(trapRef.current)
+    if (focusableElements.length === 0) return
+
+    const firstElement = focusableElements[0]
+    const lastElement = focusableElements[focusableElements.length - 1]
+
+    if (event.shiftKey) {
+      // Shift + Tab
+      if (document.activeElement === firstElement) {
+        event.preventDefault()
+        lastElement.focus()
+      }
+    } else {
+      // Tab
+      if (document.activeElement === lastElement) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+  }, [getFocusableElements])
+
+  // Set up focus trap
+  const enableFocusTrap = useCallback((container: HTMLElement) => {
+    trapRef.current = container
+    document.addEventListener('keydown', trapFocus)
+    
+    // Focus first element
+    focusFirst(container)
+  }, [trapFocus, focusFirst])
+
+  // Remove focus trap
+  const disableFocusTrap = useCallback(() => {
+    document.removeEventListener('keydown', trapFocus)
+    trapRef.current = null
+  }, [trapFocus])
+
+  // Skip to content link handler
+  const skipToContent = useCallback((contentId: string) => {
+    const content = document.getElementById(contentId)
+    if (content) {
+      content.focus()
+      content.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [])
+
+  return {
+    storeFocus,
+    restoreFocus,
+    setFocus,
+    focusFirst,
+    getFocusableElements,
+    enableFocusTrap,
+    disableFocusTrap,
+    skipToContent
+  }
+}

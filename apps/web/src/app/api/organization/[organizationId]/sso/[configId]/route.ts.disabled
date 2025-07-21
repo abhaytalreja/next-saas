@@ -1,0 +1,286 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { z } from 'zod'
+import { SAMLHandler } from '@nextsaas/enterprise-auth'
+
+const updateSsoConfigSchema = z.object({
+  provider_name: z.string().min(1, 'Provider name is required').optional(),
+  metadata_xml: z.string().min(1, 'SAML metadata is required').optional(),
+  is_active: z.boolean().optional(),
+  attribute_mapping: z.object({
+    email: z.string().min(1, 'Email attribute mapping is required'),
+    first_name: z.string().optional(),
+    last_name: z.string().optional(),
+    display_name: z.string().optional(),
+    groups: z.string().optional(),
+  }).optional(),
+})
+
+// GET /api/organization/[organizationId]/sso/[configId] - Get specific SSO configuration
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { organizationId: string; configId: string } }
+) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Verify organization access
+    const { data: membership } = await supabase
+      .from('memberships')
+      .select('role')
+      .eq('organization_id', params.organizationId)
+      .eq('user_id', session.user.id)
+      .single()
+
+    if (!membership || !['owner', 'admin'].includes(membership.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // Fetch SSO configuration
+    const { data: configuration, error } = await supabase
+      .from('sso_configurations')
+      .select('*')
+      .eq('id', params.configId)
+      .eq('organization_id', params.organizationId)
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json(
+          { error: 'SSO configuration not found' },
+          { status: 404 }
+        )
+      }
+      console.error('Error fetching SSO configuration:', error)
+      return NextResponse.json(
+        { error: 'Failed to fetch SSO configuration' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ configuration })
+  } catch (error) {
+    console.error('GET /api/organization/[organizationId]/sso/[configId] error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+// PUT /api/organization/[organizationId]/sso/[configId] - Update SSO configuration
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { organizationId: string; configId: string } }
+) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Verify organization access
+    const { data: membership } = await supabase
+      .from('memberships')
+      .select('role')
+      .eq('organization_id', params.organizationId)
+      .eq('user_id', session.user.id)
+      .single()
+
+    if (!membership || !['owner', 'admin'].includes(membership.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // Parse and validate request body
+    const body = await request.json()
+    const validatedData = updateSsoConfigSchema.parse(body)
+
+    // Get existing configuration
+    const { data: existingConfig, error: fetchError } = await supabase
+      .from('sso_configurations')
+      .select('*')
+      .eq('id', params.configId)
+      .eq('organization_id', params.organizationId)
+      .single()
+
+    if (fetchError || !existingConfig) {
+      return NextResponse.json(
+        { error: 'SSO configuration not found' },
+        { status: 404 }
+      )
+    }
+
+    let metadata = existingConfig.metadata
+
+    // If metadata_xml is provided, parse it
+    if (validatedData.metadata_xml) {
+      const samlHandler = new SAMLHandler()
+      try {
+        const parsedMetadata = await samlHandler.parseMetadata(validatedData.metadata_xml)
+        metadata = {
+          ...parsedMetadata,
+          attribute_mapping: validatedData.attribute_mapping || metadata.attribute_mapping,
+        }
+      } catch (error) {
+        return NextResponse.json(
+          { 
+            error: 'Invalid SAML metadata',
+            details: error instanceof Error ? error.message : 'Unknown error'
+          },
+          { status: 400 }
+        )
+      }
+    } else if (validatedData.attribute_mapping) {
+      // Update only attribute mapping
+      metadata = {
+        ...metadata,
+        attribute_mapping: validatedData.attribute_mapping,
+      }
+    }
+
+    // If setting as active, deactivate other configurations
+    if (validatedData.is_active === true) {
+      await supabase
+        .from('sso_configurations')
+        .update({ is_active: false })
+        .eq('organization_id', params.organizationId)
+        .neq('id', params.configId)
+    }
+
+    // Prepare update data
+    const updateData: any = {
+      metadata,
+      updated_at: new Date().toISOString(),
+    }
+
+    if (validatedData.provider_name !== undefined) {
+      updateData.provider_name = validatedData.provider_name
+    }
+    if (validatedData.is_active !== undefined) {
+      updateData.is_active = validatedData.is_active
+    }
+
+    // Update SSO configuration
+    const { data: configuration, error } = await supabase
+      .from('sso_configurations')
+      .update(updateData)
+      .eq('id', params.configId)
+      .eq('organization_id', params.organizationId)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error updating SSO configuration:', error)
+      return NextResponse.json(
+        { error: 'Failed to update SSO configuration' },
+        { status: 500 }
+      )
+    }
+
+    // Log security event
+    await supabase.rpc('log_security_event', {
+      p_organization_id: params.organizationId,
+      p_user_id: session.user.id,
+      p_event_type: 'sso_configuration_updated',
+      p_severity: 'medium',
+      p_description: `SSO configuration updated: ${configuration.provider_name}`,
+      p_metadata: { 
+        configuration_id: configuration.id,
+        changes: Object.keys(validatedData),
+      },
+    })
+
+    return NextResponse.json({ configuration })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Validation error', details: error.errors },
+        { status: 400 }
+      )
+    }
+
+    console.error('PUT /api/organization/[organizationId]/sso/[configId] error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+// DELETE /api/organization/[organizationId]/sso/[configId] - Delete SSO configuration
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { organizationId: string; configId: string } }
+) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies })
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Verify organization access
+    const { data: membership } = await supabase
+      .from('memberships')
+      .select('role')
+      .eq('organization_id', params.organizationId)
+      .eq('user_id', session.user.id)
+      .single()
+
+    if (!membership || !['owner', 'admin'].includes(membership.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    // Get configuration details before deletion for logging
+    const { data: configuration } = await supabase
+      .from('sso_configurations')
+      .select('provider_name')
+      .eq('id', params.configId)
+      .eq('organization_id', params.organizationId)
+      .single()
+
+    // Delete SSO configuration
+    const { error } = await supabase
+      .from('sso_configurations')
+      .delete()
+      .eq('id', params.configId)
+      .eq('organization_id', params.organizationId)
+
+    if (error) {
+      console.error('Error deleting SSO configuration:', error)
+      return NextResponse.json(
+        { error: 'Failed to delete SSO configuration' },
+        { status: 500 }
+      )
+    }
+
+    // Log security event
+    if (configuration) {
+      await supabase.rpc('log_security_event', {
+        p_organization_id: params.organizationId,
+        p_user_id: session.user.id,
+        p_event_type: 'sso_configuration_deleted',
+        p_severity: 'high',
+        p_description: `SSO configuration deleted: ${configuration.provider_name}`,
+        p_metadata: { configuration_id: params.configId },
+      })
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('DELETE /api/organization/[organizationId]/sso/[configId] error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}

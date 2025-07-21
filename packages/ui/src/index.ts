@@ -29,6 +29,7 @@ export * from './atoms/toggles/Switch'
 export * from './atoms/icons/Icon'
 export * from './atoms/skeletons/Skeleton'
 export * from './atoms/dividers/Divider'
+export * from './atoms/forms/Label'
 
 // New Components - Buttons
 export * from './components/atoms/buttons/IconButton'

@@ -1,18 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSupabase } from '@/lib/supabase/client'
-import { useOrganization } from '@/hooks/useOrganization'
+import { getSupabaseBrowserClient } from '@nextsaas/supabase'
+import { useOrganization } from '@nextsaas/auth'
 import {
   UserPlusIcon,
   EllipsisVerticalIcon,
   TrashIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button, LegacyCard as Card, LegacyCardContent as CardContent, LegacyCardHeader as CardHeader, LegacyCardTitle as CardTitle, Badge, Avatar, AvatarFallback, AvatarImage } from '@nextsaas/ui'
 
 interface ProjectMember {
   id: string
@@ -23,7 +20,9 @@ interface ProjectMember {
   added_by: string
   user: {
     id: string
-    full_name?: string
+    name?: string
+    first_name?: string
+    last_name?: string
     email: string
     avatar_url?: string
   }
@@ -31,10 +30,12 @@ interface ProjectMember {
 
 interface ProjectMembersProps {
   projectId: string
+  onInviteClick?: () => void
+  refreshTrigger?: number
 }
 
-export function ProjectMembers({ projectId }: ProjectMembersProps) {
-  const { supabase } = useSupabase()
+export function ProjectMembers({ projectId, onInviteClick, refreshTrigger }: ProjectMembersProps) {
+  const supabase = getSupabaseBrowserClient()
   const { hasPermission } = useOrganization()
 
   const [members, setMembers] = useState<ProjectMember[]>([])
@@ -55,7 +56,7 @@ export function ProjectMembers({ projectId }: ProjectMembersProps) {
         .select(
           `
           *,
-          user:users!user_id(id, full_name, email, avatar_url)
+          user:users!user_id(id, name, first_name, last_name, email, avatar_url)
         `
         )
         .eq('project_id', projectId)
@@ -140,8 +141,12 @@ export function ProjectMembers({ projectId }: ProjectMembersProps) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Project Members ({members.length})</CardTitle>
-        {canManageMembers && (
-          <Button size="sm" className="flex items-center space-x-2">
+        {canManageMembers && onInviteClick && (
+          <Button 
+            size="sm" 
+            className="flex items-center space-x-2"
+            onClick={onInviteClick}
+          >
             <UserPlusIcon className="h-4 w-4" />
             <span>Add Member</span>
           </Button>
@@ -169,10 +174,14 @@ export function ProjectMembers({ projectId }: ProjectMembersProps) {
                   <Avatar className="h-8 w-8">
                     <AvatarImage
                       src={member.user.avatar_url}
-                      alt={member.user.full_name || member.user.email}
+                      alt={member.user.name || member.user.email}
                     />
                     <AvatarFallback>
-                      {(member.user.full_name || member.user.email)
+                      {(member.user.name || 
+                        (member.user.first_name && member.user.last_name 
+                          ? `${member.user.first_name} ${member.user.last_name}`
+                          : member.user.first_name) || 
+                        member.user.email)
                         .charAt(0)
                         .toUpperCase()}
                     </AvatarFallback>
@@ -180,7 +189,11 @@ export function ProjectMembers({ projectId }: ProjectMembersProps) {
 
                   <div>
                     <div className="font-medium text-gray-900">
-                      {member.user.full_name || member.user.email}
+                      {member.user.name || 
+                        (member.user.first_name && member.user.last_name 
+                          ? `${member.user.first_name} ${member.user.last_name}`
+                          : member.user.first_name) || 
+                        member.user.email}
                     </div>
                     <div className="text-sm text-gray-500">
                       {member.user.email}

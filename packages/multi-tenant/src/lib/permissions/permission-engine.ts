@@ -192,11 +192,18 @@ export class PermissionEngine {
     context: Record<string, any>
   ): Promise<PermissionResult> {
     try {
-      // Get conditional permissions from database
+      // Get conditional permissions from database with proper join
       const { data: conditions, error } = await this.supabase
         .from('member_permissions')
-        .select('conditions')
-        .eq('membership_id', userId) // This would need proper join
+        .select(`
+          conditions,
+          organization_members!inner (
+            user_id,
+            organization_id
+          )
+        `)
+        .eq('organization_members.user_id', userId)
+        .eq('organization_members.organization_id', organizationId)
         .eq('permission', `${resource}:${action}`)
         .single();
 

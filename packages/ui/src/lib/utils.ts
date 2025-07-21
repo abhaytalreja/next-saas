@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import * as brandTokens from '@nextsaas/config/design-tokens/brand-tokens.json'
+import brandTokens from '@nextsaas/config/design-tokens/brand-tokens.json'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

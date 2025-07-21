@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { getSupabaseBrowserClient } from '../lib/auth-client'
+import { getSupabaseBrowserClient } from '@nextsaas/supabase'
 import { getSessionManager } from '../lib/session-manager'
 import type {
   AuthContextValue,
@@ -16,6 +16,7 @@ import type {
   AuthResponse,
   AuthSession,
   AuthUser,
+  AuthUserProfile,
   MagicLinkCredentials,
   OAuthCredentials,
   PhoneCredentials,
@@ -24,7 +25,6 @@ import type {
   SignUpCredentials,
   UpdatePasswordCredentials,
   UpdateProfileData,
-  UserProfile,
 } from '../types'
 import {
   magicLinkSchema,
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Set up auth state listener
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event: string, session: any) => {
       console.log('Auth state changed:', event)
 
       setSession(session as AuthSession | null)
@@ -512,7 +512,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Update profile
   const updateProfile = useCallback(
-    async (data: UpdateProfileData): Promise<AuthResponse<UserProfile>> => {
+    async (data: UpdateProfileData): Promise<AuthResponse<AuthUserProfile>> => {
       setError(null)
 
       try {
@@ -538,7 +538,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
 
         // Create profile response
-        const profile: UserProfile = {
+        const profile: AuthUserProfile = {
           id: updateData.user.id,
           email: updateData.user.email!,
           firstName:

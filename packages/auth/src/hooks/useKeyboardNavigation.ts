@@ -2,4 +2,181 @@
 
 import { useCallback, useEffect, RefObject } from 'react'
 
-interface KeyboardNavigationOptions {\n  onEscape?: () => void\n  onEnter?: () => void\n  onArrowUp?: () => void\n  onArrowDown?: () => void\n  onArrowLeft?: () => void\n  onArrowRight?: () => void\n  onHome?: () => void\n  onEnd?: () => void\n  onTab?: (event: KeyboardEvent) => void\n  preventDefault?: string[]\n  enabled?: boolean\n}\n\nexport function useKeyboardNavigation(\n  elementRef: RefObject<HTMLElement>,\n  options: KeyboardNavigationOptions = {}\n) {\n  const {\n    onEscape,\n    onEnter,\n    onArrowUp,\n    onArrowDown,\n    onArrowLeft,\n    onArrowRight,\n    onHome,\n    onEnd,\n    onTab,\n    preventDefault = [],\n    enabled = true\n  } = options\n\n  const handleKeyDown = useCallback((event: KeyboardEvent) => {\n    if (!enabled) return\n\n    const { key } = event\n\n    // Prevent default for specified keys\n    if (preventDefault.includes(key)) {\n      event.preventDefault()\n    }\n\n    switch (key) {\n      case 'Escape':\n        onEscape?.()\n        break\n      case 'Enter':\n        onEnter?.()\n        break\n      case 'ArrowUp':\n        onArrowUp?.()\n        break\n      case 'ArrowDown':\n        onArrowDown?.()\n        break\n      case 'ArrowLeft':\n        onArrowLeft?.()\n        break\n      case 'ArrowRight':\n        onArrowRight?.()\n        break\n      case 'Home':\n        onHome?.()\n        break\n      case 'End':\n        onEnd?.()\n        break\n      case 'Tab':\n        onTab?.(event)\n        break\n    }\n  }, [\n    enabled,\n    onEscape,\n    onEnter,\n    onArrowUp,\n    onArrowDown,\n    onArrowLeft,\n    onArrowRight,\n    onHome,\n    onEnd,\n    onTab,\n    preventDefault\n  ])\n\n  useEffect(() => {\n    const element = elementRef.current\n    if (!element || !enabled) return\n\n    element.addEventListener('keydown', handleKeyDown)\n    return () => element.removeEventListener('keydown', handleKeyDown)\n  }, [elementRef, handleKeyDown, enabled])\n\n  return { handleKeyDown }\n}\n\n// Helper for roving tabindex pattern\nexport function useRovingTabIndex(\n  containerRef: RefObject<HTMLElement>,\n  itemSelector: string = '[role=\"option\"], [role=\"menuitem\"], [role=\"tab\"]',\n  options: {\n    orientation?: 'horizontal' | 'vertical' | 'both'\n    wrap?: boolean\n    enabled?: boolean\n  } = {}\n) {\n  const { orientation = 'vertical', wrap = true, enabled = true } = options\n\n  const getCurrentIndex = useCallback(() => {\n    if (!containerRef.current) return -1\n    const items = Array.from(containerRef.current.querySelectorAll(itemSelector))\n    const activeElement = document.activeElement\n    return items.findIndex(item => item === activeElement)\n  }, [containerRef, itemSelector])\n\n  const focusItem = useCallback((index: number) => {\n    if (!containerRef.current) return\n    const items = Array.from(containerRef.current.querySelectorAll<HTMLElement>(itemSelector))\n    const item = items[index]\n    if (item) {\n      // Update tabindex\n      items.forEach((item, i) => {\n        item.tabIndex = i === index ? 0 : -1\n      })\n      item.focus()\n    }\n  }, [containerRef, itemSelector])\n\n  const moveToNext = useCallback(() => {\n    if (!containerRef.current) return\n    const items = Array.from(containerRef.current.querySelectorAll(itemSelector))\n    const currentIndex = getCurrentIndex()\n    const nextIndex = currentIndex === items.length - 1 \n      ? (wrap ? 0 : currentIndex)\n      : currentIndex + 1\n    focusItem(nextIndex)\n  }, [containerRef, itemSelector, getCurrentIndex, focusItem, wrap])\n\n  const moveToPrevious = useCallback(() => {\n    if (!containerRef.current) return\n    const items = Array.from(containerRef.current.querySelectorAll(itemSelector))\n    const currentIndex = getCurrentIndex()\n    const prevIndex = currentIndex === 0 \n      ? (wrap ? items.length - 1 : 0)\n      : currentIndex - 1\n    focusItem(prevIndex)\n  }, [containerRef, itemSelector, getCurrentIndex, focusItem, wrap])\n\n  const moveToFirst = useCallback(() => {\n    focusItem(0)\n  }, [focusItem])\n\n  const moveToLast = useCallback(() => {\n    if (!containerRef.current) return\n    const items = Array.from(containerRef.current.querySelectorAll(itemSelector))\n    focusItem(items.length - 1)\n  }, [containerRef, itemSelector, focusItem])\n\n  useKeyboardNavigation(containerRef, {\n    onArrowDown: orientation === 'vertical' || orientation === 'both' ? moveToNext : undefined,\n    onArrowUp: orientation === 'vertical' || orientation === 'both' ? moveToPrevious : undefined,\n    onArrowRight: orientation === 'horizontal' || orientation === 'both' ? moveToNext : undefined,\n    onArrowLeft: orientation === 'horizontal' || orientation === 'both' ? moveToPrevious : undefined,\n    onHome: moveToFirst,\n    onEnd: moveToLast,\n    preventDefault: ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'],\n    enabled\n  })\n\n  return {\n    getCurrentIndex,\n    focusItem,\n    moveToNext,\n    moveToPrevious,\n    moveToFirst,\n    moveToLast\n  }\n}
+interface KeyboardNavigationOptions {
+  onEscape?: () => void
+  onEnter?: () => void
+  onArrowUp?: () => void
+  onArrowDown?: () => void
+  onArrowLeft?: () => void
+  onArrowRight?: () => void
+  onHome?: () => void
+  onEnd?: () => void
+  onTab?: (event: KeyboardEvent) => void
+  preventDefault?: string[]
+  enabled?: boolean
+}
+
+export function useKeyboardNavigation(
+  elementRef: RefObject<HTMLElement>,
+  options: KeyboardNavigationOptions = {}
+) {
+  const {
+    onEscape,
+    onEnter,
+    onArrowUp,
+    onArrowDown,
+    onArrowLeft,
+    onArrowRight,
+    onHome,
+    onEnd,
+    onTab,
+    preventDefault = [],
+    enabled = true
+  } = options
+
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (!enabled) return
+
+    const { key } = event
+
+    // Prevent default for specified keys
+    if (preventDefault.includes(key)) {
+      event.preventDefault()
+    }
+
+    switch (key) {
+      case 'Escape':
+        onEscape?.()
+        break
+      case 'Enter':
+        onEnter?.()
+        break
+      case 'ArrowUp':
+        onArrowUp?.()
+        break
+      case 'ArrowDown':
+        onArrowDown?.()
+        break
+      case 'ArrowLeft':
+        onArrowLeft?.()
+        break
+      case 'ArrowRight':
+        onArrowRight?.()
+        break
+      case 'Home':
+        onHome?.()
+        break
+      case 'End':
+        onEnd?.()
+        break
+      case 'Tab':
+        onTab?.(event)
+        break
+    }
+  }, [
+    enabled,
+    onEscape,
+    onEnter,
+    onArrowUp,
+    onArrowDown,
+    onArrowLeft,
+    onArrowRight,
+    onHome,
+    onEnd,
+    onTab,
+    preventDefault
+  ])
+
+  useEffect(() => {
+    const element = elementRef.current
+    if (!element || !enabled) return
+
+    element.addEventListener('keydown', handleKeyDown)
+    return () => element.removeEventListener('keydown', handleKeyDown)
+  }, [elementRef, handleKeyDown, enabled])
+
+  return { handleKeyDown }
+}
+
+// Helper for roving tabindex pattern
+export function useRovingTabIndex(
+  containerRef: RefObject<HTMLElement>,
+  itemSelector: string = '[role="option"], [role="menuitem"], [role="tab"]',
+  options: {
+    orientation?: 'horizontal' | 'vertical' | 'both'
+    wrap?: boolean
+    enabled?: boolean
+  } = {}
+) {
+  const { orientation = 'vertical', wrap = true, enabled = true } = options
+
+  const getCurrentIndex = useCallback(() => {
+    if (!containerRef.current) return -1
+    const items = Array.from(containerRef.current.querySelectorAll(itemSelector))
+    const activeElement = document.activeElement
+    return items.findIndex(item => item === activeElement)
+  }, [containerRef, itemSelector])
+
+  const focusItem = useCallback((index: number) => {
+    if (!containerRef.current) return
+    const items = Array.from(containerRef.current.querySelectorAll<HTMLElement>(itemSelector))
+    const item = items[index]
+    if (item) {
+      // Update tabindex
+      items.forEach((item, i) => {
+        item.tabIndex = i === index ? 0 : -1
+      })
+      item.focus()
+    }
+  }, [containerRef, itemSelector])
+
+  const moveToNext = useCallback(() => {
+    if (!containerRef.current) return
+    const items = Array.from(containerRef.current.querySelectorAll(itemSelector))
+    const currentIndex = getCurrentIndex()
+    const nextIndex = currentIndex === items.length - 1 
+      ? (wrap ? 0 : currentIndex)
+      : currentIndex + 1
+    focusItem(nextIndex)
+  }, [containerRef, itemSelector, getCurrentIndex, focusItem, wrap])
+
+  const moveToPrevious = useCallback(() => {
+    if (!containerRef.current) return
+    const items = Array.from(containerRef.current.querySelectorAll(itemSelector))
+    const currentIndex = getCurrentIndex()
+    const prevIndex = currentIndex === 0 
+      ? (wrap ? items.length - 1 : 0)
+      : currentIndex - 1
+    focusItem(prevIndex)
+  }, [containerRef, itemSelector, getCurrentIndex, focusItem, wrap])
+
+  const moveToFirst = useCallback(() => {
+    focusItem(0)
+  }, [focusItem])
+
+  const moveToLast = useCallback(() => {
+    if (!containerRef.current) return
+    const items = Array.from(containerRef.current.querySelectorAll(itemSelector))
+    focusItem(items.length - 1)
+  }, [containerRef, itemSelector, focusItem])
+
+  useKeyboardNavigation(containerRef, {
+    onArrowDown: orientation === 'vertical' || orientation === 'both' ? moveToNext : undefined,
+    onArrowUp: orientation === 'vertical' || orientation === 'both' ? moveToPrevious : undefined,
+    onArrowRight: orientation === 'horizontal' || orientation === 'both' ? moveToNext : undefined,
+    onArrowLeft: orientation === 'horizontal' || orientation === 'both' ? moveToPrevious : undefined,
+    onHome: moveToFirst,
+    onEnd: moveToLast,
+    preventDefault: ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'],
+    enabled
+  })
+
+  return {
+    getCurrentIndex,
+    focusItem,
+    moveToNext,
+    moveToPrevious,
+    moveToFirst,
+    moveToLast
+  }
+}

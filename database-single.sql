@@ -1,6 +1,6 @@
 -- NextSaaS Database Schema
 -- Organization Mode: single
--- Generated on: 2025-07-07T18:33:16.498Z
+-- Generated on: 2025-07-21T19:45:15.394Z
 
 
 -- Enable necessary extensions
@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS profiles (
   id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email text UNIQUE NOT NULL,
   name text,
+  first_name text,
+  last_name text,
   avatar_url text,
   timezone text DEFAULT 'UTC',
   locale text DEFAULT 'en',
@@ -19,6 +21,20 @@ CREATE TABLE IF NOT EXISTS profiles (
   last_seen_at timestamptz,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
+);
+
+-- Activities table for tracking user actions
+CREATE TABLE IF NOT EXISTS activities (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  project_id uuid,
+  action text NOT NULL,
+  entity_type text,
+  entity_id uuid,
+  entity_title text,
+  description text,
+  metadata jsonb DEFAULT '{}',
+  created_at timestamptz DEFAULT now()
 );
 
 -- Plans table (for subscription billing)
@@ -172,6 +188,10 @@ CREATE TABLE IF NOT EXISTS usage_tracking (
 -- Indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
 CREATE INDEX IF NOT EXISTS idx_profiles_updated_at ON profiles(updated_at);
+CREATE INDEX IF NOT EXISTS idx_activities_user_id ON activities(user_id);
+CREATE INDEX IF NOT EXISTS idx_activities_project_id ON activities(project_id);
+CREATE INDEX IF NOT EXISTS idx_activities_created_at ON activities(created_at);
+CREATE INDEX IF NOT EXISTS idx_activities_action ON activities(action);
 
 CREATE INDEX IF NOT EXISTS idx_projects_organization_id ON projects(organization_id);
 CREATE INDEX IF NOT EXISTS idx_items_project_id ON items(project_id);
@@ -188,6 +208,7 @@ CREATE INDEX IF NOT EXISTS idx_organization_invitations_token ON organization_in
 
 -- Enable RLS on all tables
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE activities ENABLE ROW LEVEL SECURITY;
 ALTER TABLE plans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE usage_tracking ENABLE ROW LEVEL SECURITY;
@@ -207,6 +228,15 @@ CREATE POLICY "Users can update their own profile" ON profiles
 DROP POLICY IF EXISTS "Anyone can view active plans" ON plans;
 CREATE POLICY "Anyone can view active plans" ON plans
   FOR SELECT USING (is_active = true);
+
+-- Activities policies (users can view their own activities)
+DROP POLICY IF EXISTS "Users can view their own activities" ON activities;
+CREATE POLICY "Users can view their own activities" ON activities
+  FOR SELECT USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can create activities" ON activities;
+CREATE POLICY "Users can create activities" ON activities
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE organization_members ENABLE ROW LEVEL SECURITY;
@@ -332,6 +362,26 @@ CREATE POLICY "Members can view organization usage" ON usage_tracking
       AND organization_members.user_id = auth.uid()
     )
   );
+
+-- Activities policies (organization context)
+DROP POLICY IF EXISTS "Members can view organization activities" ON activities;
+CREATE POLICY "Members can view organization activities" ON activities
+  FOR SELECT USING (
+    -- Users can see their own activities
+    auth.uid() = user_id
+    OR
+    -- Or activities in projects they have access to
+    (project_id IS NOT NULL AND EXISTS (
+      SELECT 1 FROM projects 
+      JOIN organization_members ON organization_members.organization_id = projects.organization_id
+      WHERE projects.id = activities.project_id 
+      AND organization_members.user_id = auth.uid()
+    ))
+  );
+
+DROP POLICY IF EXISTS "Users can create activities in organization context" ON activities;
+CREATE POLICY "Users can create activities in organization context" ON activities
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 
 -- Updated at trigger

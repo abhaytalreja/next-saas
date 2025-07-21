@@ -62,9 +62,18 @@ export async function updateSession(request: NextRequest) {
   })
 
   // Refresh session if expired - required for Server Components
+  console.log('🔄 Middleware: Refreshing session for path:', request.nextUrl.pathname)
   const {
     data: { user },
+    error: authError,
   } = await supabase.auth.getUser()
+  
+  console.log('🔄 Middleware auth result:', { 
+    hasUser: !!user, 
+    userId: user?.id,
+    authError: authError?.message,
+    path: request.nextUrl.pathname
+  })
 
   // Handle authentication redirects
   const { pathname } = request.nextUrl
@@ -77,7 +86,8 @@ export async function updateSession(request: NextRequest) {
   }
 
   // If user is not authenticated and on protected pages, redirect to login
-  if (!user && isProtectedPath(pathname)) {
+  // BUT NOT for API routes - they should return 401 instead
+  if (!user && isProtectedPath(pathname) && !pathname.startsWith('/api/')) {
     const loginUrl = new URL('/auth/sign-in', request.url)
     loginUrl.searchParams.set('redirect', pathname)
     return NextResponse.redirect(loginUrl)
@@ -95,6 +105,7 @@ export const protectedPaths = [
   '/projects',
   '/admin',
   '/api/protected',
+  '/api/projects',
 ]
 
 /**

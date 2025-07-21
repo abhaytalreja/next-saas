@@ -33,6 +33,9 @@ afterEach(() => {
 beforeAll(() => {
   // Set timezone for consistent date formatting in tests
   process.env.TZ = 'UTC'
+  
+  // Set test environment variables
+  process.env.NEXT_PUBLIC_DISABLE_EMAIL_CONFIRMATION = 'true'
 })
 
 afterAll(() => {

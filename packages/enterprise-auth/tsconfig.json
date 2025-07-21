@@ -1,0 +1,12 @@
+{
+  "extends": "@nextsaas/tsconfig/react-library.json",
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules", "**/*.test.*", "**/*.spec.*"],
+  "compilerOptions": {
+    "lib": ["ES2019", "DOM"],
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "moduleResolution": "bundler"
+  }
+}

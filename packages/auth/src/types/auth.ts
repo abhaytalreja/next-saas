@@ -1,5 +1,8 @@
 import type { User, Session } from '@supabase/supabase-js';
 
+// Re-export base types for external use
+export type { User, Session } from '@supabase/supabase-js';
+
 // Core Authentication Types
 export interface AuthUser extends User {
   user_metadata: {

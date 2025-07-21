@@ -1,3 +1,46 @@
+# Authentication Pattern for NextSaaS
+
+## Critical Fix Pattern ⚠️
+**Always ensure unified Supabase client usage across the entire application**
+
+### Problem Solved
+- AuthProvider was using `@supabase/supabase-js` (localStorage-based)
+- Rest of app was using `@supabase/ssr` (cookie-based SSR-optimized)
+- This caused session state conflicts leading to 401 authentication errors
+
+### Solution Pattern
+1. **Standardize on SSR Client**: All components MUST import from `@nextsaas/supabase`
+   ```typescript
+   // ✅ Correct - Use this everywhere
+   import { getSupabaseBrowserClient } from '@nextsaas/supabase'
+   
+   // ❌ Wrong - Never use direct supabase imports
+   import { createClient } from '@supabase/supabase-js'
+   ```
+
+2. **Path Alias Configuration**: Ensure tsconfig.json has correct path mapping
+   ```json
+   "paths": {
+     "@/*": ["./src/*"]  // ✅ Points to src directory
+   }
+   ```
+
+3. **Route Configuration**: Use consistent route names
+   ```typescript
+   // ✅ Correct routes in AuthProvider and middleware
+   redirectTo = '/auth/sign-in'  // Not '/auth/login'
+   ```
+
+### Build Requirements
+- Always add `@nextsaas/supabase` as external dependency in package build configs
+- Build supabase package before auth package
+- Rebuild auth package after any route or client changes
+
+### For Future Development
+- Never create separate Supabase client instances
+- Always use the unified client from `@nextsaas/supabase`
+- Test authentication on every major feature to catch session conflicts early
+
 # Testing Strategy and Requirements
 
 ## Documentation Updates

@@ -4,7 +4,8 @@ export default defineConfig({
   entry: {
     index: 'src/index.ts',
     server: 'src/server.ts',
-    client: 'src/client.ts'
+    client: 'src/client.ts',
+    hooks: 'src/hooks.ts'
   },
   format: ['cjs', 'esm'],
   dts: false, // Temporarily disabled due to type errors
