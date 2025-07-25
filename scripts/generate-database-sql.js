@@ -40,19 +40,107 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at timestamptz DEFAULT now()
 );
 
--- Activities table for tracking user actions
-CREATE TABLE IF NOT EXISTS activities (
-  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  project_id uuid,
-  action text NOT NULL,
-  entity_type text,
-  entity_id uuid,
-  entity_title text,
-  description text,
-  metadata jsonb DEFAULT '{}',
-  created_at timestamptz DEFAULT now()
-);
+-- Enhanced activities table for comprehensive audit tracking
+-- Handle both new installations and existing database upgrades
+DO $$
+BEGIN
+  -- Check if activities table exists
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'activities') THEN
+    -- Add columns if they don't exist (backward compatibility)
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'ip_address') THEN
+      ALTER TABLE activities ADD COLUMN ip_address inet;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'user_agent') THEN
+      ALTER TABLE activities ADD COLUMN user_agent text;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'device_type') THEN
+      ALTER TABLE activities ADD COLUMN device_type text;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'browser') THEN
+      ALTER TABLE activities ADD COLUMN browser text;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'os') THEN
+      ALTER TABLE activities ADD COLUMN os text;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'location') THEN
+      ALTER TABLE activities ADD COLUMN location text;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'session_id') THEN
+      ALTER TABLE activities ADD COLUMN session_id text;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'status') THEN
+      ALTER TABLE activities ADD COLUMN status text DEFAULT 'success';
+      -- Add constraint if it doesn't exist
+      BEGIN
+        ALTER TABLE activities ADD CONSTRAINT activities_status_check CHECK (status IN ('success', 'failure', 'pending'));
+      EXCEPTION WHEN duplicate_object THEN
+        NULL; -- Constraint already exists
+      END;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'is_public') THEN
+      ALTER TABLE activities ADD COLUMN is_public boolean DEFAULT false;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'error_message') THEN
+      ALTER TABLE activities ADD COLUMN error_message text;
+    END IF;
+    
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'expires_at') THEN
+      ALTER TABLE activities ADD COLUMN expires_at timestamptz;
+    END IF;
+    
+    -- Ensure organization_id column exists (for organization modes)
+    IF NOT EXISTS (SELECT FROM information_schema.columns WHERE table_name = 'activities' AND column_name = 'organization_id') THEN
+      ALTER TABLE activities ADD COLUMN organization_id uuid;
+      -- Add foreign key constraint if organizations table exists
+      IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'organizations') THEN
+        ALTER TABLE activities ADD CONSTRAINT fk_activities_organization 
+          FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+      END IF;
+    END IF;
+    
+  ELSE
+    -- Create table from scratch if it doesn't exist
+    CREATE TABLE activities (
+      id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+      user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+      organization_id uuid REFERENCES organizations(id) ON DELETE CASCADE,
+      project_id uuid, -- References projects table if it exists
+      action text NOT NULL,
+      entity_type text,
+      entity_id uuid,
+      entity_title text,
+      description text,
+      metadata jsonb DEFAULT '{}',
+      
+      -- Context Information
+      ip_address inet,
+      user_agent text,
+      device_type text,
+      browser text,
+      os text,
+      location text,
+      session_id text,
+      
+      -- Status
+      status text DEFAULT 'success' CHECK (status IN ('success', 'failure', 'pending')),
+      is_public boolean DEFAULT false,
+      error_message text,
+      
+      -- Timestamps
+      created_at timestamptz DEFAULT now(),
+      expires_at timestamptz
+    );
+  END IF;
+END $$;
 
 -- Plans table (for subscription billing)
 CREATE TABLE IF NOT EXISTS plans (
@@ -86,6 +174,171 @@ BEGIN
     ALTER TABLE plans ALTER COLUMN features TYPE jsonb USING to_jsonb(features);
   END IF;
 END $$;
+
+-- Profile Management Tables
+-- User preferences for comprehensive user preferences
+CREATE TABLE IF NOT EXISTS user_preferences (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  
+  -- Theme & Appearance
+  theme text DEFAULT 'system' CHECK (theme IN ('light', 'dark', 'system')),
+  language text DEFAULT 'en',
+  timezone text DEFAULT 'UTC',
+  date_format text DEFAULT 'MM/DD/YYYY',
+  time_format text DEFAULT '12h' CHECK (time_format IN ('12h', '24h')),
+  
+  -- Email Notifications
+  email_notifications_enabled boolean DEFAULT true,
+  email_frequency text DEFAULT 'immediate' CHECK (email_frequency IN ('immediate', 'hourly', 'daily', 'weekly')),
+  email_digest boolean DEFAULT true,
+  
+  -- Notification Types
+  notify_security_alerts boolean DEFAULT true,
+  notify_account_updates boolean DEFAULT true,
+  notify_organization_updates boolean DEFAULT true,
+  notify_project_updates boolean DEFAULT true,
+  notify_mentions boolean DEFAULT true,
+  notify_comments boolean DEFAULT true,
+  notify_invitations boolean DEFAULT true,
+  notify_billing_alerts boolean DEFAULT true,
+  notify_feature_announcements boolean DEFAULT false,
+  
+  -- Push Notifications
+  browser_notifications_enabled boolean DEFAULT false,
+  desktop_notifications_enabled boolean DEFAULT false,
+  mobile_notifications_enabled boolean DEFAULT false,
+  
+  -- Marketing & Communication
+  marketing_emails boolean DEFAULT false,
+  product_updates boolean DEFAULT true,
+  newsletters boolean DEFAULT false,
+  surveys boolean DEFAULT false,
+  
+  -- Privacy Settings
+  profile_visibility text DEFAULT 'organization' CHECK (profile_visibility IN ('public', 'organization', 'private')),
+  email_visibility text DEFAULT 'organization' CHECK (email_visibility IN ('public', 'organization', 'private')),
+  activity_visibility text DEFAULT 'organization' CHECK (activity_visibility IN ('public', 'organization', 'private')),
+  hide_last_seen boolean DEFAULT false,
+  hide_activity_status boolean DEFAULT false,
+  
+  -- Advanced Settings
+  quiet_hours_enabled boolean DEFAULT false,
+  quiet_hours_start time DEFAULT '22:00',
+  quiet_hours_end time DEFAULT '08:00',
+  timezone_aware boolean DEFAULT true,
+  
+  -- Accessibility
+  reduce_motion boolean DEFAULT false,
+  high_contrast boolean DEFAULT false,
+  screen_reader_optimized boolean DEFAULT false,
+  
+  -- Data & Privacy
+  data_retention_period integer DEFAULT 365, -- days
+  auto_delete_inactive boolean DEFAULT false,
+  
+  -- Organization Mode Context (for universal SaaS support)
+  organization_context jsonb DEFAULT '{}',
+  
+  -- Timestamps
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- User avatars table for avatar management
+CREATE TABLE IF NOT EXISTS user_avatars (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  
+  -- Storage Information
+  storage_path text NOT NULL,
+  storage_bucket text DEFAULT 'avatars',
+  public_url text,
+  
+  -- File Information
+  original_filename text,
+  file_size integer NOT NULL,
+  mime_type text NOT NULL,
+  width integer,
+  height integer,
+  
+  -- Image Processing
+  is_processed boolean DEFAULT false,
+  processing_status text DEFAULT 'pending' CHECK (processing_status IN ('pending', 'processing', 'completed', 'failed')),
+  processing_error text,
+  
+  -- Variants/Sizes (JSON with size -> URL mapping)
+  variants jsonb DEFAULT '{}',
+  
+  -- Status & Moderation
+  is_active boolean DEFAULT true,
+  is_approved boolean DEFAULT true,
+  moderation_notes text,
+  
+  -- Security & Validation
+  file_hash text,
+  virus_scan_status text DEFAULT 'pending' CHECK (virus_scan_status IN ('pending', 'clean', 'infected', 'failed')),
+  virus_scan_result text,
+  
+  -- Metadata
+  uploaded_via text DEFAULT 'web',
+  upload_session_id text,
+  
+  -- Timestamps
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now(),
+  expires_at timestamptz
+);
+
+-- Profile completeness table for tracking profile completion
+CREATE TABLE IF NOT EXISTS profile_completeness (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id uuid NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  
+  -- Completeness Scores (0-100)
+  overall_score integer DEFAULT 0 CHECK (overall_score >= 0 AND overall_score <= 100),
+  basic_info_score integer DEFAULT 0 CHECK (basic_info_score >= 0 AND basic_info_score <= 100),
+  contact_info_score integer DEFAULT 0 CHECK (contact_info_score >= 0 AND contact_info_score <= 100),
+  professional_info_score integer DEFAULT 0 CHECK (professional_info_score >= 0 AND professional_info_score <= 100),
+  preferences_score integer DEFAULT 0 CHECK (preferences_score >= 0 AND preferences_score <= 100),
+  security_score integer DEFAULT 0 CHECK (security_score >= 0 AND security_score <= 100),
+  
+  -- Field Completion Status
+  completed_fields jsonb DEFAULT '[]',
+  missing_fields jsonb DEFAULT '[]',
+  
+  -- Progress Tracking
+  last_updated_field text,
+  completion_suggestions jsonb DEFAULT '[]',
+  
+  -- Timestamps
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Create user_activity view (alias for activities for API compatibility)
+CREATE OR REPLACE VIEW user_activity AS 
+SELECT 
+  id,
+  user_id,
+  action,
+  entity_type as resource,
+  entity_id as resource_id,
+  description,
+  metadata,
+  ip_address,
+  user_agent,
+  device_type,
+  browser,
+  os,
+  location,
+  session_id,
+  organization_id,
+  status,
+  error_message,
+  created_at,
+  expires_at
+FROM activities;
 `;
 
 // Organizations table (only for single and multi modes)
@@ -227,9 +480,23 @@ const getIndexes = (mode) => {
 CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
 CREATE INDEX IF NOT EXISTS idx_profiles_updated_at ON profiles(updated_at);
 CREATE INDEX IF NOT EXISTS idx_activities_user_id ON activities(user_id);
+CREATE INDEX IF NOT EXISTS idx_activities_organization_id ON activities(organization_id);
 CREATE INDEX IF NOT EXISTS idx_activities_project_id ON activities(project_id);
 CREATE INDEX IF NOT EXISTS idx_activities_created_at ON activities(created_at);
 CREATE INDEX IF NOT EXISTS idx_activities_action ON activities(action);
+CREATE INDEX IF NOT EXISTS idx_activities_entity_type ON activities(entity_type);
+
+-- Profile management indexes
+CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON user_preferences(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_preferences_theme ON user_preferences(theme);
+CREATE INDEX IF NOT EXISTS idx_user_preferences_language ON user_preferences(language);
+
+CREATE INDEX IF NOT EXISTS idx_user_avatars_user_id ON user_avatars(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_avatars_is_active ON user_avatars(is_active);
+CREATE INDEX IF NOT EXISTS idx_user_avatars_processing_status ON user_avatars(processing_status);
+
+CREATE INDEX IF NOT EXISTS idx_profile_completeness_user_id ON profile_completeness(user_id);
+CREATE INDEX IF NOT EXISTS idx_profile_completeness_overall_score ON profile_completeness(overall_score);
 `;
 
   const organizationIndexes = `
@@ -266,6 +533,9 @@ ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE usage_tracking ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_preferences ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_avatars ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profile_completeness ENABLE ROW LEVEL SECURITY;
 
 -- Profiles policies
 DROP POLICY IF EXISTS "Users can view their own profile" ON profiles;
@@ -289,6 +559,49 @@ CREATE POLICY "Users can view their own activities" ON activities
 DROP POLICY IF EXISTS "Users can create activities" ON activities;
 CREATE POLICY "Users can create activities" ON activities
   FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- User preferences policies
+DROP POLICY IF EXISTS "Users can view own preferences" ON user_preferences;
+CREATE POLICY "Users can view own preferences" ON user_preferences
+  FOR SELECT USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Users can update own preferences" ON user_preferences;
+CREATE POLICY "Users can update own preferences" ON user_preferences
+  FOR UPDATE USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Users can insert own preferences" ON user_preferences;
+CREATE POLICY "Users can insert own preferences" ON user_preferences
+  FOR INSERT WITH CHECK (user_id = auth.uid());
+
+-- User avatars policies
+DROP POLICY IF EXISTS "Users can view own avatars" ON user_avatars;
+CREATE POLICY "Users can view own avatars" ON user_avatars
+  FOR SELECT USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Users can update own avatars" ON user_avatars;
+CREATE POLICY "Users can update own avatars" ON user_avatars
+  FOR UPDATE USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Users can insert own avatars" ON user_avatars;
+CREATE POLICY "Users can insert own avatars" ON user_avatars
+  FOR INSERT WITH CHECK (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Users can delete own avatars" ON user_avatars;
+CREATE POLICY "Users can delete own avatars" ON user_avatars
+  FOR DELETE USING (user_id = auth.uid());
+
+-- Profile completeness policies
+DROP POLICY IF EXISTS "Users can view own completeness" ON profile_completeness;
+CREATE POLICY "Users can view own completeness" ON profile_completeness
+  FOR SELECT USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Users can update own completeness" ON profile_completeness;
+CREATE POLICY "Users can update own completeness" ON profile_completeness
+  FOR UPDATE USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Users can insert own completeness" ON profile_completeness;
+CREATE POLICY "Users can insert own completeness" ON profile_completeness
+  FOR INSERT WITH CHECK (user_id = auth.uid());
 `;
 
   if (mode === 'none') {
@@ -545,6 +858,147 @@ CREATE TRIGGER update_plans_updated_at BEFORE UPDATE ON plans
 DROP TRIGGER IF EXISTS update_subscriptions_updated_at ON subscriptions;
 CREATE TRIGGER update_subscriptions_updated_at BEFORE UPDATE ON subscriptions
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- Profile management triggers
+DROP TRIGGER IF EXISTS update_user_preferences_updated_at ON user_preferences;
+CREATE TRIGGER update_user_preferences_updated_at BEFORE UPDATE ON user_preferences
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+DROP TRIGGER IF EXISTS update_user_avatars_updated_at ON user_avatars;
+CREATE TRIGGER update_user_avatars_updated_at BEFORE UPDATE ON user_avatars
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+DROP TRIGGER IF EXISTS update_profile_completeness_updated_at ON profile_completeness;
+CREATE TRIGGER update_profile_completeness_updated_at BEFORE UPDATE ON profile_completeness
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- Profile completeness calculation functions
+CREATE OR REPLACE FUNCTION calculate_profile_completeness(user_uuid uuid)
+RETURNS integer
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  completeness_score integer := 0;
+  profile_record RECORD;
+  preferences_record RECORD;
+BEGIN
+  -- Get profile data
+  SELECT * INTO profile_record FROM profiles WHERE id = user_uuid;
+  
+  -- Get preferences data
+  SELECT * INTO preferences_record FROM user_preferences WHERE user_id = user_uuid;
+  
+  -- Calculate basic info score (40% weight)
+  IF profile_record.first_name IS NOT NULL AND profile_record.first_name != '' THEN
+    completeness_score := completeness_score + 10;
+  END IF;
+  
+  IF profile_record.last_name IS NOT NULL AND profile_record.last_name != '' THEN
+    completeness_score := completeness_score + 10;
+  END IF;
+  
+  IF profile_record.avatar_url IS NOT NULL AND profile_record.avatar_url != '' THEN
+    completeness_score := completeness_score + 10;
+  END IF;
+  
+  -- Calculate contact info score (20% weight)
+  IF profile_record.metadata->>'phone' IS NOT NULL AND profile_record.metadata->>'phone' != '' THEN
+    completeness_score := completeness_score + 10;
+  END IF;
+  
+  IF profile_record.metadata->>'website' IS NOT NULL AND profile_record.metadata->>'website' != '' THEN
+    completeness_score := completeness_score + 10;
+  END IF;
+  
+  -- Calculate professional info score (20% weight)
+  IF profile_record.metadata->>'job_title' IS NOT NULL AND profile_record.metadata->>'job_title' != '' THEN
+    completeness_score := completeness_score + 10;
+  END IF;
+  
+  IF profile_record.metadata->>'company' IS NOT NULL AND profile_record.metadata->>'company' != '' THEN
+    completeness_score := completeness_score + 10;
+  END IF;
+  
+  -- Calculate preferences score (20% weight)
+  IF preferences_record IS NOT NULL THEN
+    completeness_score := completeness_score + 20;
+  END IF;
+  
+  -- Additional profile completeness factors
+  IF profile_record.name IS NOT NULL AND profile_record.name != '' THEN
+    completeness_score := completeness_score + 10;
+  END IF;
+  
+  IF profile_record.timezone IS NOT NULL AND profile_record.timezone != 'UTC' THEN
+    completeness_score := completeness_score + 10;
+  END IF;
+  
+  RETURN completeness_score;
+END;
+$$;
+
+-- Function to update profile completeness
+CREATE OR REPLACE FUNCTION update_profile_completeness()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  new_score integer;
+BEGIN
+  -- Calculate new completeness score
+  new_score := calculate_profile_completeness(COALESCE(NEW.id, NEW.user_id));
+  
+  -- Update or insert completeness record
+  INSERT INTO profile_completeness (user_id, overall_score, updated_at)
+  VALUES (COALESCE(NEW.id, NEW.user_id), new_score, now())
+  ON CONFLICT (user_id) 
+  DO UPDATE SET 
+    overall_score = new_score,
+    updated_at = now();
+  
+  RETURN NEW;
+END;
+$$;
+
+-- Function to auto-create user preferences on profile creation
+CREATE OR REPLACE FUNCTION create_default_preferences()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  INSERT INTO user_preferences (user_id, created_at)
+  VALUES (NEW.id, now())
+  ON CONFLICT (user_id) DO NOTHING;
+  
+  INSERT INTO profile_completeness (user_id, overall_score, created_at)
+  VALUES (NEW.id, 0, now())
+  ON CONFLICT (user_id) DO NOTHING;
+  
+  RETURN NEW;
+END;
+$$;
+
+-- Profile management triggers
+DROP TRIGGER IF EXISTS trigger_create_default_preferences ON profiles;
+CREATE TRIGGER trigger_create_default_preferences
+  AFTER INSERT ON profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION create_default_preferences();
+
+DROP TRIGGER IF EXISTS trigger_update_profile_completeness_on_profile ON profiles;
+CREATE TRIGGER trigger_update_profile_completeness_on_profile
+  AFTER UPDATE ON profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION update_profile_completeness();
+
+DROP TRIGGER IF EXISTS trigger_update_profile_completeness_on_preferences ON user_preferences;
+CREATE TRIGGER trigger_update_profile_completeness_on_preferences
+  AFTER INSERT OR UPDATE ON user_preferences
+  FOR EACH ROW
+  EXECUTE FUNCTION update_profile_completeness();
 `;
 
   const organizationFunctions = `
@@ -648,6 +1102,36 @@ VALUES
    '{"users": -1, "projects": -1, "storage_gb": -1, "api_calls": -1}'::jsonb,
    false, 3)
 ON CONFLICT (slug) DO NOTHING;
+
+-- Helpful views for profile management
+
+-- View for user profiles with completeness
+CREATE OR REPLACE VIEW user_profiles_with_completeness AS
+SELECT 
+  p.*,
+  pc.overall_score as completeness_score,
+  pc.completion_suggestions,
+  CASE 
+    WHEN pc.overall_score >= 90 THEN 'complete'
+    WHEN pc.overall_score >= 60 THEN 'good'
+    WHEN pc.overall_score >= 30 THEN 'basic'
+    ELSE 'incomplete'
+  END as completeness_status
+FROM profiles p
+LEFT JOIN profile_completeness pc ON p.id = pc.user_id;
+
+${organizationMode !== 'none' ? `
+-- View for organization mode aware profiles
+CREATE OR REPLACE VIEW organization_profiles AS
+SELECT 
+  p.*,
+  m.organization_id,
+  m.role as organization_role,
+  o.name as organization_name,
+  o.slug as organization_slug
+FROM profiles p
+JOIN organization_members m ON p.id = m.user_id
+JOIN organizations o ON m.organization_id = o.id;` : ''}
 `;
 
 // Write the SQL file

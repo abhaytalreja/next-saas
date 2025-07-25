@@ -4,7 +4,7 @@ const config = createJestConfig({
   displayName: 'web',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/test-utils/setup.ts'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@nextsaas/auth$': '<rootDir>/../../packages/auth/src',
     '^@nextsaas/auth/(.*)$': '<rootDir>/../../packages/auth/src/$1',
@@ -35,21 +35,6 @@ const config = createJestConfig({
     }
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  transform: {
-    '^.+\\.(ts|tsx)$': ['@swc/jest', {
-      jsc: {
-        parser: {
-          syntax: 'typescript',
-          tsx: true
-        },
-        transform: {
-          react: {
-            runtime: 'automatic'
-          }
-        }
-      }
-    }]
-  },
   testTimeout: 10000
 })
 

@@ -75,7 +75,6 @@ const BasicExample = () => {
           email: 'john@example.com',
           avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face',
         }}
-        userMenuItems={sampleUserMenu}
       >
         <div className="p-6">
           <h2 className="text-2xl font-semibold mb-4">Dashboard Content</h2>
@@ -118,7 +117,6 @@ const WithBreadcrumbsExample = () => {
           email: 'sarah@example.com',
           avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face',
         }}
-        userMenuItems={sampleUserMenu}
       >
         <div className="p-6">
           <h2 className="text-2xl font-semibold mb-4">Monthly Reports</h2>
@@ -132,7 +130,7 @@ const WithBreadcrumbsExample = () => {
 }
 
 const WithActionsExample = () => {
-  const headerActions = [
+  const headerActions: React.ReactNode = [
     {
       label: 'Export',
       icon: Download,
@@ -145,7 +143,7 @@ const WithActionsExample = () => {
       onClick: () => console.log('Create clicked'),
       variant: 'default' as const,
     },
-  ]
+  ] as any
 
   return (
     <div className="h-[500px] border rounded-lg overflow-hidden">
@@ -158,7 +156,6 @@ const WithActionsExample = () => {
           email: 'alex@example.com',
           avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face',
         }}
-        userMenuItems={sampleUserMenu}
         searchPlaceholder="Search users..."
         onSearch={(query) => console.log('Search:', query)}
       >
@@ -194,7 +191,6 @@ const ResponsiveExample = () => {
           email: 'maria@example.com',
           avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face',
         }}
-        userMenuItems={sampleUserMenu}
         sidebarCollapsed={sidebarCollapsed}
         onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
         notificationCount={3}
@@ -230,7 +226,6 @@ const CustomizationExample = () => {
           email: 'david@example.com',
           avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face',
         }}
-        userMenuItems={sampleUserMenu}
         theme="dark"
         sidebarWidth={280}
         headerHeight={64}
