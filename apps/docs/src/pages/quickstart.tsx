@@ -142,9 +142,22 @@ NEXT_PUBLIC_ORGANIZATION_MODE=single  # or 'none' or 'multi'`}</code></pre>
         <li>Click "Run" to create all tables</li>
       </ol>
 
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+        <h4 className="text-blue-900 font-semibold mb-2">📋 Additional Setup for Organizations (if using "single" or "multi" mode)</h4>
+        <p className="text-blue-800 mb-2">If you're using organization modes, run this additional SQL migration:</p>
+        
+        <ol className="text-blue-800 space-y-1 text-sm ml-4">
+          <li><strong>Organization Member Sync</strong>: Run <code>sync-organization-members.sql</code> to fix any RLS policy mismatches</li>
+        </ol>
+        
+        <p className="text-blue-800 text-sm mt-2">
+          <strong>Note:</strong> Profile management tables (avatars, preferences, activity tracking) are now automatically included in the main SQL generation!
+        </p>
+      </div>
+
       <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-4">
         <p className="text-green-800 text-sm">
-          ✅ This creates all tables including authentication, organizations, sessions, billing, and security policies!
+          ✅ This creates all tables including authentication, organizations, sessions, billing, profile management, and security policies!
         </p>
       </div>
 
@@ -154,9 +167,11 @@ NEXT_PUBLIC_ORGANIZATION_MODE=single  # or 'none' or 'multi'`}</code></pre>
         <ul className="text-blue-800 space-y-1 text-sm">
           <li>• <strong>Core tables</strong>: users, organizations, memberships</li>
           <li>• <strong>Authentication</strong>: sessions, OAuth accounts, password resets, email verification, invitations</li>
+          <li>• <strong>Profile Management</strong>: user preferences, avatars, profile completeness tracking</li>
+          <li>• <strong>Activity Tracking</strong>: comprehensive audit logs with context, security events</li>
           <li>• <strong>Billing</strong>: subscriptions, plans, usage tracking</li>
           <li>• <strong>Content</strong>: projects, items (customizable for your domain)</li>
-          <li>• <strong>System</strong>: audit logs, notifications, feature flags</li>
+          <li>• <strong>Functions & Views</strong>: profile completeness calculation, helpful data views</li>
           <li>• <strong>Security</strong>: Row Level Security policies for all tables</li>
         </ul>
       </div>
@@ -228,12 +243,12 @@ NEXT_PUBLIC_ORGANIZATION_MODE=single  # or 'none' or 'multi'`}</code></pre>
         </div>
 
         <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4">
-          <h4 className="font-semibold text-green-900 mb-2">✅ UI Components</h4>
+          <h4 className="font-semibold text-green-900 mb-2">✅ Profile Management</h4>
           <ul className="text-sm text-green-800 space-y-1">
-            <li>• Navigation & Layout</li>
-            <li>• Forms & Inputs</li>
-            <li>• Modals & Dialogs</li>
-            <li>• Loading states</li>
+            <li>• Universal profile system</li>
+            <li>• Avatar upload (Backblaze)</li>
+            <li>• Activity tracking</li>
+            <li>• Organization context</li>
           </ul>
         </div>
 
@@ -251,14 +266,14 @@ NEXT_PUBLIC_ORGANIZATION_MODE=single  # or 'none' or 'multi'`}</code></pre>
       <h2>🚀 Next Steps</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 not-prose">
+        <a href="/features/profile-management" className="block border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
+          <h4 className="font-semibold mb-1">👤 Profile Management</h4>
+          <p className="text-sm text-gray-600">Configure profiles & avatars</p>
+        </a>
+        
         <a href="/features/authentication" className="block border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
           <h4 className="font-semibold mb-1">🔐 Customize Auth</h4>
           <p className="text-sm text-gray-600">Add social logins, custom fields</p>
-        </a>
-        
-        <a href="/features/database" className="block border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
-          <h4 className="font-semibold mb-1">💾 Extend Database</h4>
-          <p className="text-sm text-gray-600">Add tables for your features</p>
         </a>
         
         <a href="/deployment/vercel" className="block border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">

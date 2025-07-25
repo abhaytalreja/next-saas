@@ -96,13 +96,13 @@ export default function DocsHomePage() {
 
         <div className="border border-gray-200 rounded-lg p-4">
           <h4 className="font-semibold flex items-center gap-2 mb-3">
-            <span className="text-2xl">🎨</span> UI Components
+            <span className="text-2xl">👤</span> Profile Management
           </h4>
           <ul className="text-sm text-gray-600 space-y-1 ml-8">
-            <li>• 50+ React components</li>
-            <li>• Tailwind CSS styling</li>
-            <li>• Dark mode support</li>
-            <li>• Responsive design</li>
+            <li>• Universal profile system</li>
+            <li>• Avatar upload (Backblaze)</li>
+            <li>• Activity tracking & audit</li>
+            <li>• GDPR data export/deletion</li>
           </ul>
         </div>
       </div>
@@ -164,11 +164,15 @@ export default function DocsHomePage() {
         </a>
 
         <a
-          href="/features/authentication"
-          className="block border border-gray-200 rounded-lg p-4 hover:border-gray-400 transition-colors"
+          href="/features/profile-management"
+          className="block border-2 border-green-200 bg-green-50 rounded-lg p-4 hover:border-green-400 transition-colors"
         >
-          <h3 className="font-semibold text-lg mb-2">✨ Features</h3>
-          <p className="text-sm text-gray-600">Learn about built-in features</p>
+          <h3 className="font-semibold text-lg mb-2 text-green-900">
+            👤 Profile Management
+          </h3>
+          <p className="text-sm text-green-700">
+            Universal profile system with avatars & activity
+          </p>
         </a>
 
         <a
