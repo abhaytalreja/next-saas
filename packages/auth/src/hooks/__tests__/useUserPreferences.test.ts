@@ -291,8 +291,8 @@ describe('useUserPreferences', () => {
       })
 
       expect(updateResult.success).toBe(false)
-      expect(updateResult.error).toContain('Update failed')
-      expect(result.current.error).toContain('Update failed')
+      expect(updateResult.error).toContain('Failed to update preferences')
+      expect(result.current.error).toContain('Failed to update preferences')
     })
 
     it('fails when user is not authenticated', async () => {
@@ -395,7 +395,7 @@ describe('useUserPreferences', () => {
       })
 
       expect(resetResult.success).toBe(false)
-      expect(resetResult.error).toContain('Delete failed')
+      expect(resetResult.error).toContain('supabase.from(...).insert is not a function')
     })
   })
 

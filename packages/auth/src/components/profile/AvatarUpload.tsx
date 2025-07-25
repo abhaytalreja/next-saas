@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks'
 import { UserAvatar } from '../ui/UserAvatar'
 import { Button } from '@nextsaas/ui'
 import { CameraIcon, TrashIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline'
+import { avatarService } from '../../services/avatar-service'
 
 interface AvatarUploadProps {
   'data-testid'?: string
@@ -53,25 +54,35 @@ export function AvatarUpload({
   const handleUpload = async (file: File) => {
     setUploading(true)
     try {
-      // Here you would implement actual file upload to your storage service
-      // For now, we'll simulate a successful upload
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const uploadedUrl = previewUrl // In real implementation, this would be the uploaded URL
-      
-      // Update user profile with new avatar URL
-      const result = await updateProfile({
-        avatarUrl: uploadedUrl,
-      })
+      if (!user?.id) {
+        throw new Error('User not authenticated')
+      }
 
-      if (result.error) {
-        onError?.(result.error.message)
+      // Upload avatar using the avatar service
+      const result = await avatarService.uploadAvatar(file, user.id)
+
+      if (!result.success) {
+        onError?.(result.error || 'Failed to upload avatar')
         setPreviewUrl(null)
-      } else {
-        onSuccess?.(uploadedUrl || '')
+        return
+      }
+
+      if (result.avatar) {
+        // Activate the newly uploaded avatar
+        const activateResult = await avatarService.activateAvatar(result.avatar.id, user.id)
+        
+        if (activateResult) {
+          onSuccess?.(result.avatar.public_url || '')
+          // Update the preview to the uploaded image
+          setPreviewUrl(result.avatar.public_url)
+        } else {
+          onError?.('Failed to activate avatar')
+          setPreviewUrl(null)
+        }
       }
     } catch (error) {
-      onError?.('Failed to upload avatar')
+      console.error('Avatar upload error:', error)
+      onError?.(error instanceof Error ? error.message : 'Failed to upload avatar')
       setPreviewUrl(null)
     } finally {
       setUploading(false)
@@ -81,18 +92,31 @@ export function AvatarUpload({
   const handleRemove = async () => {
     setUploading(true)
     try {
-      const result = await updateProfile({
-        avatarUrl: null,
-      })
+      if (!user?.id) {
+        throw new Error('User not authenticated')
+      }
 
-      if (result.error) {
-        onError?.(result.error.message)
+      // Get current active avatar
+      const currentAvatar = await avatarService.getCurrentAvatar(user.id)
+      
+      if (currentAvatar) {
+        // Delete the current avatar
+        const result = await avatarService.deleteAvatar(currentAvatar.id, user.id)
+        
+        if (result) {
+          setPreviewUrl(null)
+          onSuccess?.('')
+        } else {
+          onError?.('Failed to remove avatar')
+        }
       } else {
+        // No avatar to remove
         setPreviewUrl(null)
         onSuccess?.('')
       }
     } catch (error) {
-      onError?.('Failed to remove avatar')
+      console.error('Avatar removal error:', error)
+      onError?.(error instanceof Error ? error.message : 'Failed to remove avatar')
     } finally {
       setUploading(false)
     }

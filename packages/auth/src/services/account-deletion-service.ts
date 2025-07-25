@@ -601,3 +601,11 @@ export class AccountDeletionService {
 
 // Singleton instance
 export const accountDeletionService = new AccountDeletionService()
+
+// Factory function for custom supabase client
+export function createAccountDeletionService(supabase: ReturnType<typeof createClient<Database>>) {
+  const service = Object.create(AccountDeletionService.prototype)
+  service.supabase = supabase
+  service.DELETION_GRACE_PERIOD_DAYS = 30
+  return service as AccountDeletionService
+}

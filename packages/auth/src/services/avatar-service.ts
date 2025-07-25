@@ -118,14 +118,11 @@ class SupabaseStorage implements StorageProvider {
 export class AvatarService {
   private supabase = createClientComponentClient()
   private storage: StorageProvider
-  private readonly bucketName = 'avatars'
+  private readonly bucketName = process.env.NEXT_PUBLIC_BACKBLAZE_BUCKET_NAME || 'nextsaas-avatars'
   
   constructor() {
-    // Use Backblaze if configured, otherwise fallback to Supabase
-    const useBackblaze = process.env.NEXT_PUBLIC_BACKBLAZE_BUCKET_NAME && 
-                        process.env.NEXT_PUBLIC_BACKBLAZE_ENDPOINT
-    
-    this.storage = useBackblaze ? new BackblazeStorage() : new SupabaseStorage()
+    // Always use Backblaze as per project configuration
+    this.storage = new BackblazeStorage()
   }
   
   // Default upload options
@@ -256,7 +253,7 @@ export class AvatarService {
 
       if (avatar) {
         await this.supabase
-          .from('users')
+          .from('profiles')
           .update({ avatar_url: avatar.public_url })
           .eq('id', userId)
       }
@@ -303,7 +300,7 @@ export class AvatarService {
       // If this was the active avatar, clear user's avatar_url
       if (avatar.is_active) {
         await this.supabase
-          .from('users')
+          .from('profiles')
           .update({ avatar_url: null })
           .eq('id', userId)
       }

@@ -80,3 +80,61 @@ export const createMockFile = (
 export const waitForLoadingToFinish = () => {
   return new Promise(resolve => setTimeout(resolve, 0))
 }
+
+// Setup test environment
+export const setupTestEnvironment = () => {
+  // Mock IntersectionObserver
+  global.IntersectionObserver = jest.fn().mockImplementation(() => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    disconnect: jest.fn(),
+  }))
+
+  // Mock ResizeObserver
+  global.ResizeObserver = jest.fn().mockImplementation(() => ({
+    observe: jest.fn(),
+    unobserve: jest.fn(),
+    disconnect: jest.fn(),
+  }))
+
+  // Mock matchMedia
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  })
+
+  // Mock localStorage
+  const localStorageMock = (() => {
+    let store: Record<string, string> = {}
+    return {
+      getItem: jest.fn((key: string) => store[key] || null),
+      setItem: jest.fn((key: string, value: string) => {
+        store[key] = value.toString()
+      }),
+      removeItem: jest.fn((key: string) => {
+        delete store[key]
+      }),
+      clear: jest.fn(() => {
+        store = {}
+      }),
+    }
+  })()
+  
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
+  })
+
+  // Mock sessionStorage
+  Object.defineProperty(window, 'sessionStorage', {
+    value: localStorageMock,
+  })
+}

@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nextsaas/ui'
+import { Button } from '@nextsaas/ui'
+import { Badge } from '@nextsaas/ui'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@nextsaas/ui'
 import { AlertTriangle, Shield, Clock, Monitor, Smartphone, Globe, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 

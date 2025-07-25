@@ -388,3 +388,10 @@ export class AuditService {
 
 // Singleton instance
 export const auditService = new AuditService()
+
+// Factory function for custom supabase client
+export function createAuditService(supabase: ReturnType<typeof createClient<Database>>) {
+  const service = Object.create(AuditService.prototype)
+  service.supabase = supabase
+  return service as AuditService
+}

@@ -17,6 +17,13 @@ export * from './components/ui/AccountDropdown'
 export * from './components/ui/OrganizationSwitcher'
 export * from './components/ui/MembersList'
 export * from './components/ui/InvitationForm'
+export * from './components/profile/OrganizationProfileSwitcher'
+export * from './components/profile/OrganizationAwareProfileManager'
+export * from './components/profile/OrganizationContextProvider'
+export * from './components/profile/OrganizationContextWidget'
+export * from './components/profile/ProfileModeDetector'
+export * from './components/profile/BasicProfileManager'
+export * from './components/profile/ProfileWrappers'
 
 // Hooks
 export * from './hooks'
@@ -36,6 +43,7 @@ export * from './utils'
 // Lib - CLIENT ONLY
 export * from './lib/auth-client'
 export * from './lib/session-manager'
+export * from './lib/universal-profile-manager'
 
 // Note: Server-side exports are available in @nextsaas/auth/server
 // Note: Middleware exports are available in @nextsaas/auth/server

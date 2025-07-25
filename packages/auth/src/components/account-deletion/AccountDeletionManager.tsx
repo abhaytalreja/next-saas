@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Progress } from '@/components/ui/progress'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nextsaas/ui'
+import { Button } from '@nextsaas/ui'
+import { Input } from '@nextsaas/ui'
+import { Label } from '@nextsaas/ui'
+import { Textarea } from '@nextsaas/ui'
+import { Checkbox } from '@nextsaas/ui'
+import { Alert, AlertDescription, AlertTitle } from '@nextsaas/ui'
+import { Progress } from '@nextsaas/ui'
 import { 
   AlertTriangle, 
   Clock, 
