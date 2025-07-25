@@ -1,13 +1,69 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-// TODO: Fix validation schema import
-// import { userPreferencesSchema } from '@nextsaas/auth/validation/profile-schemas'
+import { getSupabaseServerClient } from '@nextsaas/supabase'
+import { UniversalProfileManager } from '@nextsaas/auth'
 import { z } from 'zod'
+
+// User preferences validation schema
+const preferencesSchema = z.object({
+  theme: z.enum(['light', 'dark', 'system']).optional(),
+  language: z.string().max(10).optional(),
+  timezone: z.string().max(50).optional(),
+  date_format: z.string().max(20).optional(),
+  time_format: z.enum(['12h', '24h']).optional(),
+  
+  // Email Notifications
+  email_notifications_enabled: z.boolean().optional(),
+  email_frequency: z.enum(['immediate', 'hourly', 'daily', 'weekly']).optional(),
+  email_digest: z.boolean().optional(),
+  
+  // Notification Types
+  notify_security_alerts: z.boolean().optional(),
+  notify_account_updates: z.boolean().optional(),
+  notify_organization_updates: z.boolean().optional(),
+  notify_project_updates: z.boolean().optional(),
+  notify_mentions: z.boolean().optional(),
+  notify_comments: z.boolean().optional(),
+  notify_invitations: z.boolean().optional(),
+  notify_billing_alerts: z.boolean().optional(),
+  notify_feature_announcements: z.boolean().optional(),
+  
+  // Push Notifications
+  browser_notifications_enabled: z.boolean().optional(),
+  desktop_notifications_enabled: z.boolean().optional(),
+  mobile_notifications_enabled: z.boolean().optional(),
+  
+  // Marketing & Communication
+  marketing_emails: z.boolean().optional(),
+  product_updates: z.boolean().optional(),
+  newsletters: z.boolean().optional(),
+  surveys: z.boolean().optional(),
+  
+  // Privacy Settings
+  profile_visibility: z.enum(['public', 'organization', 'private']).optional(),
+  email_visibility: z.enum(['public', 'organization', 'private']).optional(),
+  activity_visibility: z.enum(['public', 'organization', 'private']).optional(),
+  hide_last_seen: z.boolean().optional(),
+  hide_activity_status: z.boolean().optional(),
+  
+  // Advanced Settings
+  quiet_hours_enabled: z.boolean().optional(),
+  quiet_hours_start: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
+  quiet_hours_end: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/).optional(),
+  timezone_aware: z.boolean().optional(),
+  
+  // Accessibility
+  reduce_motion: z.boolean().optional(),
+  high_contrast: z.boolean().optional(),
+  screen_reader_optimized: z.boolean().optional(),
+  
+  // Data & Privacy
+  data_retention_period: z.number().min(30).max(3650).optional(),
+  auto_delete_inactive: z.boolean().optional(),
+})
 
 export async function GET(req: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -17,36 +73,15 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // Get user preferences
-    const { data: preferences, error } = await supabase
-      .from('user_preferences')
-      .select('*')
-      .eq('user_id', session.user.id)
-      .single()
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        // No preferences found, return default values
-        return NextResponse.json({
-          success: true,
-          data: {
-            preferences: null,
-            has_preferences: false
-          }
-        })
-      }
-
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch preferences' },
-        { status: 500 }
-      )
-    }
+    // Use Universal Profile Manager to get preferences
+    const profileManager = new UniversalProfileManager(supabase, session.user.id)
+    const preferences = await profileManager.getPreferences()
 
     return NextResponse.json({
       success: true,
       data: {
         preferences,
-        has_preferences: true
+        has_preferences: preferences !== undefined
       }
     })
   } catch (error) {
@@ -60,7 +95,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -72,54 +107,12 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     
-    // TODO: Temporarily skip validation until schema is fixed
-    // const validatedData = userPreferencesSchema.parse(body)
-    const validatedData = body
+    // Validate request data
+    const validatedData = preferencesSchema.parse(body)
     
-    // Basic validation to prevent errors
-    if (!validatedData || typeof validatedData !== 'object') {
-      return NextResponse.json(
-        { success: false, error: 'Invalid request data' },
-        { status: 400 }
-      )
-    }
-
-    // Create new preferences
-    const { data: preferences, error } = await supabase
-      .from('user_preferences')
-      .insert({
-        user_id: session.user.id,
-        ...validatedData,
-      })
-      .select()
-      .single()
-
-    if (error) {
-      if (error.code === '23505') {
-        // Unique constraint violation - preferences already exist
-        return NextResponse.json(
-          { success: false, error: 'Preferences already exist. Use PATCH to update.' },
-          { status: 409 }
-        )
-      }
-
-      return NextResponse.json(
-        { success: false, error: 'Failed to create preferences' },
-        { status: 500 }
-      )
-    }
-
-    // Log preferences creation activity
-    await supabase
-      .from('user_activity')
-      .insert({
-        user_id: session.user.id,
-        action: 'preferences_create',
-        description: 'Created user preferences',
-        status: 'success',
-        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
-        user_agent: req.headers.get('user-agent'),
-      })
+    // Use Universal Profile Manager to create/update preferences
+    const profileManager = new UniversalProfileManager(supabase, session.user.id)
+    const preferences = await profileManager.updatePreferences(validatedData)
 
     return NextResponse.json({
       success: true,
@@ -128,17 +121,16 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Preferences creation error:', error)
 
-    // TODO: Re-enable when validation schema is fixed
-    // if (error instanceof z.ZodError) {
-    //   return NextResponse.json(
-    //     { 
-    //       success: false, 
-    //       error: 'Invalid request data',
-    //       errors: error.errors 
-    //     },
-    //     { status: 400 }
-    //   )
-    // }
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Invalid request data',
+          errors: error.errors 
+        },
+        { status: 400 }
+      )
+    }
 
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
@@ -149,7 +141,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -161,72 +153,12 @@ export async function PATCH(req: NextRequest) {
 
     const body = await req.json()
     
-    // TODO: Temporarily skip validation until schema is fixed
-    // For partial updates, we need to validate only the provided fields
-    // const partialSchema = userPreferencesSchema.partial()
-    // const validatedData = partialSchema.parse(body)
-    const validatedData = body
+    // Validate partial data
+    const validatedData = preferencesSchema.parse(body)
     
-    // Basic validation to prevent errors
-    if (!validatedData || typeof validatedData !== 'object') {
-      return NextResponse.json(
-        { success: false, error: 'Invalid request data' },
-        { status: 400 }
-      )
-    }
-
-    // Get current preferences to check for changes
-    const { data: currentPreferences } = await supabase
-      .from('user_preferences')
-      .select('*')
-      .eq('user_id', session.user.id)
-      .single()
-
-    // Update preferences
-    const { data: preferences, error } = await supabase
-      .from('user_preferences')
-      .update({
-        ...validatedData,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('user_id', session.user.id)
-      .select()
-      .single()
-
-    if (error) {
-      return NextResponse.json(
-        { success: false, error: 'Failed to update preferences' },
-        { status: 500 }
-      )
-    }
-
-    // Log significant preference changes
-    const significantChanges = []
-    if (currentPreferences) {
-      if (currentPreferences.theme !== validatedData.theme && validatedData.theme) {
-        significantChanges.push(`theme changed to ${validatedData.theme}`)
-      }
-      if (currentPreferences.language !== validatedData.language && validatedData.language) {
-        significantChanges.push(`language changed to ${validatedData.language}`)
-      }
-      if (currentPreferences.email_notifications_enabled !== validatedData.email_notifications_enabled && typeof validatedData.email_notifications_enabled === 'boolean') {
-        significantChanges.push(`email notifications ${validatedData.email_notifications_enabled ? 'enabled' : 'disabled'}`)
-      }
-    }
-
-    if (significantChanges.length > 0) {
-      await supabase
-        .from('user_activity')
-        .insert({
-          user_id: session.user.id,
-          action: 'preferences_update',
-          description: `Updated preferences: ${significantChanges.join(', ')}`,
-          status: 'success',
-          ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
-          user_agent: req.headers.get('user-agent'),
-          metadata: { updated_fields: Object.keys(validatedData) },
-        })
-    }
+    // Use Universal Profile Manager to update preferences
+    const profileManager = new UniversalProfileManager(supabase, session.user.id)
+    const preferences = await profileManager.updatePreferences(validatedData)
 
     return NextResponse.json({
       success: true,
@@ -235,17 +167,16 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     console.error('Preferences update error:', error)
 
-    // TODO: Re-enable when validation schema is fixed
-    // if (error instanceof z.ZodError) {
-    //   return NextResponse.json(
-    //     { 
-    //       success: false, 
-    //       error: 'Invalid request data',
-    //       errors: error.errors 
-    //     },
-    //     { status: 400 }
-    //   )
-    // }
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Invalid request data',
+          errors: error.errors 
+        },
+        { status: 400 }
+      )
+    }
 
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
@@ -256,7 +187,7 @@ export async function PATCH(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -267,32 +198,18 @@ export async function DELETE(req: NextRequest) {
     }
 
     // Delete user preferences (reset to defaults)
-    const { error } = await supabase
+    await supabase
       .from('user_preferences')
       .delete()
       .eq('user_id', session.user.id)
 
-    if (error) {
-      return NextResponse.json(
-        { success: false, error: 'Failed to reset preferences' },
-        { status: 500 }
-      )
-    }
-
-    // Log preferences reset activity
-    await supabase
-      .from('user_activity')
-      .insert({
-        user_id: session.user.id,
-        action: 'preferences_reset',
-        description: 'Reset preferences to defaults',
-        status: 'success',
-        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
-        user_agent: req.headers.get('user-agent'),
-      })
+    // Use Universal Profile Manager to get new defaults
+    const profileManager = new UniversalProfileManager(supabase, session.user.id)
+    const defaultPreferences = await profileManager.getPreferences()
 
     return NextResponse.json({
       success: true,
+      data: { preferences: defaultPreferences },
       message: 'Preferences reset to defaults'
     })
   } catch (error) {

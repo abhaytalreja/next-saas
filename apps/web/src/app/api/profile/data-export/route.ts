@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { getSupabaseServerClient } from '@nextsaas/supabase'
 import { z } from 'zod'
-// TODO: Re-enable when services and middleware are properly exported from @/packages/auth
-// import { dataExportService } from '@/packages/auth/src/services/data-export-service'
-// import { auditService } from '@/packages/auth/src/services/audit-service'
-// import { rateLimiters, withRateLimit } from '@/packages/auth/src/middleware/rate-limiting'
+import { createDataExportService } from '@nextsaas/auth/services/data-export-service'
 
 const dataExportRequestSchema = z.object({
   export_type: z.enum(['full', 'profile', 'activity', 'preferences', 'avatars']).default('full'),
@@ -18,18 +14,8 @@ const dataExportRequestSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  // TODO: Re-enable rate limiting when middleware is properly exported
-  // const rateLimitResponse = await withRateLimit(
-  //   async () => NextResponse.next(),
-  //   rateLimiters.dataExport
-  // )(req)
-
-  // if (rateLimitResponse.status === 429) {
-  //   return rateLimitResponse
-  // }
-
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -48,24 +34,10 @@ export async function POST(req: NextRequest) {
       .from('data_exports')
       .select('id')
       .eq('user_id', session.user.id)
-      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      .gte('requested_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
       .in('status', ['pending', 'processing', 'completed'])
 
     if (recentExports && recentExports.length >= 2) {
-      // Log rate limit violation
-      // TODO: Re-enable audit logging when service is properly exported
-      // await auditService.logSecurityViolation({
-      //   userId: session.user.id,
-      //   violationType: 'rate_limit',
-      //   resource: 'data_export',
-      //   details: {
-      //     reason: 'Daily export limit exceeded',
-      //     recent_exports_count: recentExports.length
-      //   },
-      //   ipAddress: req.headers.get('x-forwarded-for')?.split(',')[0] || req.ip,
-      //   userAgent: req.headers.get('user-agent') || undefined
-      // })
-
       return NextResponse.json(
         { 
           success: false, 
@@ -106,18 +78,9 @@ export async function POST(req: NextRequest) {
       } : undefined
     }
 
-    // Request data export
-    // TODO: Re-enable when service is properly exported
-    // const result = await dataExportService.requestDataExport(exportRequest)
-    // Temporary: Return success without actual export processing
-    const result = { 
-      success: true, 
-      data: { 
-        id: 'temp-export-id', 
-        status: 'queued', 
-        estimatedCompletionTime: new Date(Date.now() + 30 * 60 * 1000).toISOString() 
-      } 
-    }
+    // Create data export service and request export
+    const dataExportService = createDataExportService(supabase)
+    const result = await dataExportService.requestDataExport(exportRequest)
 
     if (!result.success) {
       return NextResponse.json(
@@ -125,23 +88,6 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       )
     }
-
-    // Log successful export request
-    // TODO: Re-enable audit logging when service is properly exported
-    // await auditService.logDataAccess({
-    //   userId: session.user.id,
-    //   action: 'data_export_requested',
-    //   resource: 'data_export',
-    //   resourceId: result.exportId,
-    //   details: {
-    //     export_type,
-    //     format,
-    //     include_deleted,
-    //     has_date_range: !!date_range
-    //   },
-    //   ipAddress: req.headers.get('x-forwarded-for')?.split(',')[0] || req.ip,
-    //   userAgent: req.headers.get('user-agent') || undefined
-    // })
 
     return NextResponse.json({
       success: true,
@@ -175,18 +121,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  // TODO: Re-enable rate limiting when middleware is properly exported
-  // const rateLimitResponse = await withRateLimit(
-  //   async () => NextResponse.next(),
-  //   rateLimiters.api
-  // )(req)
-
-  // if (rateLimitResponse.status === 429) {
-  //   return rateLimitResponse
-  // }
-
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -196,23 +132,12 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // Get user's export history
-    const { data: exports, error } = await supabase
-      .from('data_exports')
-      .select('*')
-      .eq('user_id', session.user.id)
-      .order('created_at', { ascending: false })
-      .limit(10)
-
-    if (error) {
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch export history' },
-        { status: 500 }
-      )
-    }
+    // Get user's export history using the service
+    const dataExportService = createDataExportService(supabase)
+    const exports = await dataExportService.getUserExports(session.user.id, 10)
 
     // Format exports for client
-    const formattedExports = exports?.map(exportRecord => ({
+    const formattedExports = exports.map(exportRecord => ({
       id: exportRecord.id,
       exportType: exportRecord.export_type,
       format: exportRecord.format,
@@ -225,15 +150,15 @@ export async function GET(req: NextRequest) {
       downloadUrl: exportRecord.status === 'completed' ? `/api/profile/data-export/${exportRecord.id}/download` : null,
       errorMessage: exportRecord.error_message,
       canDownload: exportRecord.status === 'completed' && new Date(exportRecord.expires_at) > new Date()
-    })) || []
+    }))
 
     // Get export statistics
-    const totalExports = exports?.length || 0
-    const pendingExports = exports?.filter(e => e.status === 'pending' || e.status === 'processing').length || 0
-    const canRequestNew = pendingExports === 0 && 
-      (exports?.filter(e => 
-        new Date(e.created_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)
-      ).length || 0) < 2
+    const totalExports = exports.length
+    const pendingExports = exports.filter(e => e.status === 'pending' || e.status === 'processing').length
+    const recentExports = exports.filter(e => 
+      new Date(e.requested_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)
+    ).length
+    const canRequestNew = pendingExports === 0 && recentExports < 2
 
     return NextResponse.json({
       success: true,

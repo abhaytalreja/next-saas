@@ -1,18 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-// TODO: Fix validation schema import
-// import { profileFormSchema } from '@nextsaas/auth/validation/profile-schemas'
+import { getSupabaseServerClient } from '@nextsaas/supabase'
+import { UniversalProfileManager } from '@nextsaas/auth'
 import { z } from 'zod'
+
+// Profile form validation schema
+const profileFormSchema = z.object({
+  first_name: z.string().min(1, 'First name is required').max(50),
+  last_name: z.string().min(1, 'Last name is required').max(50),
+  display_name: z.string().max(100).optional(),
+  bio: z.string().max(500).optional(),
+  phone: z.string().max(20).optional(),
+  website: z.string().url('Invalid website URL').max(200).optional().or(z.literal('')),
+  job_title: z.string().max(100).optional(),
+  company: z.string().max(100).optional(),
+  department: z.string().max(100).optional(),
+  location: z.string().max(100).optional(),
+  timezone: z.string().max(50),
+  locale: z.string().max(10).default('en'),
+})
 
 const getProfileSchema = z.object({
   include_preferences: z.boolean().optional().default(false),
   include_activity: z.boolean().optional().default(false),
+  include_sessions: z.boolean().optional().default(false),
+  include_avatars: z.boolean().optional().default(false),
+  organization_id: z.string().optional(),
 })
 
 export async function GET(req: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -23,51 +40,21 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url)
-    const includePreferences = searchParams.get('include_preferences') === 'true'
-    const includeActivity = searchParams.get('include_activity') === 'true'
-
-    // Get user profile
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single()
-
-    if (profileError) {
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch profile' },
-        { status: 500 }
-      )
+    const options = {
+      includePreferences: searchParams.get('include_preferences') === 'true',
+      includeActivity: searchParams.get('include_activity') === 'true',
+      includeSessions: searchParams.get('include_sessions') === 'true',
+      includeAvatars: searchParams.get('include_avatars') === 'true',
+      organizationId: searchParams.get('organization_id') || undefined,
     }
 
-    const result: any = { profile }
-
-    // Include preferences if requested
-    if (includePreferences) {
-      const { data: preferences } = await supabase
-        .from('user_preferences')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .single()
-
-      result.preferences = preferences
-    }
-
-    // Include recent activity if requested
-    if (includeActivity) {
-      const { data: activities } = await supabase
-        .from('user_activity')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false })
-        .limit(10)
-
-      result.activities = activities
-    }
+    // Use Universal Profile Manager to get comprehensive profile data
+    const profileManager = new UniversalProfileManager(supabase, session.user.id)
+    const profileData = await profileManager.getProfile(options)
 
     return NextResponse.json({
       success: true,
-      data: result
+      data: profileData
     })
   } catch (error) {
     console.error('Profile fetch error:', error)
@@ -80,7 +67,7 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -92,89 +79,33 @@ export async function PATCH(req: NextRequest) {
 
     const body = await req.json()
     
-    // TODO: Temporarily skip validation until schema is fixed
-    // const validatedData = profileFormSchema.parse(body)
-    const validatedData = body
+    // Validate request data with proper schema
+    const validatedData = profileFormSchema.parse(body)
     
-    // Basic validation to prevent errors
-    if (!validatedData || typeof validatedData !== 'object') {
-      return NextResponse.json(
-        { success: false, error: 'Invalid request data' },
-        { status: 400 }
-      )
-    }
+    // Get organization context if provided
+    const organizationId = body.organization_id
 
-    // Get current profile to check for changes
-    const { data: currentProfile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single()
-
-    // Update profile
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .update({
-        ...validatedData,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', session.user.id)
-      .select()
-      .single()
-
-    if (profileError) {
-      return NextResponse.json(
-        { success: false, error: 'Failed to update profile' },
-        { status: 500 }
-      )
-    }
-
-    // Log profile update activity
-    const changes = []
-    if (currentProfile) {
-      if (currentProfile.first_name !== validatedData.first_name) changes.push('first_name')
-      if (currentProfile.last_name !== validatedData.last_name) changes.push('last_name')
-      if (currentProfile.display_name !== validatedData.display_name) changes.push('display_name')
-      if (currentProfile.bio !== validatedData.bio) changes.push('bio')
-      if (currentProfile.phone_number !== validatedData.phone_number) changes.push('phone_number')
-      if (currentProfile.company !== validatedData.company) changes.push('company')
-      if (currentProfile.job_title !== validatedData.job_title) changes.push('job_title')
-      if (currentProfile.timezone !== validatedData.timezone) changes.push('timezone')
-      if (currentProfile.location !== validatedData.location) changes.push('location')
-    }
-
-    if (changes.length > 0) {
-      await supabase
-        .from('user_activity')
-        .insert({
-          user_id: session.user.id,
-          action: 'profile_update',
-          description: `Updated profile fields: ${changes.join(', ')}`,
-          status: 'success',
-          ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
-          user_agent: req.headers.get('user-agent'),
-          metadata: { updated_fields: changes },
-        })
-    }
+    // Use Universal Profile Manager to update profile
+    const profileManager = new UniversalProfileManager(supabase, session.user.id)
+    const updatedProfileData = await profileManager.updateProfile(validatedData, organizationId)
 
     return NextResponse.json({
       success: true,
-      data: { profile }
+      data: updatedProfileData
     })
   } catch (error) {
     console.error('Profile update error:', error)
 
-    // TODO: Re-enable when validation schema is fixed
-    // if (error instanceof z.ZodError) {
-    //   return NextResponse.json(
-    //     { 
-    //       success: false, 
-    //       error: 'Invalid request data',
-    //       errors: error.errors 
-    //     },
-    //     { status: 400 }
-    //   )
-    // }
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Invalid request data',
+          errors: error.errors 
+        },
+        { status: 400 }
+      )
+    }
 
     return NextResponse.json(
       { success: false, error: 'Internal server error' },

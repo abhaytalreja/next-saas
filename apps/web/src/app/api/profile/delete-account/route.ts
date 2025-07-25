@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { getSupabaseServerClient } from '@nextsaas/supabase'
 import { z } from 'zod'
-// TODO: Re-enable when services and middleware are properly exported from @/packages/auth
-// import { accountDeletionService } from '@/packages/auth/src/services/account-deletion-service'
-// import { auditService } from '@/packages/auth/src/services/audit-service'
-// import { rateLimiters, withRateLimit } from '@/packages/auth/src/middleware/rate-limiting'
+import { createAccountDeletionService } from '@nextsaas/auth/services/account-deletion-service'
+import { createAuditService } from '@nextsaas/auth/services/audit-service'
 
 const deletionRequestSchema = z.object({
   confirmation_text: z.string().min(1, 'Confirmation text is required'),
@@ -22,18 +19,8 @@ const cancellationSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  // TODO: Re-enable rate limiting when middleware is properly exported
-  // const rateLimitResponse = await withRateLimit(
-  //   async () => NextResponse.next(),
-  //   rateLimiters.auth // Use auth rate limiter for sensitive operations
-  // )(req)
-
-  // if (rateLimitResponse.status === 429) {
-  //   return rateLimitResponse
-  // }
-
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -46,11 +33,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { confirmation_text, reason, password, understand_consequences } = deletionRequestSchema.parse(body)
 
+    // Create service instances
+    const accountDeletionService = createAccountDeletionService(supabase)
+    const auditService = createAuditService(supabase)
+
     // Check if user already has a pending deletion request
-    const statusResult = // TODO: Re-enable when service is properly exported
-    // await accountDeletionService.getDeletionStatus(session.user.id)
-    // Temporary: Return no pending status
-    { success: true, deletion: null }
+    const statusResult = await accountDeletionService.getDeletionStatus(session.user.id)
     
     if (statusResult.success && statusResult.deletion && 
         ['pending', 'processing'].includes(statusResult.deletion.status)) {
@@ -68,18 +56,17 @@ export async function POST(req: NextRequest) {
 
     // Validate confirmation text
     if (confirmation_text !== 'DELETE MY ACCOUNT') {
-      // TODO: Re-enable audit logging when service is properly exported
-      // await auditService.logSecurityViolation({
-      //   userId: session.user.id,
-      //   violationType: 'suspicious_activity',
-      //   resource: 'account_deletion',
-      //   details: {
-      //     invalid_confirmation: confirmation_text,
-      //     expected: 'DELETE MY ACCOUNT'
-      //   },
-      //   ipAddress: req.headers.get('x-forwarded-for')?.split(',')[0] || req.ip,
-      //   userAgent: req.headers.get('user-agent') || undefined
-      // })
+      await auditService.logSecurityViolation({
+        userId: session.user.id,
+        violationType: 'suspicious_activity',
+        resource: 'account_deletion',
+        details: {
+          invalid_confirmation: confirmation_text,
+          expected: 'DELETE MY ACCOUNT'
+        },
+        ipAddress: req.headers.get('x-forwarded-for')?.split(',')[0] || req.ip,
+        userAgent: req.headers.get('user-agent') || undefined
+      })
 
       return NextResponse.json({
         success: false,
@@ -110,24 +97,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Request account deletion with grace period
-    // TODO: Re-enable when service is properly exported
-    // const deletionResult = await accountDeletionService.requestAccountDeletion({
-    //   userId: session.user.id,
-    //   reason,
-    //   confirmationText: confirmation_text,
-    //   password,
-    //   ipAddress: req.headers.get('x-forwarded-for')?.split(',')[0] || req.ip,
-    //   userAgent: req.headers.get('user-agent') || undefined
-    // })
-    // Temporary: Return success without actually processing deletion
-    const deletionResult = { 
-      success: true, 
-      data: { 
-        id: 'temp-deletion-id', 
-        status: 'pending', 
-        scheduledFor: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() 
-      } 
-    }
+    const deletionResult = await accountDeletionService.requestAccountDeletion({
+      userId: session.user.id,
+      reason,
+      confirmationText: confirmation_text,
+      password,
+      ipAddress: req.headers.get('x-forwarded-for')?.split(',')[0] || req.ip,
+      userAgent: req.headers.get('user-agent') || undefined
+    })
 
     if (!deletionResult.success) {
       return NextResponse.json({
@@ -180,19 +157,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  // Apply rate limiting
-  // TODO: Re-enable rate limiting when middleware is properly exported
-  // const rateLimitResponse = await withRateLimit(
-  //   async () => NextResponse.next(),
-  //   rateLimiters.api
-  // )(req)
-
-  // if (rateLimitResponse.status === 429) {
-  //   return rateLimitResponse
-  // }
-
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -202,11 +168,11 @@ export async function GET(req: NextRequest) {
       )
     }
 
+    // Create service instance
+    const accountDeletionService = createAccountDeletionService(supabase)
+
     // Get user's current deletion status
-    const result = // TODO: Re-enable when service is properly exported
-    // await accountDeletionService.getDeletionStatus(session.user.id)
-    // Temporary: Return no pending status
-    { success: true, deletion: null }
+    const result = await accountDeletionService.getDeletionStatus(session.user.id)
 
     if (!result.success) {
       return NextResponse.json({
@@ -282,19 +248,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  // Apply rate limiting
-  // TODO: Re-enable rate limiting when middleware is properly exported
-  // const rateLimitResponse = await withRateLimit(
-  //   async () => NextResponse.next(),
-  //   rateLimiters.auth
-  // )(req)
-
-  // if (rateLimitResponse.status === 429) {
-  //   return rateLimitResponse
-  // }
-
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = getSupabaseServerClient()
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
@@ -307,15 +262,15 @@ export async function DELETE(req: NextRequest) {
     const body = await req.json()
     const { deletion_id, reason } = cancellationSchema.parse(body)
 
+    // Create service instance
+    const accountDeletionService = createAccountDeletionService(supabase)
+
     // Cancel the deletion request
-    // TODO: Re-enable when service is properly exported
-    // const result = await accountDeletionService.cancelAccountDeletion(
-    //   deletion_id,
-    //   session.user.id,
-    //   reason
-    // )
-    // Temporary: Return success for cancellation
-    const result = { success: true }
+    const result = await accountDeletionService.cancelAccountDeletion(
+      deletion_id,
+      session.user.id,
+      reason
+    )
 
     if (!result.success) {
       return NextResponse.json({
