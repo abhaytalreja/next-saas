@@ -130,6 +130,111 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 
 Select.displayName = 'Select'
 
+// Modern Select components (shadcn-style)
+export interface SelectTriggerProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  placeholder?: string
+}
+
+export const SelectTrigger = React.forwardRef<
+  HTMLButtonElement,
+  SelectTriggerProps
+>(({ children, className, placeholder, ...props }, ref) => {
+  return (
+    <button
+      ref={ref}
+      type="button"
+      className={cn(
+        'flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100',
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <svg
+        className="h-4 w-4 opacity-50"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </button>
+  )
+})
+SelectTrigger.displayName = 'SelectTrigger'
+
+export interface SelectValueProps
+  extends React.HTMLAttributes<HTMLSpanElement> {
+  placeholder?: string
+}
+
+export const SelectValue = React.forwardRef<HTMLSpanElement, SelectValueProps>(
+  ({ children, className, placeholder, ...props }, ref) => {
+    return (
+      <span ref={ref} className={cn('block truncate', className)} {...props}>
+        {children || placeholder}
+      </span>
+    )
+  }
+)
+SelectValue.displayName = 'SelectValue'
+
+export interface SelectContentProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  position?: 'top' | 'bottom' | 'auto'
+}
+
+export const SelectContent = React.forwardRef<
+  HTMLDivElement,
+  SelectContentProps
+>(({ children, className, position = 'bottom', ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border bg-white p-1 text-gray-900 shadow-md animate-in fade-in-0 zoom-in-95 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100',
+        position === 'top' && 'bottom-full mb-1',
+        position === 'bottom' && 'top-full mt-1',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+})
+SelectContent.displayName = 'SelectContent'
+
+export interface SelectItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  value: string
+  disabled?: boolean
+}
+
+export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
+  ({ children, className, disabled, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-gray-100 focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-gray-700 dark:focus:bg-gray-700',
+          className
+        )}
+        data-disabled={disabled}
+        {...props}
+      >
+        {children}
+      </div>
+    )
+  }
+)
+SelectItem.displayName = 'SelectItem'
+
 // Multi-select component with checkboxes
 export interface MultiSelectProps
   extends Omit<SelectProps, 'value' | 'onChange'> {

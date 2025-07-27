@@ -23,7 +23,13 @@ export class SecurityMiddleware {
   constructor(config: SecurityMiddlewareConfig = {}) {
     this.policyEngine = new SecurityPolicyEngine()
     this.config = {
-      skipPaths: ['/auth/sign-in', '/auth/sign-up', '/auth/callback', '/api/auth/callback', ...config.skipPaths || []],
+      skipPaths: [
+        '/auth/sign-in',
+        '/auth/sign-up',
+        '/auth/callback',
+        '/api/auth/callback',
+        ...(config.skipPaths || []),
+      ],
       errorPages: {
         ipBlocked: '/security/ip-blocked',
         mfaRequired: '/security/mfa-required',
@@ -48,12 +54,16 @@ export class SecurityMiddleware {
       const userAgent = request.headers.get('user-agent') || ''
 
       if (this.config.debug) {
-        console.log(`[SecurityMiddleware] Checking path: ${pathname}, IP: ${clientIP}`)
+        console.log(
+          `[SecurityMiddleware] Checking path: ${pathname}, IP: ${clientIP}`
+        )
       }
 
       // Get user session
-      const supabase = createSupabaseServerClient()
-      const { data: { session } } = await supabase.auth.getSession()
+      const supabase = await createSupabaseServerClient()
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
 
       if (!session) {
         // No session, skip security checks (will be handled by auth middleware)
@@ -61,8 +71,11 @@ export class SecurityMiddleware {
       }
 
       // Get user's organization context
-      const organizationId = await this.getOrganizationContext(request, session.user.id)
-      
+      const organizationId = await this.getOrganizationContext(
+        request,
+        session.user.id
+      )
+
       if (!organizationId) {
         // No organization context, skip security checks
         return NextResponse.next()
@@ -70,7 +83,7 @@ export class SecurityMiddleware {
 
       // Load and check security policies
       const policies = await this.loadSecurityPolicies(organizationId)
-      
+
       if (policies.length === 0) {
         // No security policies, allow access
         return NextResponse.next()
@@ -101,7 +114,9 @@ export class SecurityMiddleware {
 
       if (mfaValidation.required && !this.isMFASetupPath(pathname)) {
         if (this.config.debug) {
-          console.log(`[SecurityMiddleware] MFA required: ${mfaValidation.reason}`)
+          console.log(
+            `[SecurityMiddleware] MFA required: ${mfaValidation.reason}`
+          )
         }
         return this.createMFARequiredResponse(mfaValidation.gracePeriod)
       }
@@ -109,17 +124,20 @@ export class SecurityMiddleware {
       // Validate session timeout
       const sessionData = await this.getSessionData(session.user.id)
       if (sessionData) {
-        const sessionValidation = await this.policyEngine.validateSessionTimeout(
-          organizationId,
-          sessionData.started_at,
-          sessionData.last_activity
-        )
+        const sessionValidation =
+          await this.policyEngine.validateSessionTimeout(
+            organizationId,
+            sessionData.started_at,
+            sessionData.last_activity
+          )
 
         if (!sessionValidation.valid) {
           if (this.config.debug) {
-            console.log(`[SecurityMiddleware] Session timeout: ${sessionValidation.reason}`)
+            console.log(
+              `[SecurityMiddleware] Session timeout: ${sessionValidation.reason}`
+            )
           }
-          
+
           // Clear session and redirect to login
           await supabase.auth.signOut()
           return this.createSessionExpiredResponse(sessionValidation.reason)
@@ -130,21 +148,24 @@ export class SecurityMiddleware {
       }
 
       // Check for suspicious activity
-      const suspiciousActivity = await this.policyEngine.detectSuspiciousActivity(
-        organizationId,
-        session.user.id,
-        {
-          ipAddress: clientIP,
-          userAgent,
-          location: await this.getLocationFromIP(clientIP),
-        }
-      )
+      const suspiciousActivity =
+        await this.policyEngine.detectSuspiciousActivity(
+          organizationId,
+          session.user.id,
+          {
+            ipAddress: clientIP,
+            userAgent,
+            location: await this.getLocationFromIP(clientIP),
+          }
+        )
 
       if (suspiciousActivity.suspicious && suspiciousActivity.riskScore >= 80) {
         if (this.config.debug) {
-          console.log(`[SecurityMiddleware] High risk activity detected: ${suspiciousActivity.riskScore}`)
+          console.log(
+            `[SecurityMiddleware] High risk activity detected: ${suspiciousActivity.riskScore}`
+          )
         }
-        
+
         // For very high risk, require re-authentication
         await supabase.auth.signOut()
         return NextResponse.redirect(
@@ -154,15 +175,14 @@ export class SecurityMiddleware {
 
       // All security checks passed
       return NextResponse.next()
-
     } catch (error) {
       console.error('[SecurityMiddleware] Error:', error)
-      
+
       // On error, allow access but log the issue
       if (this.config.debug) {
         console.log('[SecurityMiddleware] Error occurred, allowing access')
       }
-      
+
       return NextResponse.next()
     }
   }
@@ -181,15 +201,18 @@ export class SecurityMiddleware {
     const xForwardedFor = request.headers.get('x-forwarded-for')
     const xRealIP = request.headers.get('x-real-ip')
     const cfConnectingIP = request.headers.get('cf-connecting-ip')
-    
+
     if (cfConnectingIP) return cfConnectingIP
     if (xRealIP) return xRealIP
     if (xForwardedFor) return xForwardedFor.split(',')[0].trim()
-    
+
     return '127.0.0.1' // Fallback IP for NextRequest which doesn't have ip property
   }
 
-  private async getOrganizationContext(request: NextRequest, userId: string): Promise<string | null> {
+  private async getOrganizationContext(
+    request: NextRequest,
+    userId: string
+  ): Promise<string | null> {
     try {
       // Try to get organization from header or cookie
       const orgHeader = request.headers.get('x-organization-id')
@@ -199,7 +222,7 @@ export class SecurityMiddleware {
       if (orgCookie) return orgCookie
 
       // Fallback: get user's primary organization
-      const supabase = createSupabaseServerClient()
+      const supabase = await createSupabaseServerClient()
       const { data } = await supabase
         .from('organization_members')
         .select('organization_id')
@@ -213,9 +236,11 @@ export class SecurityMiddleware {
     }
   }
 
-  private async loadSecurityPolicies(organizationId: string): Promise<SecurityPolicy[]> {
+  private async loadSecurityPolicies(
+    organizationId: string
+  ): Promise<SecurityPolicy[]> {
     try {
-      const supabase = createSupabaseServerClient()
+      const supabase = await createSupabaseServerClient()
       const { data } = await supabase
         .from('security_policies')
         .select('*')
@@ -228,9 +253,11 @@ export class SecurityMiddleware {
     }
   }
 
-  private async getUserMFAStatus(userId: string): Promise<{ enabled: boolean; lastVerified?: Date }> {
+  private async getUserMFAStatus(
+    userId: string
+  ): Promise<{ enabled: boolean; lastVerified?: Date }> {
     try {
-      const supabase = createSupabaseServerClient()
+      const supabase = await createSupabaseServerClient()
       const { data } = await supabase
         .from('user_mfa_settings')
         .select('enabled, last_verified_at')
@@ -239,16 +266,20 @@ export class SecurityMiddleware {
 
       return {
         enabled: data?.enabled || false,
-        lastVerified: data?.last_verified_at ? new Date(data.last_verified_at) : undefined,
+        lastVerified: data?.last_verified_at
+          ? new Date(data.last_verified_at)
+          : undefined,
       }
     } catch {
       return { enabled: false }
     }
   }
 
-  private async getSessionData(userId: string): Promise<{ started_at: Date; last_activity: Date } | null> {
+  private async getSessionData(
+    userId: string
+  ): Promise<{ started_at: Date; last_activity: Date } | null> {
     try {
-      const supabase = createSupabaseServerClient()
+      const supabase = await createSupabaseServerClient()
       const { data } = await supabase
         .from('user_sessions')
         .select('started_at, last_activity_at')
@@ -271,7 +302,7 @@ export class SecurityMiddleware {
 
   private async updateSessionActivity(userId: string): Promise<void> {
     try {
-      const supabase = createSupabaseServerClient()
+      const supabase = await createSupabaseServerClient()
       await supabase
         .from('user_sessions')
         .update({ last_activity_at: new Date().toISOString() })
@@ -282,30 +313,39 @@ export class SecurityMiddleware {
     }
   }
 
-  private async getLocationFromIP(ipAddress: string): Promise<{ country?: string; city?: string } | undefined> {
+  private async getLocationFromIP(
+    ipAddress: string
+  ): Promise<{ country?: string; city?: string } | undefined> {
     // In real implementation, would use a GeoIP service
     return undefined
   }
 
-  private createBlockResponse(reason: 'ip_blocked', message?: string): NextResponse {
+  private createBlockResponse(
+    reason: 'ip_blocked',
+    message?: string
+  ): NextResponse {
     const redirectUrl = this.config.errorPages!.ipBlocked!
-    const response = NextResponse.redirect(new URL(redirectUrl, 'http://localhost'))
-    
+    const response = NextResponse.redirect(
+      new URL(redirectUrl, 'http://localhost')
+    )
+
     if (message) {
-      response.cookies.set('security_block_reason', message, { 
+      response.cookies.set('security_block_reason', message, {
         maxAge: 300, // 5 minutes
         secure: true,
         httpOnly: true,
       })
     }
-    
+
     return response
   }
 
   private createMFARequiredResponse(gracePeriod?: Date): NextResponse {
     const redirectUrl = this.config.errorPages!.mfaRequired!
-    const response = NextResponse.redirect(new URL(redirectUrl, 'http://localhost'))
-    
+    const response = NextResponse.redirect(
+      new URL(redirectUrl, 'http://localhost')
+    )
+
     if (gracePeriod) {
       response.cookies.set('mfa_grace_period', gracePeriod.toISOString(), {
         maxAge: 300,
@@ -313,18 +353,18 @@ export class SecurityMiddleware {
         httpOnly: true,
       })
     }
-    
+
     return response
   }
 
   private createSessionExpiredResponse(reason?: string): NextResponse {
     const redirectUrl = this.config.errorPages!.sessionExpired!
     const url = new URL(redirectUrl, 'http://localhost')
-    
+
     if (reason) {
       url.searchParams.set('reason', reason)
     }
-    
+
     return NextResponse.redirect(url)
   }
 }
@@ -341,16 +381,16 @@ export function withSecurity(
   config?: SecurityMiddlewareConfig
 ) {
   const securityMiddleware = new SecurityMiddleware(config)
-  
+
   return async (request: NextRequest): Promise<NextResponse> => {
     // Run security checks first
     const securityResponse = await securityMiddleware.handle(request)
-    
+
     // If security middleware returns a redirect/block, return it
     if (securityResponse.status !== 200) {
       return securityResponse
     }
-    
+
     // Otherwise, continue with the original middleware
     return middleware(request)
   }

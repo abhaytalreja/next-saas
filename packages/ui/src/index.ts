@@ -1,5 +1,12 @@
 // Core utilities
-export { cn, getColor, getSpace, getFontSize, getShadow, getRadius } from './lib/utils'
+export {
+  cn,
+  getColor,
+  getSpace,
+  getFontSize,
+  getShadow,
+  getRadius,
+} from './lib/utils'
 export * from './utils/component-validator'
 
 // Design Tokens
@@ -56,7 +63,10 @@ export * from './components/atoms/feedback/Progress'
 export * from './molecules/cards/Card'
 export * from './molecules/alerts/Alert'
 export { FormField, FormSection } from './molecules/forms/FormField'
-export type { FormFieldProps, FormSectionProps } from './molecules/forms/FormField'
+export type {
+  FormFieldProps,
+  FormSectionProps,
+} from './molecules/forms/FormField'
 export * from './molecules/search/SearchBox'
 export * from './molecules/navigation/DropdownMenu'
 
@@ -65,11 +75,11 @@ export * from './components/molecules/forms/Form'
 
 // New Molecules - Navigation
 export * from './components/molecules/navigation/Tabs'
-export { 
-  Breadcrumb, 
+export {
+  Breadcrumb,
   CollapsibleBreadcrumb,
   type BreadcrumbProps,
-  type CollapsibleBreadcrumbProps 
+  type CollapsibleBreadcrumbProps,
 } from './components/molecules/navigation/Breadcrumb'
 export * from './components/molecules/navigation/Pagination'
 
@@ -86,7 +96,7 @@ export * from './components/molecules/data-display/Stat'
 
 // New Molecules - Navigation (Additional)
 export * from './components/molecules/navigation/Navbar'
-export { 
+export {
   Sidebar,
   SidebarProvider,
   SidebarHeader,
@@ -104,7 +114,7 @@ export {
   type SidebarGroupProps,
   type SidebarToggleProps,
   type SidebarSeparatorProps,
-  type SidebarItemProps
+  type SidebarItemProps,
 } from './components/molecules/navigation/Sidebar'
 export * from './components/molecules/navigation/Menu'
 export * from './components/molecules/navigation/ContextMenu'
@@ -125,6 +135,11 @@ export * from './organisms/data-display/DataGrid'
 export * from './organisms/feedback/NotificationCenter'
 export * from './organisms/layout/Dashboard'
 
+// Email Organisms
+export * from './components/organisms/email/EmailCampaignList'
+export * from './components/organisms/email/EmailTemplateEditor'
+export * from './components/organisms/email/EmailAnalyticsDashboard'
+
 // Templates
 export * from './templates/layouts/DashboardLayout'
 export * from './templates/layouts/AuthLayout'
@@ -136,7 +151,11 @@ export * from './hooks/useResponsive'
 
 // Providers
 export { ThemeProvider } from './providers/ThemeProvider'
-export type { ThemeProviderProps, Theme, ColorMode } from './providers/ThemeProvider'
+export type {
+  ThemeProviderProps,
+  Theme,
+  ColorMode,
+} from './providers/ThemeProvider'
 
 // Test Status Badge
 export { TestStatusBadge, useTestStatus } from './components/TestStatusBadge'

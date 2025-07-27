@@ -1,4 +1,5 @@
 // Analytics and reporting types
+import type { DateRange } from './usage'
 
 export interface UsageAnalytics {
   organization_id: string
@@ -97,7 +98,11 @@ export interface DashboardConfig {
   layout: DashboardLayout
   widgets: DashboardWidget[]
   refresh_interval: number // in seconds
-  date_range_default: 'last_7_days' | 'last_30_days' | 'current_month' | 'custom'
+  date_range_default:
+    | 'last_7_days'
+    | 'last_30_days'
+    | 'current_month'
+    | 'custom'
   custom_date_range?: DateRange
 }
 
@@ -125,7 +130,7 @@ export interface DashboardWidget {
   is_visible: boolean
 }
 
-export type WidgetType = 
+export type WidgetType =
   | 'usage_chart'
   | 'cost_summary'
   | 'usage_table'
@@ -188,11 +193,7 @@ export interface ReportSection {
   time_grouping?: 'day' | 'week' | 'month'
 }
 
-// Date range helpers
-export interface DateRange {
-  start: string // ISO date string
-  end: string // ISO date string
-}
+// Date range helpers are imported from usage.ts
 
 export interface QuickDateRange {
   label: string
@@ -203,9 +204,23 @@ export interface QuickDateRange {
 
 // Analytics service interface
 export interface AnalyticsService {
-  getUsageAnalytics(organizationId: string, period: DateRange): Promise<UsageAnalytics>
+  getUsageAnalytics(
+    organizationId: string,
+    period: DateRange
+  ): Promise<UsageAnalytics>
   generateReport(organizationId: string, config: ReportConfig): Promise<Blob>
-  getDashboardData(organizationId: string, config: DashboardConfig): Promise<Record<string, any>>
-  exportUsageData(organizationId: string, period: DateRange, format: 'csv' | 'json'): Promise<Blob>
-  getUsageForecast(organizationId: string, metricIds: string[], days: number): Promise<UsageForecast[]>
+  getDashboardData(
+    organizationId: string,
+    config: DashboardConfig
+  ): Promise<Record<string, any>>
+  exportUsageData(
+    organizationId: string,
+    period: DateRange,
+    format: 'csv' | 'json'
+  ): Promise<Blob>
+  getUsageForecast(
+    organizationId: string,
+    metricIds: string[],
+    days: number
+  ): Promise<UsageForecast[]>
 }
