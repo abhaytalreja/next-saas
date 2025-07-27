@@ -1,0 +1,94 @@
+{
+  "name": "@nextsaas/email",
+  "version": "1.0.0",
+  "description": "Email system with dual-provider support (Resend + SendGrid) and React Email templates",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest --config jest.integration.config.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "email:preview": "email dev --dir src/templates --port 3001",
+    "email:export": "email export --dir src/templates --out .react-email"
+  },
+  "dependencies": {
+    "@nextsaas/supabase": "*",
+    "@nextsaas/config": "*",
+    "@nextsaas/database": "*",
+    "@next-saas/multi-tenant": "*",
+    "@react-email/components": "^0.0.14",
+    "@react-email/render": "^0.0.12",
+    "@react-email/tailwind": "^0.0.14",
+    "@sendgrid/mail": "^8.1.0",
+    "html-to-text": "^9.0.5",
+    "resend": "^3.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@nextsaas/tsconfig": "*",
+    "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/react": "^14.1.2",
+    "@types/html-to-text": "^9.0.4",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "keywords": [
+    "email",
+    "resend",
+    "sendgrid",
+    "react-email",
+    "templates",
+    "campaigns",
+    "analytics",
+    "multi-tenant"
+  ],
+  "author": "NextSaaS",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./templates": {
+      "types": "./dist/templates/index.d.ts",
+      "import": "./dist/templates/index.mjs",
+      "require": "./dist/templates/index.js"
+    },
+    "./providers": {
+      "types": "./dist/providers/index.d.ts",
+      "import": "./dist/providers/index.mjs",
+      "require": "./dist/providers/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.mjs",
+      "require": "./dist/components/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ]
+}
