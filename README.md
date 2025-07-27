@@ -48,6 +48,7 @@ NextSaaS is a comprehensive starter kit designed to accelerate SaaS development.
 - 🤖 **Test Automation** - CI/CD pipeline with automated test execution and reporting
 - 👤 **Comprehensive Profile Management** - Universal profile system that adapts to single-user, organization-based, and multi-tenant SaaS applications
 - 🖼️ **Avatar Management** - Integrated Backblaze B2 cloud storage with automatic image processing and variants
+- 📧 **Enterprise Email System** - Dual-provider architecture (Resend + SendGrid) with React Email templates, campaign management, and GDPR compliance
 - 📊 **Activity Tracking** - Comprehensive audit trails with organization context and GDPR compliance
 - 🏢 **Multi-Tenant Organizations** - Organization-specific profiles with role-based permissions and context switching
 - 📥 **Data Export & Deletion** - GDPR-compliant data export and secure account deletion with grace periods
@@ -228,6 +229,7 @@ Each package in the `packages/` directory is available to all apps:
 - **@nextsaas/ui** - Shared React components
 - **@nextsaas/auth** - Authentication logic and hooks
 - **@nextsaas/database** - Database client, schemas, and migrations
+- **@nextsaas/email** - Enterprise email system with React Email templates, campaign management, and provider integration
 - **@nextsaas/config** - Shared ESLint, TypeScript, Tailwind configs
 - **@nextsaas/types** - Shared TypeScript type definitions
 - **@nextsaas/utils** - Shared utility functions
