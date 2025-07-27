@@ -1,17 +1,17 @@
 import { DashboardLayout, Button } from '@nextsaas/ui'
 import { ComponentLayout } from '../../components/ComponentLayout'
 import { useState } from 'react'
-import { 
-  Home, 
-  Users, 
-  Settings, 
-  BarChart3, 
-  FileText, 
-  Bell, 
+import {
+  Home,
+  Users,
+  Settings,
+  BarChart3,
+  FileText,
+  Bell,
   Search,
   Menu,
   Plus,
-  Download
+  Download,
 } from 'lucide-react'
 
 const sampleSidebarItems = [
@@ -73,15 +73,17 @@ const BasicExample = () => {
         user={{
           name: 'John Doe',
           email: 'john@example.com',
-          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face',
+          avatar:
+            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face',
         }}
       >
         <div className="p-6">
           <h2 className="text-2xl font-semibold mb-4">Dashboard Content</h2>
           <p className="text-muted-foreground mb-6">
-            This is the main content area where your dashboard components would go.
+            This is the main content area where your dashboard components would
+            go.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 border rounded-lg">
               <h3 className="font-medium mb-2">Revenue</h3>
@@ -115,7 +117,8 @@ const WithBreadcrumbsExample = () => {
         user={{
           name: 'Sarah Wilson',
           email: 'sarah@example.com',
-          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face',
+          avatar:
+            'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face',
         }}
       >
         <div className="p-6">
@@ -154,20 +157,28 @@ const WithActionsExample = () => {
         user={{
           name: 'Alex Chen',
           email: 'alex@example.com',
-          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face',
+          avatar:
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face',
         }}
-        searchPlaceholder="Search users..."
-        onSearch={(query) => console.log('Search:', query)}
+        search={{
+          placeholder: 'Search users...',
+          onSearch: query => console.log('Search:', query),
+        }}
       >
         <div className="p-6">
           <h2 className="text-2xl font-semibold mb-4">Team Members</h2>
           <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-3 p-3 border rounded-lg">
+            {[1, 2, 3].map(i => (
+              <div
+                key={i}
+                className="flex items-center gap-3 p-3 border rounded-lg"
+              >
                 <div className="w-10 h-10 rounded-full bg-muted"></div>
                 <div>
                   <p className="font-medium">Team Member {i}</p>
-                  <p className="text-sm text-muted-foreground">member{i}@example.com</p>
+                  <p className="text-sm text-muted-foreground">
+                    member{i}@example.com
+                  </p>
                 </div>
               </div>
             ))}
@@ -189,18 +200,23 @@ const ResponsiveExample = () => {
         user={{
           name: 'Maria Garcia',
           email: 'maria@example.com',
-          avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face',
+          avatar:
+            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face',
         }}
         sidebarCollapsed={sidebarCollapsed}
-        onSidebarToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-        notificationCount={3}
+        onSidebarCollapse={collapsed => setSidebarCollapsed(collapsed)}
+        notifications={{
+          count: 3,
+          onClick: () => console.log('Notifications clicked'),
+        }}
       >
         <div className="p-6">
           <h2 className="text-2xl font-semibold mb-4">Responsive Design</h2>
           <p className="text-muted-foreground mb-4">
-            The sidebar automatically collapses on mobile devices and can be toggled manually.
+            The sidebar automatically collapses on mobile devices and can be
+            toggled manually.
           </p>
-          
+
           <Button onClick={() => setSidebarCollapsed(!sidebarCollapsed)}>
             {sidebarCollapsed ? 'Expand' : 'Collapse'} Sidebar
           </Button>
@@ -216,15 +232,16 @@ const CustomizationExample = () => {
       <DashboardLayout
         sidebarItems={sampleSidebarItems}
         title="Custom Branding"
-        logo={{
-          src: '/api/placeholder/120/40',
-          alt: 'Company Logo',
+        brand={{
+          name: 'Your Company',
+          logo: '/api/placeholder/120/40',
           href: '/',
         }}
         user={{
           name: 'David Kim',
           email: 'david@example.com',
-          avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face',
+          avatar:
+            'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face',
         }}
         theme="dark"
         sidebarWidth={280}
@@ -233,7 +250,8 @@ const CustomizationExample = () => {
         <div className="p-6">
           <h2 className="text-2xl font-semibold mb-4">Customized Layout</h2>
           <p className="text-muted-foreground">
-            This layout demonstrates custom branding, theming, and sizing options.
+            This layout demonstrates custom branding, theming, and sizing
+            options.
           </p>
         </div>
       </DashboardLayout>
