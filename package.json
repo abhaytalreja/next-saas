@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "Modern Next.js SaaS application with Turborepo monorepo",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -53,7 +57,23 @@
     "test:e2e:cleanup": "node scripts/cleanup-e2e-data.js",
     "test:e2e:reset": "node scripts/cleanup-e2e-data.js --full-reset",
     "test:e2e:auth": "playwright test e2e/auth/ --config=e2e/playwright.config.ts",
-    "test:e2e:auth:headed": "playwright test e2e/auth/ --config=e2e/playwright.config.ts --headed"
+    "test:e2e:auth:headed": "playwright test e2e/auth/ --config=e2e/playwright.config.ts --headed",
+    "admin:setup": "node scripts/admin-setup.js",
+    "admin:verify": "node scripts/admin-verify.js",
+    "admin:create-user": "node scripts/admin-create-user.js",
+    "admin:revoke": "node scripts/admin-revoke.js",
+    "admin:list-admins": "node scripts/admin-list.js",
+    "admin:export-audit": "node scripts/admin-export-audit.js",
+    "admin:export-users": "node scripts/admin-export-users.js",
+    "admin:status": "node scripts/admin-status.js"
+  },
+  "dependencies": {
+    "i18next": "^25.3.1",
+    "next-i18next": "^15.4.2",
+    "react-i18next": "^15.6.0",
+    "sonner": "^1.4.0",
+    "tailwindcss-animate": "^1.0.7",
+    "ua-parser-js": "^1.0.38"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",
@@ -88,20 +108,8 @@
     "turbo": "^2.3.0",
     "zod": "^3.22.0"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "packageManager": "npm@10.9.2",
   "engines": {
     "node": ">=18.0.0"
-  },
-  "dependencies": {
-    "i18next": "^25.3.1",
-    "next-i18next": "^15.4.2",
-    "react-i18next": "^15.6.0",
-    "sonner": "^1.4.0",
-    "tailwindcss-animate": "^1.0.7",
-    "ua-parser-js": "^1.0.38"
   }
 }

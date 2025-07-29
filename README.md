@@ -55,6 +55,7 @@ NextSaaS is a comprehensive starter kit designed to accelerate SaaS development.
 - 📱 **Mobile-First Design** - Touch-optimized interfaces with responsive design
 - ♿ **Accessibility Excellence** - WCAG 2.1 AA compliance with screen reader support
 - 🔒 **GDPR Compliance** - Data export, deletion workflows, and privacy controls
+- 👨‍💼 **Admin Dashboard** - Comprehensive admin interface with user management, analytics, system monitoring, and security controls
 
 ## 📁 Project Structure
 
@@ -67,6 +68,7 @@ next-saas/
 ├── packages/               # Shared packages
 │   ├── ui/                 # Shared React components
 │   ├── auth/               # Authentication utilities
+│   ├── admin/              # Admin dashboard and management system
 │   ├── database/           # Database client and schemas
 │   ├── config/             # Configuration system with validation
 │   ├── tsconfig/           # Base TypeScript configurations
@@ -399,6 +401,10 @@ NextSaaS supports three organization modes to fit different use cases:
 - 🔄 **[Organization Modes Comparison](./docs/ORGANIZATION_MODES_COMPARISON.md)** - Detailed comparison and migration guide
 - 🚀 **[Database Setup Guide](./docs/DATABASE_SETUP.md)** - Step-by-step setup instructions
 - 🔌 **[Supabase Integration](./docs/SUPABASE_INTEGRATION.md)** - Supabase-specific configuration
+- 👨‍💼 **[Admin System Setup](./docs/admin-setup-guide.md)** - Complete admin dashboard setup and configuration
+- 📖 **[Admin User Guide](./docs/admin-user-guide.md)** - How to use the admin dashboard
+- 🔧 **[Admin API Reference](./docs/admin-api-reference.md)** - Admin API endpoints documentation
+- 🔐 **[Admin Security](./ADMIN_SECURITY.md)** - Security architecture and best practices
 
 ## 📚 Documentation
 

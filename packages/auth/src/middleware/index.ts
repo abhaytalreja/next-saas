@@ -1,5 +1,6 @@
 // Main middleware exports
 export * from './auth-middleware'
+export * from './admin-middleware'
 export * from './csrf-protection'
 export * from './rate-limiting'
 export * from './security-headers'
