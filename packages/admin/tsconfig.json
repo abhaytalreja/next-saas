@@ -1,0 +1,16 @@
+{
+  "extends": "@nextsaas/tsconfig/react-library.json",
+  "compilerOptions": {
+    "declarationMap": true,
+    "incremental": false
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.test.*",
+    "**/*.spec.*"
+  ]
+}

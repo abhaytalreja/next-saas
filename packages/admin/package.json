@@ -1,0 +1,59 @@
+{
+  "name": "@nextsaas/admin",
+  "version": "0.1.0",
+  "description": "Admin dashboard components and functionality for NextSaaS",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint . --max-warnings 0",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nextsaas/auth": "workspace:*",
+    "@nextsaas/database": "workspace:*",
+    "@nextsaas/multi-tenant": "workspace:*",
+    "@nextsaas/supabase": "workspace:*",
+    "@nextsaas/ui": "workspace:*",
+    "@nextsaas/utils": "workspace:*",
+    "@tanstack/react-query": "^5.0.0",
+    "@tanstack/react-table": "^8.0.0",
+    "lucide-react": "^0.263.1",
+    "recharts": "^2.8.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.45.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0",
+    "tsup": "^7.2.0",
+    "jest": "^29.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "jest-axe": "^8.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ]
+}
