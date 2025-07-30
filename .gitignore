@@ -54,3 +54,12 @@ coverage/
 
 # ESLint cache
 .eslintcache
+
+# E2E Testing artifacts
+e2e-report/
+e2e-results.json
+e2e-results.xml
+e2e-summary.json
+playwright-report/
+test-results/
+e2e/billing/
